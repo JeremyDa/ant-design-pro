@@ -832,7 +832,7 @@ export default class TableList extends PureComponent {
 
         return (
             <div>
-                {/* <PageHeaderWrapper title="查询表格"> */}
+                <PageHeaderWrapper title="查询表格">
                 <Card bordered={false}>
                     <div className={styles.tableList}>
                         {/* {<div className={styles.tableListForm}>{this.renderForm()}</div>} */}
@@ -893,7 +893,7 @@ export default class TableList extends PureComponent {
                         values={stepFormValues}
                     />
                 ) : null}
-                {/* </PageHeaderWrapper> */}
+                </PageHeaderWrapper>
             </div>
         );
     }
