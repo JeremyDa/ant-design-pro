@@ -16,6 +16,7 @@ import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
+import Exception403 from '../pages/Exception/403';
 
 const { Content } = Layout;
 
@@ -76,6 +77,7 @@ class BasicLayout extends React.PureComponent {
     this.getPageTitle = memoizeOne(this.getPageTitle);
     this.getBreadcrumbNameMap = memoizeOne(this.getBreadcrumbNameMap, isEqual);
     this.breadcrumbNameMap = this.getBreadcrumbNameMap();
+    this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
   }
 
   state = {
@@ -156,14 +158,16 @@ class BasicLayout extends React.PureComponent {
     return routerMap;
   }
 
+  matchParamsPath = pathname => {
+    const pathKey = Object.keys(this.breadcrumbNameMap).find(key =>
+      pathToRegexp(key).test(pathname)
+    );
+    return this.breadcrumbNameMap[pathKey];
+  };
+
   getPageTitle = pathname => {
-    let currRouterData = null;
-    // match params path
-    Object.keys(this.breadcrumbNameMap).forEach(key => {
-      if (pathToRegexp(key).test(pathname)) {
-        currRouterData = this.breadcrumbNameMap[key];
-      }
-    });
+    const currRouterData = this.matchParamsPath(pathname);
+
     if (!currRouterData) {
       return 'Ant Design Pro';
     }
@@ -201,6 +205,16 @@ class BasicLayout extends React.PureComponent {
     });
   };
 
+  renderSettingDrawer() {
+    // Do show SettingDrawer in production
+    // unless deployed in preview.pro.ant.design as demo
+    const { rendering } = this.state;
+    if ((rendering || process.env.NODE_ENV === 'production') && APP_TYPE !== 'site') {
+      return null;
+    }
+    return <SettingDrawer />;
+  }
+
   render() {
     const {
       navTheme,
@@ -208,9 +222,10 @@ class BasicLayout extends React.PureComponent {
       children,
       location: { pathname },
     } = this.props;
-    const { rendering, isMobile } = this.state;
+    const { isMobile } = this.state;
     const isTop = PropsLayout === 'topmenu';
     const menuData = this.getMenuData();
+    const routerConfig = this.matchParamsPath(pathname);
     const layout = (
       <Layout>
         {isTop && !isMobile ? null : (
@@ -237,7 +252,11 @@ class BasicLayout extends React.PureComponent {
             isMobile={isMobile}
             {...this.props}
           />
-          <Content style={this.getContentStyle()}>{children}</Content>
+          <Content style={this.getContentStyle()}>
+            <Authorized authority={routerConfig.authority} noMatch={<Exception403 />}>
+              {children}
+            </Authorized>
+          </Content>
           <Footer />
         </Layout>
       </Layout>
@@ -253,9 +272,7 @@ class BasicLayout extends React.PureComponent {
             )}
           </ContainerQuery>
         </DocumentTitle>
-        {rendering && process.env.NODE_ENV === 'production' ? null : ( // Do show SettingDrawer in production
-          <SettingDrawer />
-        )}
+        {this.renderSettingDrawer()}
       </React.Fragment>
     );
   }

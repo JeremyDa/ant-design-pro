@@ -15,6 +15,7 @@ module.exports = [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
+    authority: ['admin', 'user'],
     routes: [
       // dashboard
       { path: '/', redirect: '/dashboard/analysis' },
@@ -290,6 +291,7 @@ module.exports = [
           {
             path: '/form/advanced-form',
             name: 'advancedform',
+            authority: ['admin'],
             component: './Forms/AdvancedForm',
           },
         ],
@@ -357,6 +359,7 @@ module.exports = [
           {
             path: '/profile/advanced',
             name: 'advanced',
+            authority: ['admin'],
             component: './Profile/AdvancedProfile',
           },
         ],
