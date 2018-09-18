@@ -173,7 +173,7 @@ export default class TableList extends PureComponent {
         <Card bordered={false}>
           <div className="clearfix">
             <Upload
-              action="http://localhost:8011/uploadFile"
+              action="http://106.12.24.238:8082/uploadFile"
               listType="picture-card"
               fileList={wall && wall.data.list||[]}
               onPreview={this.handlePreview}

@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const url = 'http://localhost:8011';
+const url = 'http://106.12.24.238:8082';
 
 export async function query() {
   return request('/api/users');

@@ -813,7 +813,7 @@ export default class TableList extends PureComponent {
 
         const props = {
             name: 'file',
-            action: 'http://localhost:8011/uploadExcel',
+            action: 'http://106.12.24.238:8082/uploadExcel',
             headers: {
               authorization: 'authorization-text',
             },
