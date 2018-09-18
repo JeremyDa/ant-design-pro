@@ -38,21 +38,15 @@ module.exports = [
             name: 'facetype',
             component: './AAGeitpay/Facetype/TableList',
           },
+          // {
+          //   path: '/face/capture',
+          //   name: 'facecapture',
+          //   component: './AAGeitpay/Facecapture/TableList',
+          // },
           
         ],
       },
-      {
-        path: '/dev',
-        name: 'dev',
-        icon: 'tool',
-        routes: [
-          {
-            path: '/dev/log',
-            name: 'log',
-            component: './AAGeitpay/Log/TableList',
-          },
-        ],
-      },
+
       {
         path: '/system',
         name: 'system',
@@ -75,120 +69,135 @@ module.exports = [
           },
         ],
       },
+
       {
-        path: '/basic',
-        name: 'basic',
-        icon: 'appstore-o',
+        path: '/dev',
+        name: 'dev',
+        icon: 'tool',
         routes: [
           {
-            path: '/basic/order-type',
-            name: 'order-type',
-            component: './AAGeitpay/OrderType/TableList',
-          },
-          {
-            path: '/basic/channel-type',
-            name: 'channel-type',
-            component: './AAGeitpay/ChannelType/TableList',
-          },
-          {
-            path: '/basic/third',
-            name: 'third',
-            component: './AAGeitpay/Third/TableList',
-          },
-          {
-            path: '/basic/pay-type',
-            name: 'pay-type',
-            component: './AAGeitpay/PayType/TableList',
-          },
-          {
-            path: '/basic/third-return',
-            name: 'third-return',
-            component: './AAGeitpay/ThirdReturn/TableList',
-          },
-          {
-            path: '/basic/third-state',
-            name: 'third-state',
-            component: './AAGeitpay/ThirdState/TableList',
-          },
-          {
-            path: '/basic/trans-type',
-            name: 'trans-type',
-            component: './AAGeitpay/TransType/TableList',
-          },
-          {
-            path: '/basic/error-code',
-            name: 'error-code',
-            component: './AAGeitpay/ErrorCode/TableList',
-          },
-          {
-            path: '/basic/merchant',
-            name: 'merchant',
-            component: './AAGeitpay/Merchant/TableList',
-          },
-          {
-            path: '/basic/merchant-acc',
-            name: 'merchant-acc',
-            component: './AAGeitpay/MerchantAcc/TableList',
-          },
-          {
-            path: '/basic/casher',
-            name: 'casher',
-            component: './AAGeitpay/Casher/TableList',
-          },
-          {
-            path: '/basic/industry',
-            name: 'industry',
-            component: './AAGeitpay/Industry/TableList',
-          },
-          {
-            path: '/basic/order',
-            name: 'order',
-            component: './AAGeitpay/Order/TableList',
+            path: '/dev/log',
+            name: 'log',
+            component: './AAGeitpay/Log/TableList',
           },
         ],
       },
-      {
-        path: '/trans',
-        name: 'trans',
-        icon: 'pay-circle-o',
-        routes: [
-          {
-            path: '/trans/order-pay',
-            name: 'order-pay',
-            component: './AAGeitpay/OrderPay/TableList',
-          },
-          {
-            path: '/trans/return',
-            name: 'return',
-            component: './AAGeitpay/Return/TableList',
-          },
-          {
-            path: '/trans/settle',
-            name: 'settle',
-            component: './AAGeitpay/Settle/TableList',
-          },
-          {
-            path: '/trans/relation',
-            name: 'relation',
-            component: './AAGeitpay/Relation/TableList',
-          },
-          {
-            path: '/trans/order',
-            name: 'order',
-            component: './AAGeitpay/Order/TableList',
-          },
-          {
-            path: '/trans/test',
-            name: 'test',
-            component: './AAGeitpay/Test/TableList',
-          },
-          {
-            path: '/trans/ttest',
-            name: 'ttest',
-            component: './AAGeitpay/Test/TTableList',
-          },
-        ],
-      },
+      
+      // {
+      //   path: '/basic',
+      //   name: 'basic',
+      //   icon: 'appstore-o',
+      //   routes: [
+      //     {
+      //       path: '/basic/order-type',
+      //       name: 'order-type',
+      //       component: './AAGeitpay/OrderType/TableList',
+      //     },
+      //     {
+      //       path: '/basic/channel-type',
+      //       name: 'channel-type',
+      //       component: './AAGeitpay/ChannelType/TableList',
+      //     },
+      //     {
+      //       path: '/basic/third',
+      //       name: 'third',
+      //       component: './AAGeitpay/Third/TableList',
+      //     },
+      //     {
+      //       path: '/basic/pay-type',
+      //       name: 'pay-type',
+      //       component: './AAGeitpay/PayType/TableList',
+      //     },
+      //     {
+      //       path: '/basic/third-return',
+      //       name: 'third-return',
+      //       component: './AAGeitpay/ThirdReturn/TableList',
+      //     },
+      //     {
+      //       path: '/basic/third-state',
+      //       name: 'third-state',
+      //       component: './AAGeitpay/ThirdState/TableList',
+      //     },
+      //     {
+      //       path: '/basic/trans-type',
+      //       name: 'trans-type',
+      //       component: './AAGeitpay/TransType/TableList',
+      //     },
+      //     {
+      //       path: '/basic/error-code',
+      //       name: 'error-code',
+      //       component: './AAGeitpay/ErrorCode/TableList',
+      //     },
+      //     {
+      //       path: '/basic/merchant',
+      //       name: 'merchant',
+      //       component: './AAGeitpay/Merchant/TableList',
+      //     },
+      //     {
+      //       path: '/basic/merchant-acc',
+      //       name: 'merchant-acc',
+      //       component: './AAGeitpay/MerchantAcc/TableList',
+      //     },
+      //     {
+      //       path: '/basic/casher',
+      //       name: 'casher',
+      //       component: './AAGeitpay/Casher/TableList',
+      //     },
+      //     {
+      //       path: '/basic/industry',
+      //       name: 'industry',
+      //       component: './AAGeitpay/Industry/TableList',
+      //     },
+      //     {
+      //       path: '/basic/order',
+      //       name: 'order',
+      //       component: './AAGeitpay/Order/TableList',
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: '/trans',
+      //   name: 'trans',
+      //   icon: 'pay-circle-o',
+      //   routes: [
+      //     {
+      //       path: '/trans/order-pay',
+      //       name: 'order-pay',
+      //       component: './AAGeitpay/OrderPay/TableList',
+      //     },
+      //     {
+      //       path: '/trans/return',
+      //       name: 'return',
+      //       component: './AAGeitpay/Return/TableList',
+      //     },
+      //     {
+      //       path: '/trans/settle',
+      //       name: 'settle',
+      //       component: './AAGeitpay/Settle/TableList',
+      //     },
+      //     {
+      //       path: '/trans/relation',
+      //       name: 'relation',
+      //       component: './AAGeitpay/Relation/TableList',
+      //     },
+      //     {
+      //       path: '/trans/order',
+      //       name: 'order',
+      //       component: './AAGeitpay/Order/TableList',
+      //     },
+      //     {
+      //       path: '/trans/test',
+      //       name: 'test',
+      //       component: './AAGeitpay/Test/TableList',
+      //     },
+      //     {
+      //       path: '/trans/ttest',
+      //       name: 'ttest',
+      //       component: './AAGeitpay/Test/TTableList',
+      //     },
+      //   ],
+      // },
+
       // {
       //   path: '/chart',
       //   name: 'chart',
