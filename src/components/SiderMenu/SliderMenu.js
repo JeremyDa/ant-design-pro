@@ -6,6 +6,7 @@ import Link from 'umi/link';
 import styles from './index.less';
 import BaseMenu, { getMenuMatches } from './BaseMenu';
 import { urlToList } from '../_utils/pathTools';
+import logo from '../../../public/logo.png';
 
 const { Sider } = Layout;
 
@@ -87,7 +88,7 @@ export default class SiderMenu extends PureComponent {
   };
 
   render() {
-    const { logo, collapsed, onCollapse, fixSiderbar, theme } = this.props;
+    const { collapsed, onCollapse, fixSiderbar, theme } = this.props;
     const { openKeys } = this.state;
     const defaultProps = collapsed ? {} : { openKeys };
 
@@ -110,7 +111,7 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} id="logo">
           <Link to="/">
             <img src={logo} alt="logo" />
-            <h1>Ant Design Pro</h1>
+            <h1>GEIT FACE</h1>
           </Link>
         </div>
         <BaseMenu
