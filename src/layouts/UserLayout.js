@@ -52,7 +52,7 @@ class UserLayout extends React.PureComponent {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Geit Pay</span>
+                <span className={styles.title}>Geit Face</span>
               </Link>
             </div>
             <div className={styles.desc} />
