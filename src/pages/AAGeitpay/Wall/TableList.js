@@ -169,7 +169,7 @@ export default class TableList extends PureComponent {
       </div>
     );
     return (
-      // <PageHeaderWrapper title="查询表格">
+      <PageHeaderWrapper title="查询表格">
         <Card bordered={false}>
           <div className="clearfix">
             <Upload
@@ -190,7 +190,7 @@ export default class TableList extends PureComponent {
             </Modal>
           </div>
         </Card>
-      // </PageHeaderWrapper>
+      </PageHeaderWrapper>
     );
   }
 }
