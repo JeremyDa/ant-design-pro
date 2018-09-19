@@ -88,7 +88,10 @@ const CreateForm = Form.create()(props => {
                 <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}  label="行业代码">
                     {form.getFieldDecorator('fCode', {
                         initialValue:fCode,
-                        rules: [{ required: true, message: 'Please input the title of collection!' }],
+                        rules: [
+                        { required: true, message: '请输入行业代码' },
+                        { max: 4, message: '不超过4位' },
+                       ],
                     })(
                         <Input />
                     )}
@@ -97,7 +100,8 @@ const CreateForm = Form.create()(props => {
                 <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}  label="行业名称">
                     {form.getFieldDecorator('fName', {
                         initialValue:fName,
-                        rules: [{ required: true, message: 'Please input the title of collection!' }],
+                        rules: [{ required: true, message: '请输入行业名称' },
+                        { max: 33, message: '不超过33位' },],
                     })(
                         <Input />
                     )}
