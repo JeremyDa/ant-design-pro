@@ -58,6 +58,8 @@ const CreateForm = Form.create()(props => {
     // to update: value to text的数据源，这里是表名
     T_CITY,
     T_INDUSTRY,
+    T_PAY_TYPE,
+    T_CHANEL_TYPE,
   } = props;
 
   // to update: 字段名，用于双向绑定数据
@@ -104,6 +106,34 @@ const CreateForm = Form.create()(props => {
             { max: 33, message: '不超过33位' },
           ],
         })(<Input placeholder="请输入" />)}
+      </FormItem>
+
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="支付类型">
+        {form.getFieldDecorator('fPaytype', {
+          initialValue:` `,
+        })(
+          <Select placeholder="请选择" style={{ width: '100%' }} mode="tags">
+          {T_PAY_TYPE
+            ? T_PAY_TYPE.tv.map(d => (
+              <Option key={d.value} value={d.value}>{d.text}</Option>
+              ))
+            : ''}
+        </Select>
+        )}
+      </FormItem>
+
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道类型">
+        {form.getFieldDecorator('fChanneltype', {
+          initialValue:` `,
+        })(
+          <Select placeholder="请选择" style={{ width: '100%' }} mode="tags">
+          {T_CHANEL_TYPE
+            ? T_CHANEL_TYPE.tv.map(d => (
+              <Option key={d.value} value={d.value}>{d.text}</Option>
+              ))
+            : ''}
+        </Select>
+        )}
       </FormItem>
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属城市">
@@ -439,6 +469,26 @@ export default class TableList extends PureComponent {
         key: 'F_CODE',
         value: 'F_NAME',
         table: 'T_INDUSTRY',
+      },
+    });
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_TYPE',
+        value: 'F_NAME',
+        table: 'T_PAY_TYPE',
+      },
+    });
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_TYPE',
+        value: 'F_NAME',
+        table: 'T_CHANEL_TYPE',
       },
     });
 
@@ -848,6 +898,8 @@ export default class TableList extends PureComponent {
           // to update: 中文翻译
           T_INDUSTRY={table.T_INDUSTRY}
           T_CITY={table.T_CITY}
+          T_PAY_TYPE={table.T_PAY_TYPE}
+          T_CHANEL_TYPE = {table.T_CHANEL_TYPE}
 
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
