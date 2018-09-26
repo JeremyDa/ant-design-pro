@@ -274,6 +274,7 @@ export default class TableList extends PureComponent {
         tradeCode: tradeSpace + '.selectSettle',
         date_start: date_start,
         date_end: date_end,
+        closePagination: true,
       },
     });
 
