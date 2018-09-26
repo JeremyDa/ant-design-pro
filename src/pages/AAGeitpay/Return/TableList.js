@@ -46,14 +46,14 @@ const getValue = obj =>
     .join(',');
 
 
-const payOrReturn = {'1':'支付', '-1' : '退款'};
-const payOrReturnColor = {'1':'green', '-1':'red'};
+const payOrReturn = { '1': '支付', '-1': '退款' };
+const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = {'0':'待确认', '1':'已确认', 'V':'订单关闭'};
-const payStatusColor = {'0':'orange', '1':'green', 'V':'grey'};
+const payStatus = { '0': '待确认', '1': '已确认', 'V': '订单关闭' };
+const payStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
 
-const relationFlag = {'0':'平','1':'长款','-1':'短款'};
-const relationFlagColor = {'0':'grey','1':'orange','-1':'red'};
+const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
+const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, chart, loading }) => ({
@@ -64,11 +64,11 @@ const relationFlagColor = {'0':'grey','1':'orange','-1':'red'};
 @Form.create()
 export default class TableList extends PureComponent {
 
-  
+
 
   getColumns = table => {
     // to update: 列名
-    const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
+    const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
     return [
 
       {
@@ -85,14 +85,14 @@ export default class TableList extends PureComponent {
         align: 'center',
         width: 110,
         render: (text, record) => (
-            record.fPayStatus === '1' && !record.fReturnStatus && record.fReturnStatus !=='0' &&
-            (
+          record.fPayStatus === '1' && !record.fReturnStatus && record.fReturnStatus !== '0' &&
+          (
             <Fragment>
-              <Popconfirm title="确认退款吗?" onConfirm={this.handleReturn.bind(null, record)}>
-                <a href="">退款</a>
-              </Popconfirm>
+              {/* <Popconfirm title="确认退款吗?" onConfirm={this.handleReturn.bind(null, record)}> */}
+              <a onClick={this.returnVisible.bind(null, record)}>退款</a>
+              {/* </Popconfirm> */}
             </Fragment>
-            )
+          )
         ),
       },
       {
@@ -101,11 +101,11 @@ export default class TableList extends PureComponent {
       },
 
       {
-        title:'姓名',
+        title: '姓名',
         dataIndex: 'fBuyername',
       },
       {
-        title:'电话',
+        title: '电话',
         dataIndex: 'fBuyertel',
       },
       {
@@ -148,7 +148,7 @@ export default class TableList extends PureComponent {
         title: '订单金额',
         dataIndex: 'f3totalFee',
         align: 'right',
-        render: val => val/100 + '元',
+        render: val => val / 100 + '元',
       },
 
       {
@@ -163,7 +163,7 @@ export default class TableList extends PureComponent {
         title: '支付对账',
         dataIndex: 'fPayFlag',
         render: (val) => (
-          relationFlag[val] && 
+          relationFlag[val] &&
           <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
         ),
       },
@@ -172,7 +172,7 @@ export default class TableList extends PureComponent {
         title: '退款状态',
         dataIndex: 'fReturnStatus',
         render: (val) => (
-          payStatus[val] && 
+          payStatus[val] &&
           <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag> || '-'
         ),
       },
@@ -181,7 +181,7 @@ export default class TableList extends PureComponent {
         title: '退款对账',
         dataIndex: 'fReturnFlag',
         render: (val) => (
-          relationFlag[val] && 
+          relationFlag[val] &&
           <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
         ),
       },
@@ -209,7 +209,7 @@ export default class TableList extends PureComponent {
       //     <span>{(val && moment(val, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}</span>
       //   ),
       // },
-      
+
       // {
       //   title: '现金支付金额',
       //   dataIndex: 'f3cashFee',
@@ -233,10 +233,12 @@ export default class TableList extends PureComponent {
     modalVisible: false,
     updateModalVisible: false,
     expandForm: false,
+    returnVisible: false,
     selectedRows: [],
     formValues: {},
     addOrUpdate: 1,
     stepFormValues: {},
+    record: '',
 
     // to update: tradeCode更新
     tradeSpace: 'torderpay',
@@ -429,49 +431,80 @@ export default class TableList extends PureComponent {
     });
   };
 
+  returnVisible = (record) => {
+    this.setState({
+      returnVisible: true,
+      record: record,
+    });
+  }
+  handleCancel = () => {
+    this.setState({
+      returnVisible: false,
+    });
+  }
 
-  handleReturn = record => {
-    const { dispatch } = this.props;
-    const { tradeSpace } = this.state;
 
-    if (!record) return;
-    dispatch({
-      type: 'table/update',
-      payload: {
-        // to update: set primarykey
-        indCode: record.fIndustryCode,
-        chanelType: record.fChannel,
-        merchantId: record.fMerchantid,
-        operId: record.fOperid,
-        termId: record.fTermid,
-        orderId: record.fOrdertrace,
-        refundAmt: record.f3totalFee,
-        refundReason: '1',
-        tradeCode: 'trans/return',
-        returnSelect: tradeSpace + '.selectOrderAndPay',
-      },
-      callback: () => {
-        if(!this.props.table.rspMsg){
-          message.warning('退款申请发起成功');
-        }
-      },
+
+
+  handleReturn = () => {
+    const { dispatch, form } = this.props;
+    const { tradeSpace, record } = this.state;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      if (!record) return;
+      dispatch({
+        type: 'table/update',
+        payload: {
+          // to update: set primarykey
+          indCode: record.fIndustryCode,
+          chanelType: record.fChannel,
+          merchantId: record.fMerchantid,
+          operId: record.fOperid,
+          termId: record.fTermid,
+          orderId: record.fOrdertrace,
+          refundAmt: record.f3totalFee,
+          refundReason: fieldsValue.refundReason,
+          tradeCode: 'trans/return',
+          returnSelect: tradeSpace + '.selectOrderAndPay',
+        },
+        callback: () => {
+          if (!this.props.table.rspMsg) {
+            message.warning('退款申请发起成功');
+          }
+        },
+      });
+  
+      dispatch({
+        type: 'table/update',
+        payload: {
+          // to update: set primarykey
+          indCode: record.fIndustryCode,
+          chanelType: record.fChannel,
+          merchantId: record.fMerchantid,
+          operId: record.fOperid,
+          termId: record.fTermid,
+          orderId: record.fOrdertrace,
+          tradeCode: 'trans/returnQuery',
+          returnSelect: 'none',
+        },
+      });
     });
 
-    dispatch({
-      type: 'table/update',
-      payload: {
-        // to update: set primarykey
-        indCode: record.fIndustryCode,
-        chanelType: record.fChannel,
-        merchantId: record.fMerchantid,
-        operId: record.fOperid,
-        termId: record.fTermid,
-        orderId: record.fOrdertrace,
-        tradeCode: 'trans/returnQuery',
-        returnSelect: 'none',
-      },
+    this.setState({
+      returnVisible: false,
     });
+  
+
+
+    
   };
+
+  textarea = (e) =>{
+    console.log("===",e);
+
+  }
 
   handleSelectRows = rows => {
     this.setState({
@@ -580,63 +613,82 @@ export default class TableList extends PureComponent {
 
     const { rangePickerValue } = this.state;
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
-          <Col md={24} sm={24}>
-            <div className={styles.salesExtraWrap}>
-              <RangePicker
-                value={rangePickerValue}
-                onChange={this.handleRangePickerChange}
-                style={{ width: 256 , marginBottom:'24px'}}
-              />
-              <div className={styles.salesExtra}>
-                <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
-                  <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
-                </a>
-                <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
-                  <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
-                </a>
-                <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
-                  <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
-                </a>
-                <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
-                  <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
-                </a>
+      <div>
+        <Modal
+          title="退款原因"
+          visible={this.state.returnVisible}
+          onOk={this.handleReturn}
+          onCancel={this.handleCancel}>
+          <Form>
+            <FormItem>
+            <FormItem>
+                {getFieldDecorator('refundReason',{
+                  rules: [{ required: true, message: '请输入退款原因' }],
+                }
+                )(<TextArea rows={4} placeholder="请输入退款原因" />)}
+              </FormItem>
+          
+          </FormItem>
+          </Form>
+        </Modal>
+        <Form onSubmit={this.handleSearch} layout="inline">
+          <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
+            <Col md={24} sm={24}>
+              <div className={styles.salesExtraWrap}>
+                <RangePicker
+                  value={rangePickerValue}
+                  onChange={this.handleRangePickerChange}
+                  style={{ width: 256, marginBottom: '24px' }}
+                />
+                <div className={styles.salesExtra}>
+                  <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
+                    <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
+                  </a>
+                  <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
+                    <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
+                  </a>
+                  <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
+                    <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
+                  </a>
+                  <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
+                    <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
+                  </a>
+                </div>
               </div>
-            </div>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="姓名">
-              {getFieldDecorator('fBuyername')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="电话">
-              {getFieldDecorator('fBuyertel')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="订单号">
-              {getFieldDecorator('fOrdertrace')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={4} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
+            </Col>
+          </Row>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={6} sm={24}>
+              <FormItem label="姓名">
+                {getFieldDecorator('fBuyername')(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem label="电话">
+                {getFieldDecorator('fBuyertel')(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <FormItem label="订单号">
+                {getFieldDecorator('fOrdertrace')(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col md={4} sm={24}>
+              <span className={styles.submitButtons}>
+                <Button type="primary" htmlType="submit">
+                  查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
+                <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                  重置
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
+                <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                  展开 <Icon type="down" />
+                </a>
+              </span>
+            </Col>
+          </Row>
+        </Form>
+      </div>
     );
   }
 
@@ -648,7 +700,7 @@ export default class TableList extends PureComponent {
 
     const { rangePickerValue } = this.state;
 
-    const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
+    const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -658,7 +710,7 @@ export default class TableList extends PureComponent {
               <RangePicker
                 value={rangePickerValue}
                 onChange={this.handleRangePickerChange}
-                style={{ width: 256 , marginBottom:'24px'}}
+                style={{ width: 256, marginBottom: '24px' }}
               />
               <div className={styles.salesExtra}>
                 <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
@@ -694,7 +746,7 @@ export default class TableList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '0px'}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="商户">
               {getFieldDecorator(
@@ -703,8 +755,8 @@ export default class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_MERCHANT
                     ? T_MERCHANT.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
                     : ''}
                 </Select>
               )}
@@ -719,8 +771,8 @@ export default class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_CHANEL_TYPE
                     ? T_CHANEL_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
                     : ''}
                 </Select>
               )}
@@ -735,15 +787,15 @@ export default class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_ORDER_TYPE
                     ? T_ORDER_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
                     : ''}
                 </Select>
               )}
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '0px'}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="支付类型">
               {getFieldDecorator(
@@ -752,8 +804,8 @@ export default class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_PAY_TYPE
                     ? T_PAY_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
                     : ''}
                 </Select>
               )}
@@ -768,8 +820,8 @@ export default class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_THIRD
                     ? T_THIRD.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
                     : ''}
                 </Select>
               )}
@@ -791,9 +843,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
-              <span style={{ 
+              <span style={{
                 // float: 'right',
-                 marginBottom: 24 }}>
+                marginBottom: 24
+              }}>
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
@@ -807,7 +860,7 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
         </Row>
-        
+
       </Form>
     );
   }
@@ -858,34 +911,34 @@ export default class TableList extends PureComponent {
     const { selectedRows } = this.state;
 
     const renderExpand = (record) => {
-      const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
+      const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
       return (
         <p>
-          <p style={{float:'left',width:'20%'}}>
+          <p style={{ float: 'left', width: '20%' }}>
             <h2>患者信息</h2>
             姓名:{record.fBuyername}
-            <br/>
+            <br />
             手机:{record.fBuyertel}
-            <br/>
+            <br />
             科室:{record.fDepart}
           </p>
-          <p style={{float:'left',width:'20%'}}>
+          <p style={{ float: 'left', width: '20%' }}>
             <h2>订单信息</h2>
-            订单号:{record.fOrdertrace}<br/>
-            平台时间:{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br/>
-            商户:{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br/>
-            渠道:{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br/>
-            订单类型:{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br/>
-            支付类型:{ T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{color:'#00A3EE'}}/> }{ T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{color:'green'}}/> }{T_THIRD ? '  '+T_THIRD.kv[record.fThirdid] : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br/>
-            金额:{record.f3totalFee/100 + '元'}<br/>
+            订单号:{record.fOrdertrace}<br />
+            平台时间:{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
+            商户:{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br />
+            渠道:{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br />
+            订单类型:{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br />
+            支付类型:{T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}{T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}{T_THIRD ? '  ' + T_THIRD.kv[record.fThirdid] : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br />
+            金额:{record.f3totalFee / 100 + '元'}<br />
           </p>
           {record.f3transactionId && (
-          <p style={{float:'left',width:'50%'}}>
-            <h2></h2>
-            第三方流水:{record.f3transactionId}<br/>
-            第三方id:{record.f3openid}<br/>
-            第三方时间:{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br/>
-          </p>
+            <p style={{ float: 'left', width: '50%' }}>
+              <h2></h2>
+              第三方流水:{record.f3transactionId}<br />
+              第三方id:{record.f3openid}<br />
+              第三方时间:{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
+            </p>
           )
           }
         </p>
@@ -901,6 +954,7 @@ export default class TableList extends PureComponent {
 
             {/* <div className={styles.tableListOperator} /> */}
             <StandardTable
+            // rowSelection={rowSelection}
               selectedRows={selectedRows}
               loading={loading}
               data={data}
