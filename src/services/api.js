@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-const url = 'http://localhost:8011';
+const url = 'http://192.168.2.206:8011';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
