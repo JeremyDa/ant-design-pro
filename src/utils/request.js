@@ -147,7 +147,6 @@ export default function request(
       return data;
     })
     .catch(e => {
-      console.log('catch %o',e);
       if( options.body && options.body.showError && e == 'TypeError: Failed to fetch'){
         notification.error({
           message: `请求错误 : `,
