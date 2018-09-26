@@ -21,6 +21,7 @@ import {
   Steps,
   Radio,
   Popconfirm,
+  Tag,
 } from 'antd';
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -57,6 +58,7 @@ const CreateForm = Form.create()(props => {
 
     // to update: value to text的数据源，这里是表名
     T_THIRD,
+    
   } = props;
 
   // to update: 字段名，用于双向绑定数据
@@ -106,9 +108,7 @@ const CreateForm = Form.create()(props => {
           <Select placeholder="请选择" style={{ width: '100%' }}>
             {T_THIRD
               ? T_THIRD.tv.map(d => (
-                  // <Option key={d.value} title={d.text}>
-                  //   {d.text}
-                  // </Option>
+                  
 
                 <Option value={d.value}>{d.text}</Option>
                 ))
@@ -130,16 +130,7 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="状态">
-        {form.getFieldDecorator('fUse', {
-          initialValue: fUse || ``,
-        })(
-          <Select placeholder="请选择" style={{ width: '100%' }}>
-            <Option value="1">正常</Option>
-            <Option value="0">停用</Option>
-          </Select>
-        )}
-      </FormItem>
+      
 
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="备注">
         {form.getFieldDecorator('fMem', {
@@ -352,6 +343,15 @@ class UpdateForm extends PureComponent {
   }
 }
 
+const InTable = () => {
+  return(
+    <div>
+      <span>支付类型(已启用): </span><Tag>支付宝商户扫码</Tag><Tag>EPOS刷卡</Tag><Tag>微信商户被扫</Tag><br />
+      <span>渠道类型(已启用): </span><Tag>自助终端</Tag><Tag>人工窗口</Tag><Tag>手机APP</Tag>
+    </div>
+  );
+};
+
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, loading }) => ({
   table,
@@ -361,7 +361,7 @@ class UpdateForm extends PureComponent {
 export default class TableList extends PureComponent {
   getColumns = table => {
     // to update: 列名
-    const { T_THIRD,T_MERCHANT } = table;
+    const { T_THIRD,T_MERCHANT, T_PAY_TYPE } = table;
     return [
       {
         title: '商户',
@@ -378,6 +378,14 @@ export default class TableList extends PureComponent {
           // return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
+      // {
+      //   title: '支付类型',
+      //   dataIndex: 'fThirdid',
+      //   render(val) {
+      //     return <span>{T_PAY_TYPE ? T_PAY_TYPE.kv[val] : ''}</span>;
+      //     // return <Badge status={statusMap[val]} text={status[val]} />;
+      //   },
+      // },
       {
         title: '第三方分配的账号ID',
         dataIndex: 'fAppid',
@@ -386,13 +394,13 @@ export default class TableList extends PureComponent {
         title: '第三方分配的商户号',
         dataIndex: 'fMchid',
       },
-      {
-        title: '启用标志',
-        dataIndex: 'fUse',
-        render(val) {
-          return <span>{['停用', '启用'][val]}</span>;
-        },
-      },
+      // {
+      //   title: '启用标志',
+      //   dataIndex: 'fUse',
+      //   render(val) {
+      //     return <span>{['停用', '启用'][val]}</span>;
+      //   },
+      // },
       {
         title: '备注',
         dataIndex: 'fMem',
@@ -440,6 +448,59 @@ export default class TableList extends PureComponent {
         table: 'T_THIRD',
       },
     });
+
+    dispatch({
+      type: 'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_MERCHANTID',
+        value: 'F_NAME',
+        table: 'T_MERCHANT',
+      },
+    });
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_MERCHANTID',
+        value: 'F_PAYTYPE',
+        table: 'T_MERCHANT_PAYMODEL', 
+      },
+    });
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_TYPE',
+        value: 'F_NAME',
+        table: 'T_PAY_TYPE',
+      },
+    });
+
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'f_merchantid',
+        value: 'f_chaneltype',
+        table: 't_merchant_chanel', 
+      },
+    });
+
+    dispatch({
+      type:'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_TYPE',
+        value: 'F_NAME',
+        table: 'T_CHANEL_TYPE',
+      },
+    });
+
+    
 
     dispatch({
       type: 'table/fetch',
@@ -837,6 +898,7 @@ export default class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              expandedRowRender={InTable}
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
