@@ -44,7 +44,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-
+const Search = Input.Search;
 
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
@@ -55,14 +55,46 @@ const payStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
 const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
 const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
 
+
+
+
+
+
+const ReturnModal = Form.create()(
+  class extends React.Component {
+    render() {
+      const { handleReturn, handleCancel, returnVisible, form } = this.props;
+      const { getFieldDecorator } = form;
+      return (
+        <div>
+          <Modal
+            title="退款原因"
+            visible={returnVisible}
+            onOk={handleReturn}
+            onCancel={handleCancel}>
+            <FormItem>
+              {getFieldDecorator('refundReason', {
+                rules: [{ required: true, message: '请输入退款原因' }],
+              }
+              )(<TextArea rows={4} placeholder="请输入退款原因" />)}
+            </FormItem>
+          </Modal>
+        </div>
+      );
+    }
+  }
+);
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, chart, loading }) => ({
   table,
   chart,
   loading: loading.models.table,
 }))
+
 @Form.create()
 export default class TableList extends PureComponent {
+
+
 
 
 
@@ -185,51 +217,11 @@ export default class TableList extends PureComponent {
           <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
         ),
       },
-
-      // {
-      //   title: '商户',
-      //   dataIndex: 'fMerchantid',
-      //   render(val) {
-      //     return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
-      //   },
-      // },
-
-      // {
-      //   title: '渠道',
-      //   dataIndex: 'fChannel',
-      //   render(val) {
-      //     return <span>{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[val] : ''}</span>;
-      //   },
-      // },
-
-      // {
-      //   title: '第三方支付完成时间',
-      //   dataIndex: 'f3dateEnd',
-      //   render: val => (
-      //     <span>{(val && moment(val, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}</span>
-      //   ),
-      // },
-
-      // {
-      //   title: '现金支付金额',
-      //   dataIndex: 'f3cashFee',
-      //   align: 'right',
-      //   render: val => val/100 + '元',
-      // },
-
-      // {
-      //   title: '第三方流水号',
-      //   dataIndex: 'f3transactionId',
-      // },
-
-      // {
-      //   title: '付款人第三方id号',
-      //   dataIndex: 'f3openid',
-      // },
     ];
   };
 
   state = {
+    selectedRowKeys: [],
     modalVisible: false,
     updateModalVisible: false,
     expandForm: false,
@@ -238,6 +230,7 @@ export default class TableList extends PureComponent {
     formValues: {},
     addOrUpdate: 1,
     stepFormValues: {},
+    refundReason: '',
     record: '',
 
     // to update: tradeCode更新
@@ -443,11 +436,16 @@ export default class TableList extends PureComponent {
     });
   }
 
+  saveFormRef = (formRef) => {
+    this.formRef = formRef;
+  }
+
 
 
 
   handleReturn = () => {
-    const { dispatch, form } = this.props;
+    const { dispatch } = this.props;
+    const form = this.formRef.props.form;
     const { tradeSpace, record } = this.state;
 
     form.validateFields((err, fieldsValue) => {
@@ -470,41 +468,50 @@ export default class TableList extends PureComponent {
           returnSelect: tradeSpace + '.selectOrderAndPay',
         },
         callback: () => {
-          if (!this.props.table.rspMsg) {
-            message.warning('退款申请发起成功');
-          }
+          // if (!this.props.table.rspMsg) {
+            // message.warning('退款申请发起成功');
+          // }
+
+          dispatch({
+            type: 'table/update',
+            payload: {
+              // to update: set primarykey
+              indCode: record.fIndustryCode,
+              chanelType: record.fChannel,
+              merchantId: record.fMerchantid,
+              operId: record.fOperid,
+              termId: record.fTermid,
+              orderId: record.fOrdertrace,
+              tradeCode: 'trans/returnQuery',
+              returnSelect: tradeSpace + '.selectOrderAndPay',
+            },
+            callback: () => {
+              if (!this.props.table.rspMsg) {
+                message.success('退款成功');
+              }
+            }
+          });
+
         },
       });
-  
-      dispatch({
-        type: 'table/update',
-        payload: {
-          // to update: set primarykey
-          indCode: record.fIndustryCode,
-          chanelType: record.fChannel,
-          merchantId: record.fMerchantid,
-          operId: record.fOperid,
-          termId: record.fTermid,
-          orderId: record.fOrdertrace,
-          tradeCode: 'trans/returnQuery',
-          returnSelect: 'none',
-        },
-      });
+
+      
+      if (fieldsValue.refundReason == null) {
+        message.success("输入退款原因");
+      }else{
+        this.setState({
+          returnVisible: false,
+        });
+
+      };
+
+
     });
 
-    this.setState({
-      returnVisible: false,
-    });
-  
 
 
     
   };
-
-  textarea = (e) =>{
-    console.log("===",e);
-
-  }
 
   handleSelectRows = rows => {
     this.setState({
@@ -514,13 +521,11 @@ export default class TableList extends PureComponent {
 
   handleSearch = e => {
     e.preventDefault();
-
     const { dispatch, form } = this.props;
     const { tradeSpace, rangePickerValue } = this.state;
-
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
 
+      if (err) return;
       // 处理起始日期
       console.log('rangePickerValue:' + rangePickerValue);
       let date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
@@ -611,83 +616,73 @@ export default class TableList extends PureComponent {
       form: { getFieldDecorator },
     } = this.props;
 
+
+
+
     const { rangePickerValue } = this.state;
     return (
       <div>
-        <Modal
-          title="退款原因"
-          visible={this.state.returnVisible}
-          onOk={this.handleReturn}
-          onCancel={this.handleCancel}>
-          <Form>
-            <FormItem>
-            <FormItem>
-                {getFieldDecorator('refundReason',{
-                  rules: [{ required: true, message: '请输入退款原因' }],
-                }
-                )(<TextArea rows={4} placeholder="请输入退款原因" />)}
-              </FormItem>
-          
-          </FormItem>
-          </Form>
-        </Modal>
-        <Form onSubmit={this.handleSearch} layout="inline">
-          <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
-            <Col md={24} sm={24}>
-              <div className={styles.salesExtraWrap}>
-                <RangePicker
-                  value={rangePickerValue}
-                  onChange={this.handleRangePickerChange}
-                  style={{ width: 256, marginBottom: '24px' }}
-                />
-                <div className={styles.salesExtra}>
-                  <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
-                    <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
-                  </a>
-                  <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
-                    <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
-                  </a>
-                  <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
-                    <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
-                  </a>
-                  <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
-                    <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
-                  </a>
+
+
+        <div>
+          <Form onSubmit={this.handleSearch} layout="inline">
+            <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
+              <Col md={24} sm={24}>
+                <div className={styles.salesExtraWrap}>
+                  <RangePicker
+                    value={rangePickerValue}
+                    onChange={this.handleRangePickerChange}
+                    style={{ width: 256, marginBottom: '24px' }}
+                  />
+                  <div className={styles.salesExtra}>
+                    <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
+                      <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
+                    </a>
+                    <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
+                      <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
+                    </a>
+                    <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
+                      <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
+                    </a>
+                    <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
+                      <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </Col>
-          </Row>
-          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={6} sm={24}>
-              <FormItem label="姓名">
-                {getFieldDecorator('fBuyername')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={6} sm={24}>
-              <FormItem label="电话">
-                {getFieldDecorator('fBuyertel')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={6} sm={24}>
-              <FormItem label="订单号">
-                {getFieldDecorator('fOrdertrace')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={4} sm={24}>
-              <span className={styles.submitButtons}>
-                <Button type="primary" htmlType="submit">
-                  查询
+              </Col>
+            </Row>
+            <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+              <Col md={6} sm={24}>
+                <FormItem label="姓名">
+                  {getFieldDecorator('fBuyername')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col md={6} sm={24}>
+                <FormItem label="电话">
+                  {getFieldDecorator('fBuyertel')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col md={6} sm={24}>
+                <FormItem label="订单号">
+                  {getFieldDecorator('fOrdertrace')(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+              <Col md={4} sm={24}>
+                <span className={styles.submitButtons}>
+                  <Button type="primary" htmlType="submit">
+                    查询
               </Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                  重置
+                  <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                    重置
               </Button>
-                <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                  展开 <Icon type="down" />
-                </a>
-              </span>
-            </Col>
-          </Row>
-        </Form>
+                  <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                    展开 <Icon type="down" />
+                  </a>
+                </span>
+              </Col>
+            </Row>
+          </Form>
+        </div>
       </div>
     );
   }
@@ -901,14 +896,39 @@ export default class TableList extends PureComponent {
     });
   };
 
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    console.log('selectedRows changed: ', selectedRows);
+
+    this.setState({ selectedRowKeys, selectedRows });
+  };
+
+  returnReson = (value) => {
+    console.log("==", value);
+
+
+  };
+
   render() {
+
     const {
       table: { data },
       table,
       loading,
     } = this.props;
+    const { list } = this.props.table.data;
 
-    const { selectedRows } = this.state;
+    for (let j = 0, len = list.length; j < len; j++) {
+      list[j].key = j;
+    };
+
+    const { selectedRows, selectedRowKeys } = this.state;
+
+    const rowSelection = {
+      selectedRowKeys,
+      selectedRows,
+      onChange: this.onSelectChange,
+    };
 
     const renderExpand = (record) => {
       const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
@@ -945,28 +965,45 @@ export default class TableList extends PureComponent {
       );
     };
 
-    return (
-      <PageHeaderWrapper title="查询表格">
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            {/* // to choose: 设置查询条件 */}
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
 
-            {/* <div className={styles.tableListOperator} /> */}
-            <StandardTable
-            // rowSelection={rowSelection}
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data}
-              columns={this.getColumns(table)}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-              scroll={{ x: 1500 }}
-              expandedRowRender={renderExpand}
-            />
-          </div>
-        </Card>
-      </PageHeaderWrapper>
+
+
+    return (
+      <div>
+
+
+        <PageHeaderWrapper title="查询表格">
+          <ReturnModal
+            wrappedComponentRef={this.saveFormRef}
+            handleReturn={this.handleReturn}
+            handleCancel={this.handleCancel}
+            returnVisible={this.state.returnVisible}
+          />
+          <Card bordered={false}>
+            <div className={styles.tableList}>
+              {/* // to choose: 设置查询条件 */}
+              <div className={styles.tableListForm}>{this.renderForm()}</div>
+
+              {/* <div className={styles.tableListOperator} /> */}
+              <StandardTable
+                rowSelection={rowSelection}
+                selectedRows={selectedRows}
+                loading={loading}
+                data={data}
+                columns={this.getColumns(table)}
+                onSelectRow={this.handleSelectRows}
+                onChange={this.handleStandardTableChange}
+                scroll={{ x: 1500 }}
+                expandedRowRender={renderExpand}
+              />
+            </div>
+          </Card>
+        </PageHeaderWrapper>
+      </div>
+
     );
   }
 }
