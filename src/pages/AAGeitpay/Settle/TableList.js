@@ -326,6 +326,7 @@ export default class TableList extends PureComponent {
         tradeCode: tradeSpace + '.selectSettle',
         date_start: date_start,
         date_end: date_end,
+        closePagination: true,
       },
     });
   };
@@ -400,6 +401,9 @@ export default class TableList extends PureComponent {
         payload: {
           ...values,
           tradeCode: tradeSpace + '.selectSettle',
+          date_start: date_start,
+          date_end: date_end,
+          closePagination: true,
         },
       });
     });
@@ -433,6 +437,9 @@ export default class TableList extends PureComponent {
           ...values,
           tradeCode: 'trans/settle',
           returnSelect: tradeSpace + '.selectSettle',
+          date_start: date_start,
+          date_end: date_end,
+          closePagination: true,
         },
       });
     });
@@ -481,11 +488,15 @@ export default class TableList extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
-    const { tradeSpace } = this.state;
+    const { tradeSpace,rangePickerValue } = this.state;
     const values = {
       ...fields,
       accDate: (fields.accDate && fields.accDate.format('YYYYMMDD')) || null,
     };
+
+    // 处理起始日期
+    let date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
+    let date_end = moment(rangePickerValue[1]).format('YYYYMMDD');
 
     this.setState({
       formValues: values,
@@ -497,9 +508,12 @@ export default class TableList extends PureComponent {
         ...values,
         tradeCode: 'trans/settle',
         returnSelect: tradeSpace + '.selectSettle',
+        date_start: date_start,
+        date_end: date_end,
+        closePagination: true,
       },
       callback: () => {
-        message.success('添加成功');
+        message.success('对账申请成功');
       },
     });
 
