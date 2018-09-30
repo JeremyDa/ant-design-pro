@@ -57,14 +57,15 @@ const CreateForm = Form.create()(props => {
 
     // to update: value to text的数据源，这里是表名
     T_ROLE,
+    T_MERCHANT,
   } = props;
 
   // to update: 字段名，用于双向绑定数据
-  const {  fId, fName, fRoleid, fState } = record;
+  const {  fId, fName, fRoleid, fState,fMerchantid } = record;
 
   const getMDate = date => {
     if (date) return moment(date);
-    else return moment();
+    return moment();
   };
 
   const okHandle = () => {
@@ -105,7 +106,7 @@ const CreateForm = Form.create()(props => {
           'fRoleid',
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
-            initialValue: fRoleid ? fRoleid : ``,
+            initialValue: fRoleid || ``,
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -114,12 +115,31 @@ const CreateForm = Form.create()(props => {
                   // <Option key={d.value} title={d.text}>
                   //   {d.text}
                   // </Option>
-
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
         )}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户">
+        {form.getFieldDecorator(
+            'fMerchantid',
+            // f_SELECT && { initialValue: `${f_SELECT}`,
+            {
+              initialValue: fMerchantid || ``,
+            }
+          )(
+            <Select placeholder="请选择" style={{ width: '100%' }}>
+              {T_MERCHANT
+                ? T_MERCHANT.tv.map(d => (
+                    // <Option key={d.value} title={d.text}>
+                    //   {d.text}
+                    // </Option>
+                  <Option value={d.value}>{d.text}</Option>
+                  ))
+                : ''}
+            </Select>
+          )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
         {form.getFieldDecorator('fState', {
@@ -345,7 +365,7 @@ class UpdateForm extends PureComponent {
 class TableList extends PureComponent {
   getColumns = table => {
     // to update: 列名
-    const { T_ROLE } = table;
+    const { T_ROLE,T_MERCHANT } = table;
     return [
       {
         title: 'id',
@@ -361,6 +381,13 @@ class TableList extends PureComponent {
         dataIndex: 'fRoleid',
         render(val) {
           return <span>{T_ROLE ? T_ROLE.kv[val] : ''}</span>;
+        },
+      },
+      {
+        title: '商户',
+        dataIndex: 'fMerchantid',
+        render(val) {
+          return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
       },
       {
@@ -417,9 +444,19 @@ class TableList extends PureComponent {
     });
 
     dispatch({
+      type: 'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_MERCHANTID',
+        value: 'F_NAME',
+        table: 'T_MERCHANT',
+      },
+    });
+
+    dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   }
@@ -448,7 +485,7 @@ class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   };
@@ -463,7 +500,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   };
@@ -486,7 +523,7 @@ class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: tradeSpace + '.deleteByPrimaryKey',
+            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -509,7 +546,7 @@ class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -529,7 +566,7 @@ class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fId: record.fId,
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -569,7 +606,7 @@ class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: tradeSpace + '.selectByPrimaryKey',
+          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
         },
       });
     });
@@ -585,7 +622,7 @@ class TableList extends PureComponent {
   handleModalUpdate = (flag, tableRow) => {
     this.setState({
       modalVisible: !!flag,
-      tableRow: tableRow,
+      tableRow,
       addOrUpdate: 2,
     });
   };
@@ -599,7 +636,7 @@ class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
+        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
       },
     });
 
@@ -619,12 +656,13 @@ class TableList extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
+    delete fields.fId;
     dispatch({
       type: 'table/add',
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.insertSelective',
+        tradeCode: `${tradeSpace  }.insertSelective`,
       },
     });
 
@@ -821,6 +859,7 @@ class TableList extends PureComponent {
         <CreateForm
           // to update: 中文翻译
           T_ROLE={table.T_ROLE}
+          T_MERCHANT={table.T_MERCHANT}
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
           record={(addOrUpdate === 2 && tableRow) || {}}
