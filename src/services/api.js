@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-const url = 'http://192.168.2.206:8011';
+const url = 'http://localhost:8011';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -17,6 +17,10 @@ export async function accountLogin(params) {
     method: 'POST',
     body: params,
   });
+}
+
+export async function queryNotices() {
+  return request(`${url}/api/notices`);
 }
 
 export async function query(params) {
@@ -180,9 +184,7 @@ export async function fakeRegister(params) {
   });
 }
 
-export async function queryNotices() {
-  return request('/api/notices');
-}
+
 
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
