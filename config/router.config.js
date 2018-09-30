@@ -20,56 +20,78 @@ module.exports = [
       // dashboard
       { path: '/', redirect: '/trans/order-pay' },
 
-
+      {
+        path: '/init',
+        name: 'init',
+        icon: 'appstore-o',
+        routes: [
+          {
+            path: '/init/merchant',
+            name: 'merchant',
+            component: './AAGeitpay/Merchant/TableList',
+          },
+          {
+            path: '/init/order-type',
+            name: 'order-type',
+            component: './AAGeitpay/OrderType/TableList',
+          },
+          {
+            path: '/init/channel-type',
+            name: 'channel-type',
+            component: './AAGeitpay/ChannelType/TableList',
+          },
+          {
+            path: '/init/third',
+            name: 'third',
+            component: './AAGeitpay/Third/TableList',
+          },
+          {
+            path: '/init/pay-type',
+            name: 'pay-type',
+            component: './AAGeitpay/PayType/TableList',
+          },
+          {
+            path: '/init/third-return',
+            name: 'third-return',
+            component: './AAGeitpay/ThirdReturn/TableList',
+          },
+          {
+            path: '/init/third-state',
+            name: 'third-state',
+            component: './AAGeitpay/ThirdState/TableList',
+          },
+          {
+            path: '/init/trans-type',
+            name: 'trans-type',
+            component: './AAGeitpay/TransType/TableList',
+          },
+          {
+            path: '/init/error-code',
+            name: 'error-code',
+            component: './AAGeitpay/ErrorCode/TableList',
+          },
+          
+          {
+            path: '/init/industry',
+            name: 'industry',
+            component: './AAGeitpay/Industry/TableList',
+          },
+        ],
+      },
       {
         path: '/basic',
         name: 'basic',
         icon: 'appstore-o',
         routes: [
           {
-            path: '/basic/order-type',
-            name: 'order-type',
-            component: './AAGeitpay/OrderType/TableList',
+            path: '/basic/merchant-channel',
+            name: 'merchant-channel',
+            component: './AAGeitpay/MerchantChannel/TableList',
           },
           {
-            path: '/basic/channel-type',
-            name: 'channel-type',
-            component: './AAGeitpay/ChannelType/TableList',
-          },
-          {
-            path: '/basic/third',
-            name: 'third',
-            component: './AAGeitpay/Third/TableList',
-          },
-          {
-            path: '/basic/pay-type',
-            name: 'pay-type',
-            component: './AAGeitpay/PayType/TableList',
-          },
-          {
-            path: '/basic/third-return',
-            name: 'third-return',
-            component: './AAGeitpay/ThirdReturn/TableList',
-          },
-          {
-            path: '/basic/third-state',
-            name: 'third-state',
-            component: './AAGeitpay/ThirdState/TableList',
-          },
-          {
-            path: '/basic/trans-type',
-            name: 'trans-type',
-            component: './AAGeitpay/TransType/TableList',
-          },
-          {
-            path: '/basic/error-code',
-            name: 'error-code',
-            component: './AAGeitpay/ErrorCode/TableList',
-          },
-          {
-            path: '/basic/merchant',
-            name: 'merchant',
-            component: './AAGeitpay/Merchant/TableList',
+            path: '/basic/merchant-paytype',
+            name: 'merchant-paytype',
+            component: './AAGeitpay/MerchantPaytype/TableList',
           },
           {
             path: '/basic/merchant-acc',
@@ -81,13 +103,9 @@ module.exports = [
             name: 'casher',
             component: './AAGeitpay/Casher/TableList',
           },
-          {
-            path: '/basic/industry',
-            name: 'industry',
-            component: './AAGeitpay/Industry/TableList',
-          },
         ],
       },
+
       {
         path: '/trans',
         name: 'trans',
@@ -362,66 +380,66 @@ module.exports = [
       //     },
       //   ],
       // },
-      // {
-      //   name: 'account',
-      //   icon: 'user',
-      //   path: '/account',
-      //   routes: [
-      //     {
-      //       path: '/account/center',
-      //       name: 'center',
-      //       component: './Account/Center/Center',
-      //       routes: [
-      //         {
-      //           path: '/account/center',
-      //           redirect: '/account/center/articles',
-      //         },
-      //         {
-      //           path: '/account/center/articles',
-      //           component: './Account/Center/Articles',
-      //         },
-      //         {
-      //           path: '/account/center/applications',
-      //           component: './Account/Center/Applications',
-      //         },
-      //         {
-      //           path: '/account/center/projects',
-      //           component: './Account/Center/Projects',
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       path: '/account/settings',
-      //       name: 'settings',
-      //       component: './Account/Settings/Info',
-      //       routes: [
-      //         {
-      //           path: '/account/settings',
-      //           redirect: '/account/settings/base',
-      //         },
-      //         {
-      //           path: '/account/settings/base',
-      //           component: './Account/Settings/BaseView',
-      //         },
-      //         {
-      //           path: '/account/settings/security',
-      //           component: './Account/Settings/SecurityView',
-      //         },
-      //         {
-      //           path: '/account/settings/binding',
-      //           component: './Account/Settings/BindingView',
-      //         },
-      //         {
-      //           path: '/account/settings/notification',
-      //           component: './Account/Settings/NotificationView',
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
-      // {
-      //   component: '404',
-      // },
+      {
+        name: 'account',
+        icon: 'user',
+        path: '/account',
+        routes: [
+          {
+            path: '/account/center',
+            name: 'center',
+            component: './Account/Center/Center',
+            routes: [
+              {
+                path: '/account/center',
+                redirect: '/account/center/articles',
+              },
+              {
+                path: '/account/center/articles',
+                component: './Account/Center/Articles',
+              },
+              {
+                path: '/account/center/applications',
+                component: './Account/Center/Applications',
+              },
+              {
+                path: '/account/center/projects',
+                component: './Account/Center/Projects',
+              },
+            ],
+          },
+          {
+            path: '/account/settings',
+            name: 'settings',
+            component: './Account/Settings/Info',
+            routes: [
+              {
+                path: '/account/settings',
+                redirect: '/account/settings/base',
+              },
+              {
+                path: '/account/settings/base',
+                component: './Account/Settings/BaseView',
+              },
+              {
+                path: '/account/settings/security',
+                component: './Account/Settings/SecurityView',
+              },
+              {
+                path: '/account/settings/binding',
+                component: './Account/Settings/BindingView',
+              },
+              {
+                path: '/account/settings/notification',
+                component: './Account/Settings/NotificationView',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        component: '404',
+      },
     ],
   },
 ];
