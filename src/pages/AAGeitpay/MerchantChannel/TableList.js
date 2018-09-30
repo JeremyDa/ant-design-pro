@@ -21,6 +21,7 @@ import {
   Steps,
   Radio,
   Popconfirm,
+  Switch,
 } from 'antd';
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -60,12 +61,11 @@ const CreateForm = Form.create()(props => {
     T_INDUSTRY,
     T_PAY_TYPE,
     T_CHANEL_TYPE,
+    T_MERCHANT,
   } = props;
 
   // to update: 字段名，用于双向绑定数据
-  const { fMerchantid, fName, fCitycode, fIndustryCode, fChanneltype, fPaytype } = record;
-  const arr_fChanneltype = fChanneltype && (''+fChanneltype).split(',') || [];
-  const arr_fPaytype =  fPaytype && (''+fPaytype).split(',') || [];
+  const { fMerchantid, fChanneltype, fUse } = record;
 
   const getMDate = date => {
     if (date) return moment(date);
@@ -90,7 +90,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户代码">
+      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户代码">
         {form.getFieldDecorator('fMerchantid', {
           initialValue: fMerchantid,
           rules: [
@@ -107,7 +107,7 @@ const CreateForm = Form.create()(props => {
             { max: 33, message: '不超过33位' },
           ],
         })(<Input placeholder="请输入" />)}
-      </FormItem>
+      </FormItem> */}
 
       {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="支付类型">
         {form.getFieldDecorator('fPaytype', {
@@ -137,49 +137,6 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem> */}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属城市">
-        {form.getFieldDecorator(
-          'fCitycode',
-          // f_SELECT && { initialValue: `${f_SELECT}`,
-          {
-            initialValue: fCitycode ? `${fCitycode}` : ``,
-          }
-        )(
-          <Select placeholder="请选择" style={{ width: '100%' }}>
-            {T_CITY
-              ? T_CITY.tv.map(d => (
-                  // <Option key={d.value} title={d.text}>
-                  //   {d.text}
-                  // </Option>
-
-                  <Option value={d.value}>{d.text}</Option>
-                ))
-              : ''}
-          </Select>
-        )}
-      </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属行业">
-        {form.getFieldDecorator(
-          'fIndustryCode',
-          // f_SELECT && { initialValue: `${f_SELECT}`,
-          {
-            initialValue: fIndustryCode ? `${fIndustryCode}` : ``,
-          }
-        )(
-          <Select placeholder="请选择" style={{ width: '100%' }}>
-            {T_INDUSTRY
-              ? T_INDUSTRY.tv.map(d => (
-                  // <Option key={d.value} title={d.text}>
-                  //   {d.text}
-                  // </Option>
-
-                  <Option value={d.value}>{d.text}</Option>
-                ))
-              : ''}
-          </Select>
-        )}
-      </FormItem>
     </Modal>
   );
 });
@@ -392,46 +349,32 @@ class UpdateForm extends PureComponent {
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-  getColumns = table => {
+  getColumns = (table,checkUse) => {
     // to update: 列名
-    const {T_INDUSTRY, T_CITY}  = table;
+    const {T_INDUSTRY, T_CITY,T_CHANEL_TYPE,T_MERCHANT}  = table;
 
     return [
       {
-        title: '商户代码',
+        title: '商户',
         dataIndex: 'fMerchantid',
-      },
-      {
-        title: '商户名称',
-        dataIndex: 'fName',
-      },
-      {
-        title: '所属城市',
-        dataIndex: 'fCitycode',
         render(val) {
-          return <span>{T_CITY ? T_CITY.kv[val] : ''}</span>;
+          return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
       },
       {
-        title: '所属行业',
-        dataIndex: 'fIndustryCode',
+        title: '渠道',
+        dataIndex: 'fChaneltype',
         render(val) {
-          return <span>{T_INDUSTRY ? T_INDUSTRY.kv[val] : ''}</span>;
+          return <span>{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[val] : ''}</span>;
         },
       },
       {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
-
-            <Divider type="vertical" />
-
-            <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
-              <a href="">删除</a>
-            </Popconfirm>
-          </Fragment>
-        ),
+        title: '状态',
+        dataIndex: 'fUse',
+        render(val,record) {
+          const ischeck = (val==='1'?true:false);
+          return <Switch checked={ischeck} onChange={(checked) => checkUse(checked,record)} />;
+        },
       },
     ];
   };
@@ -446,42 +389,12 @@ export default class TableList extends PureComponent {
     stepFormValues: {},
 
     // to update: tradeCode更新
-    tradeSpace: 'tmerchant',
+    tradeSpace: 'tmerchantchanel',
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
-
-    dispatch({
-      type: 'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_CODE',
-        value: 'F_NAME',
-        table: 'T_CITY',
-      },
-    });
-
-    dispatch({
-      type: 'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_CODE',
-        value: 'F_NAME',
-        table: 'T_INDUSTRY',
-      },
-    });
-
-    dispatch({
-      type:'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_TYPE',
-        value: 'F_NAME',
-        table: 'T_PAY_TYPE',
-      },
-    });
 
     dispatch({
       type:'table/fetchKV',
@@ -494,9 +407,20 @@ export default class TableList extends PureComponent {
     });
 
     dispatch({
+      type: 'table/fetchKV',
+      payload: {
+        tradeCode: 'selectKeyValue',
+        key: 'F_MERCHANTID',
+        value: 'F_NAME',
+        table: 'T_MERCHANT',
+      },
+    });
+
+    dispatch({
       type: 'table/fetch',
       payload: {
         tradeCode: tradeSpace + '.selectByPrimaryKey',
+        closePagination: true,
       },
     });
   }
@@ -711,6 +635,22 @@ export default class TableList extends PureComponent {
     this.handleModalVisible();
   };
 
+  checkUse = (checked,record) => {
+    const { dispatch } = this.props;
+    const { tradeSpace } = this.state;
+    dispatch({
+      type: 'table/update',
+      payload: {
+        ...record,
+        fUse: checked?1:0,
+        // f_DATE: fields.f_DATE.format('YYYYMMDD'),
+        tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
+      },
+    });
+
+    message.success('更新成功');
+  };
+
   // handleUpdate = fields => {
   //   const { dispatch } = this.props;
   //   dispatch({
@@ -861,39 +801,14 @@ export default class TableList extends PureComponent {
       <PageHeaderWrapper title="查询表格">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            {/* <div className={styles.tableListForm}>{this.renderForm()}</div> */}
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {/* {selectedRows.length === 1 && (
-                <span>
-                  <Button icon="edit" onClick={() => this.handleModalUpdate(true, selectedRows[0])}>
-                    更新
-                  </Button>
-                </span>
-              )} */}
-              {/* {selectedRows.length > 0 && (
-                <span>
-                  <Popconfirm title="确认删除吗?" onConfirm={this.handleDeleteBatch}>
-                    <Button>删除</Button>
-                  </Popconfirm>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )} */}
-            </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              columns={this.getColumns(table)}
+              columns={this.getColumns(table,this.checkUse)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
+              paginationBool={false}
             />
           </div>
         </Card>
@@ -903,6 +818,7 @@ export default class TableList extends PureComponent {
           T_CITY={table.T_CITY}
           T_PAY_TYPE={table.T_PAY_TYPE}
           T_CHANEL_TYPE = {table.T_CHANEL_TYPE}
+          T_MERCHANT = {table.T_MERCHANT}
 
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
