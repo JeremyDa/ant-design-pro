@@ -70,6 +70,7 @@ class StandardTable extends PureComponent {
       rowKey,
       scroll,
       expandedRowRender,
+      paginationBool,
     } = this.props;
 
     const paginationProps = {
@@ -117,7 +118,7 @@ class StandardTable extends PureComponent {
           // rowSelection={rowSelection}
           dataSource={list}
           columns={columns}
-          pagination={paginationProps}
+          pagination={(paginationBool === undefined) && paginationProps}
           onChange={this.handleTableChange}
           size="small"
           scroll={scroll || {}}
