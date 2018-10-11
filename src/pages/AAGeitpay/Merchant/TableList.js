@@ -90,7 +90,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户代码">
+      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户代码">
         {form.getFieldDecorator('fMerchantid', {
           initialValue: fMerchantid,
           rules: [
@@ -98,7 +98,7 @@ const CreateForm = Form.create()(props => {
             { max: 12, message: '不超过12位' },
           ],
         })(<Input placeholder="请输入" />)}
-      </FormItem>
+      </FormItem> */}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户名称">
         {form.getFieldDecorator('fName', {
           initialValue: fName,
@@ -137,7 +137,7 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem> */}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属城市">
+      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属城市">
         {form.getFieldDecorator(
           'fCitycode',
           // f_SELECT && { initialValue: `${f_SELECT}`,
@@ -157,7 +157,7 @@ const CreateForm = Form.create()(props => {
               : ''}
           </Select>
         )}
-      </FormItem>
+      </FormItem> */}
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属行业">
         {form.getFieldDecorator(
@@ -405,13 +405,13 @@ export default class TableList extends PureComponent {
         title: '商户名称',
         dataIndex: 'fName',
       },
-      {
-        title: '所属城市',
-        dataIndex: 'fCitycode',
-        render(val) {
-          return <span>{T_CITY ? T_CITY.kv[val] : ''}</span>;
-        },
-      },
+      // {
+      //   title: '所属城市',
+      //   dataIndex: 'fCitycode',
+      //   render(val) {
+      //     return <span>{T_CITY ? T_CITY.kv[val] : ''}</span>;
+      //   },
+      // },
       {
         title: '所属行业',
         dataIndex: 'fIndustryCode',
@@ -419,20 +419,20 @@ export default class TableList extends PureComponent {
           return <span>{T_INDUSTRY ? T_INDUSTRY.kv[val] : ''}</span>;
         },
       },
-      {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
+      // {
+      //   title: '操作',
+      //   render: (text, record) => (
+      //     <Fragment>
+      //       <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
 
-            <Divider type="vertical" />
+      //       <Divider type="vertical" />
 
-            <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
-              <a href="">删除</a>
-            </Popconfirm>
-          </Fragment>
-        ),
-      },
+      //       <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
+      //         <a href="">删除</a>
+      //       </Popconfirm>
+      //     </Fragment>
+      //   ),
+      // },
     ];
   };
 
