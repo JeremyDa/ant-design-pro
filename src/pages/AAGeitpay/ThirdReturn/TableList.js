@@ -86,13 +86,13 @@ const CreateForm = Form.create()(props => {
     >
       {/* // to update: form表单内容，修改字段名称 */}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方代码">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方">
         {form.getFieldDecorator(
           'fThirdid',
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fThirdid ? `${fThirdid}` : ``,
-            rules: [{ required: true, message: '请选择第三方代码' }],
+            rules: [{ required: true, message: '请选择第三方' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -148,13 +148,13 @@ const CreateForm = Form.create()(props => {
           ],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="平台响应代码">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="平台响应描述">
         {form.getFieldDecorator(
           'fCode',
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fCode ? `${fCode}` : ``,
-            rules: [{ required: true, message: '请选择平台响应代码' }],
+            rules: [{ required: true, message: '请选择平台响应描述' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -388,7 +388,7 @@ export default class TableList extends PureComponent {
     return [
       {
         dataIndex: 'fThirdid',
-        title: '第三方代码',
+        title: '第三方',
         render(val) {
           return <span>{T_THIRD ? T_THIRD.kv[val] : ''}</span>;
           // return <Badge status={statusMap[val]} text={status[val]} />;
@@ -412,7 +412,7 @@ export default class TableList extends PureComponent {
       },
       {
         dataIndex: 'fCode',
-        title: '平台响应代码',
+        title: '平台响应描述',
         render(val) {
           return <span>{T_ERROR_CODE ? T_ERROR_CODE.kv[val] : ''}</span>;
           // return <Badge status={statusMap[val]} text={status[val]} />;
