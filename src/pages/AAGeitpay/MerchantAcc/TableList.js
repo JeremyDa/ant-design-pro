@@ -87,7 +87,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="商户代码">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="商户名称">
         {form.getFieldDecorator('fMerchantid', {
           initialValue: fMerchantid,
           rules: [
@@ -96,7 +96,7 @@ const CreateForm = Form.create()(props => {
           ],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方名称">
         
         {form.getFieldDecorator(
           'fThirdid',
@@ -117,16 +117,16 @@ const CreateForm = Form.create()(props => {
         )}
 
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方分配的账号ID">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方ID">
         {form.getFieldDecorator('fAppid', {
           initialValue: fAppid,
-          rules: [{ required: true, message: '请输入所属城市' }, { max: 6, message: '不超过6位' }],
+          rules: [{ required: true, message: '请输入第三方ID' }, { max: 6, message: '不超过6位' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方分配的商户号">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方商户号">
         {form.getFieldDecorator('fMchid', {
           initialValue: fMchid,
-          rules: [{ required: true, message: '请输入所属行业' }],
+          rules: [{ required: true, message: '请输入第三方商户号' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
@@ -364,14 +364,14 @@ export default class TableList extends PureComponent {
     const { T_THIRD,T_MERCHANT, T_PAY_TYPE } = table;
     return [
       {
-        title: '商户',
+        title: '商户名称',
         dataIndex: 'fMerchantid',
         render(val) {
           return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
       },
       {
-        title: '第三方',
+        title: '第三方名称',
         dataIndex: 'fThirdid',
         render(val) {
           return <span>{T_THIRD ? T_THIRD.kv[val] : ''}</span>;
@@ -387,11 +387,11 @@ export default class TableList extends PureComponent {
       //   },
       // },
       {
-        title: '第三方分配的账号ID',
+        title: '第三方ID',
         dataIndex: 'fAppid',
       },
       {
-        title: '第三方分配的商户号',
+        title: '第三方商户号',
         dataIndex: 'fMchid',
       },
       // {
@@ -898,7 +898,7 @@ export default class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              expandedRowRender={InTable}
+              // expandedRowRender={InTable}
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
