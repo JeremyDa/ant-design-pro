@@ -179,9 +179,11 @@ export default class TableList extends PureComponent {
       //   dataIndex: 'fSystrace',
       //   render: renderContent,
       // },
-
+// todo 
+// 收款3行，退款3行，差异标红，分割线加粗
+// 不区分第三方，求合计金额
       {
-        title: '商户',
+        title: '商户名称',
         dataIndex: 'fMerchantid',
         render(val,row,index) {
           return renderContent(<span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>,row,index);
@@ -189,7 +191,7 @@ export default class TableList extends PureComponent {
       },
 
       {
-        title: '第三方',
+        title: '第三方名称',
         dataIndex: 'fThirdid',
         render(val,row,index) {
           return renderContent(<span>{ T_THIRD && T_THIRD.kv[val] === '支付宝' && <Icon type="alipay" style={{color:'#00A3EE'}}/> }{ T_THIRD && T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{color:'green'}}/> }{T_THIRD ? '  '+T_THIRD.kv[val] : ''}</span>,row,index)
@@ -200,13 +202,13 @@ export default class TableList extends PureComponent {
         dataIndex: 'fTitle',
       },
       {
-        title: '笔数',
+        title: '交易总笔数',
         dataIndex: 'fCount',
         align:'right',
       },
 
       {
-        title: '金额',
+        title: '交易总金额',
         dataIndex: 'fAmount',
         align:'right',
         render(val) {
