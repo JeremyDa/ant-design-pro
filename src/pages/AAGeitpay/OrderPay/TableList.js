@@ -25,10 +25,10 @@ import {
   Tag,
   Avatar,
 } from 'antd';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-import { formatMessage, FormattedMessage } from 'umi/locale';
 import { getTimeDistance } from '../../../utils/utils';
 
 import styles from './TableList.less';
@@ -70,7 +70,7 @@ class TableList extends PureComponent {
     return [
 
       {
-        title: '平台时间',
+        title: '交易时间',
         dataIndex: 'fDate',
         // fixed: 'left',
         render: val => (
@@ -98,18 +98,18 @@ class TableList extends PureComponent {
         dataIndex: 'fOrdertrace',
       },
 
-      {
-        title:'姓名',
-        dataIndex: 'fBuyername',
-      },
-      {
-        title:'电话',
-        dataIndex: 'fBuyertel',
-      },
-      {
-        title: '科室',
-        dataIndex: 'fDepart',
-      },
+      // {
+      //   title:'姓名',
+      //   dataIndex: 'fBuyername',
+      // },
+      // {
+      //   title:'电话',
+      //   dataIndex: 'fBuyertel',
+      // },
+      // {
+      //   title: '科室',
+      //   dataIndex: 'fDepart',
+      // },
 
       // {
       //   title: '第三方',
@@ -146,7 +146,7 @@ class TableList extends PureComponent {
         title: '订单金额',
         dataIndex: 'f3totalFee',
         align: 'right',
-        render: val => val/100 + '元',
+        render: val => `${val/100  }元`,
       },
 
       {
@@ -300,7 +300,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectOrderAndPay',
+        tradeCode: `${tradeSpace  }.selectOrderAndPay`,
       },
     });
 
@@ -330,7 +330,7 @@ class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: tradeSpace + '.selectOrderAndPay',
+        tradeCode: `${tradeSpace  }.selectOrderAndPay`,
       },
     });
   };
@@ -339,8 +339,8 @@ class TableList extends PureComponent {
     const { form, dispatch } = this.props;
     const { tradeSpace, rangePickerValue } = this.state;
 
-    let date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
-    let date_end = moment(rangePickerValue[1]).format('YYYYMMDD');
+    const date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
+    const date_end = moment(rangePickerValue[1]).format('YYYYMMDD');
 
     form.resetFields();
     this.setState({
@@ -349,9 +349,9 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectOrderAndPay',
-        date_start: date_start,
-        date_end: date_end,
+        tradeCode: `${tradeSpace  }.selectOrderAndPay`,
+        date_start,
+        date_end,
       },
     });
   };
@@ -374,7 +374,7 @@ class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: tradeSpace + '.deleteByPrimaryKey',
+            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -397,7 +397,7 @@ class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -417,7 +417,7 @@ class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fOrdertrace: record.fOrdertrace,
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -446,7 +446,7 @@ class TableList extends PureComponent {
         refundAmt: record.f3totalFee,
         refundReason: '1',
         tradeCode: 'trans/return',
-        returnSelect: tradeSpace + '.selectOrderAndPay',
+        returnSelect: `${tradeSpace  }.selectOrderAndPay`,
       },
       callback: () => {
         if(!this.props.table.rspMsg){
@@ -487,9 +487,9 @@ class TableList extends PureComponent {
       if (err) return;
 
       // 处理起始日期
-      console.log('rangePickerValue:' + rangePickerValue);
-      let date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
-      let date_end = moment(rangePickerValue[1]).format('YYYYMMDD');
+      console.log(`rangePickerValue:${  rangePickerValue}`);
+      const date_start = moment(rangePickerValue[0]).format('YYYYMMDD');
+      const date_end = moment(rangePickerValue[1]).format('YYYYMMDD');
 
       const values = {
         ...fieldsValue,
@@ -508,7 +508,7 @@ class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: tradeSpace + '.selectOrderAndPay',
+          tradeCode: `${tradeSpace  }.selectOrderAndPay`,
         },
       });
     });
@@ -524,7 +524,7 @@ class TableList extends PureComponent {
   handleModalUpdate = (flag, tableRow) => {
     this.setState({
       modalVisible: !!flag,
-      tableRow: tableRow,
+      tableRow,
       addOrUpdate: 2,
     });
   };
@@ -538,7 +538,7 @@ class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
+        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
       },
     });
 
@@ -563,7 +563,7 @@ class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.insertSelective',
+        tradeCode: `${tradeSpace  }.insertSelective`,
       },
     });
 
@@ -692,7 +692,7 @@ class TableList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '0px'}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{marginTop: '0px'}}>
           <Col md={6} sm={24}>
             <FormItem label="商户">
               {getFieldDecorator(
@@ -701,7 +701,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_MERCHANT
                     ? T_MERCHANT.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
+                      <Option value={d.value}>{d.text}</Option>
                       ))
                     : ''}
                 </Select>
@@ -717,7 +717,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_CHANEL_TYPE
                     ? T_CHANEL_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
+                      <Option value={d.value}>{d.text}</Option>
                       ))
                     : ''}
                 </Select>
@@ -733,7 +733,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_ORDER_TYPE
                     ? T_ORDER_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
+                      <Option value={d.value}>{d.text}</Option>
                       ))
                     : ''}
                 </Select>
@@ -741,7 +741,7 @@ class TableList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '0px'}}>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{marginTop: '0px'}}>
           <Col md={6} sm={24}>
             <FormItem label="支付类型">
               {getFieldDecorator(
@@ -750,7 +750,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_PAY_TYPE
                     ? T_PAY_TYPE.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
+                      <Option value={d.value}>{d.text}</Option>
                       ))
                     : ''}
                 </Select>
@@ -766,7 +766,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_THIRD
                     ? T_THIRD.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
+                      <Option value={d.value}>{d.text}</Option>
                       ))
                     : ''}
                 </Select>
@@ -791,7 +791,8 @@ class TableList extends PureComponent {
             <div style={{ overflow: 'hidden' }}>
               <span style={{ 
                 // float: 'right',
-                 marginBottom: 24 }}>
+                 marginBottom: 24 }}
+              >
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
@@ -862,27 +863,27 @@ class TableList extends PureComponent {
           <p style={{float:'left',width:'20%'}}>
             <h2>患者信息</h2>
             姓名:{record.fBuyername}
-            <br/>
+            <br />
             手机:{record.fBuyertel}
-            <br/>
+            <br />
             科室:{record.fDepart}
           </p>
           <p style={{float:'left',width:'20%'}}>
             <h2>订单信息</h2>
-            订单号:{record.fOrdertrace}<br/>
-            平台时间:{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br/>
-            商户:{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br/>
-            渠道:{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br/>
-            订单类型:{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br/>
-            支付类型:{ T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{color:'#00A3EE'}}/> }{ T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{color:'green'}}/> }{T_THIRD ? '  '+T_THIRD.kv[record.fThirdid] : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br/>
-            金额:{record.f3totalFee/100 + '元'}<br/>
+            订单号:{record.fOrdertrace}<br />
+            平台时间:{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
+            商户:{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br />
+            渠道:{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br />
+            订单类型:{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br />
+            支付类型:{ T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{color:'#00A3EE'}} /> }{ T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{color:'green'}} /> }{T_THIRD ? `  ${T_THIRD.kv[record.fThirdid]}` : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br />
+            金额:{`${record.f3totalFee/100  }元`}<br />
           </p>
           {record.f3transactionId && (
           <p style={{float:'left',width:'50%'}}>
-            <h2></h2>
-            第三方流水:{record.f3transactionId}<br/>
-            第三方id:{record.f3openid}<br/>
-            第三方时间:{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br/>
+            <h2 />
+            第三方流水:{record.f3transactionId}<br />
+            第三方id:{record.f3openid}<br />
+            第三方时间:{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
           </p>
           )
           }
