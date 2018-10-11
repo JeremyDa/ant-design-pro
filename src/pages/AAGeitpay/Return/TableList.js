@@ -103,14 +103,7 @@ export default class TableList extends PureComponent {
     const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
     return [
 
-      {
-        title: '平台时间',
-        dataIndex: 'fDate',
-        // fixed: 'left',
-        render: val => (
-          <span>{(val && moment(val, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}</span>
-        ),
-      },
+      
       {
         title: '操作',
         // fixed: 'left',
@@ -136,14 +129,38 @@ export default class TableList extends PureComponent {
         title: '姓名',
         dataIndex: 'fBuyername',
       },
+
       {
-        title: '电话',
-        dataIndex: 'fBuyertel',
+        title: '订单金额',
+        dataIndex: 'f3totalFee',
+        align: 'right',
+        render: val => val / 100 + '元',
       },
+
       {
-        title: '科室',
-        dataIndex: 'fDepart',
+        title: '支付状态',
+        dataIndex: 'fPayStatus',
+        render(val) {
+          return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
+        },
       },
+
+      {
+        title: '退款状态',
+        dataIndex: 'fReturnStatus',
+        render: (val) => (
+          payStatus[val] &&
+          <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag> || '-'
+        ),
+      },
+      // {
+      //   title: '电话',
+      //   dataIndex: 'fBuyertel',
+      // },
+      // {
+      //   title: '科室',
+      //   dataIndex: 'fDepart',
+      // },
 
       // {
       //   title: '第三方',
@@ -176,45 +193,31 @@ export default class TableList extends PureComponent {
         },
       },
 
-      {
-        title: '订单金额',
-        dataIndex: 'f3totalFee',
-        align: 'right',
-        render: val => val / 100 + '元',
-      },
+      
+      // {
+      //   title: '支付对账',
+      //   dataIndex: 'fPayFlag',
+      //   render: (val) => (
+      //     relationFlag[val] &&
+      //     <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
+      //   ),
+      // },
 
-      {
-        title: '支付状态',
-        dataIndex: 'fPayStatus',
-        render(val) {
-          return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
-        },
-      },
 
+      // {
+      //   title: '退款对账',
+      //   dataIndex: 'fReturnFlag',
+      //   render: (val) => (
+      //     relationFlag[val] &&
+      //     <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
+      //   ),
+      // },
       {
-        title: '支付对账',
-        dataIndex: 'fPayFlag',
-        render: (val) => (
-          relationFlag[val] &&
-          <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
-        ),
-      },
-
-      {
-        title: '退款状态',
-        dataIndex: 'fReturnStatus',
-        render: (val) => (
-          payStatus[val] &&
-          <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag> || '-'
-        ),
-      },
-
-      {
-        title: '退款对账',
-        dataIndex: 'fReturnFlag',
-        render: (val) => (
-          relationFlag[val] &&
-          <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
+        title: '平台时间',
+        dataIndex: 'fDate',
+        // fixed: 'left',
+        render: val => (
+          <span>{(val && moment(val, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}</span>
         ),
       },
     ];
