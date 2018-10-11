@@ -355,21 +355,21 @@ export default class TableList extends PureComponent {
 
     return [
       {
-        title: '商户',
+        title: '商户名称',
         dataIndex: 'fMerchantid',
         render(val) {
           return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
       },
       {
-        title: '渠道',
+        title: '渠道名称',
         dataIndex: 'fChaneltype',
         render(val) {
           return <span>{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[val] : ''}</span>;
         },
       },
       {
-        title: '状态',
+        title: '开通状态',
         dataIndex: 'fUse',
         render(val,record) {
           const ischeck = (val==='1'?true:false);
