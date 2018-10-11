@@ -65,7 +65,7 @@ const CreateForm = Form.create()(props => {
 
   const getMDate = date => {
     if (date) return moment(date);
-    else return moment();
+    return moment();
   };
 
   const okHandle = () => {
@@ -86,13 +86,13 @@ const CreateForm = Form.create()(props => {
     >
       {/* // to update: form表单内容，修改字段名称 */}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方代码">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方">
         {form.getFieldDecorator(
           'fThirdid',
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fThirdid ? `${fThirdid}` : ``,
-            rules: [{ required: true, message: '请选择第三方代码' }],
+            rules: [{ required: true, message: '请选择第三方' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -102,7 +102,7 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -129,13 +129,13 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="平台响应代码">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="平台响应描述">
         {form.getFieldDecorator(
           'fCode',
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fCode ? `${fCode}` : ``,
-            rules: [{ required: true, message: '请选择平台响应代码' }],
+            rules: [{ required: true, message: '请选择平台响应描述' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -145,7 +145,7 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -369,7 +369,7 @@ class TableList extends PureComponent {
     return [
       {
         dataIndex: 'fThirdid',
-        title: '第三方代码',
+        title: '第三方',
         render(val) {
           return <span>{T_THIRD ? T_THIRD.kv[val] : ''}</span>;
           // return <Badge status={statusMap[val]} text={status[val]} />;
@@ -385,7 +385,7 @@ class TableList extends PureComponent {
       },
       {
         dataIndex: 'fCode',
-        title: '平台响应代码',
+        title: '平台响应描述',
         render(val) {
           return <span>{T_ERROR_CODE ? T_ERROR_CODE.kv[val] : ''}</span>;
           // return <Badge status={statusMap[val]} text={status[val]} />;
@@ -449,7 +449,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   }
@@ -478,7 +478,7 @@ class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   };
@@ -493,7 +493,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
       },
     });
   };
@@ -516,7 +516,7 @@ class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: tradeSpace + '.deleteByPrimaryKey',
+            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -539,7 +539,7 @@ class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -560,7 +560,7 @@ class TableList extends PureComponent {
         // to update: set primarykey
         fThirdid: record.fThirdid,
         f3state: record.f3state,
-        tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -600,7 +600,7 @@ class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: tradeSpace + '.selectByPrimaryKey',
+          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
         },
       });
     });
@@ -616,7 +616,7 @@ class TableList extends PureComponent {
   handleModalUpdate = (flag, tableRow) => {
     this.setState({
       modalVisible: !!flag,
-      tableRow: tableRow,
+      tableRow,
       addOrUpdate: 2,
     });
   };
@@ -630,7 +630,7 @@ class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
+        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
       },
     });
 
@@ -655,7 +655,7 @@ class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: tradeSpace + '.insertSelective',
+        tradeCode: `${tradeSpace  }.insertSelective`,
       },
     });
 
