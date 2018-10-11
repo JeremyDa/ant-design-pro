@@ -50,6 +50,12 @@ const getValue = obj =>
 // });
 // console.log(gradeName);
 
+
+// todo 
+// 完善
+
+// 多渠道，多商户，多支付方式，订单类型，进出账
+
 const CreateForm = Form.create()(props => {
   const {
     modalVisible,
