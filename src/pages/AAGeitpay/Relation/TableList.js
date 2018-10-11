@@ -58,6 +58,11 @@ const payStatusColor = {'0':'orange', '1':'green', 'V':'grey'};
 }))
 @Form.create()
 export default class TableList extends PureComponent {
+
+  // todo
+  // 加交易类型 区分支付退款
+  // 有疑问的明细
+
   getColumns = table => {
     // to update: 列名
     const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
@@ -92,19 +97,26 @@ export default class TableList extends PureComponent {
         },
       },
 
-      {
-        title:'平台流水号',
-        dataIndex:'fPttrace',
-      },
+      // {
+      //   title:'平台流水号',
+      //   dataIndex:'fPttrace',
+      // },
       {
         title:'商户订单号',
         dataIndex:'fOrderid',
       },
       {
-        title:'交易类型',
+        title:'支付/退款',
         dataIndex:'fTranstype',
         render(val) {
           return <Tag color={payOrReturnColor[val]}>{payOrReturn[val]}</Tag>;
+        },
+      },
+      {
+        title: '订单类型',
+        dataIndex: 'fOrdertype',
+        render(val) {
+          return <span>{T_ORDER_TYPE ? T_ORDER_TYPE.kv[val] : ''}</span>;
         },
       },
       {
@@ -414,8 +426,8 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
           <Col md={6} sm={24}>
-            <FormItem label="对账流水">
-              {getFieldDecorator('fSystrace')(<Input placeholder="请输入" />)}
+            <FormItem label="订单号">
+              {getFieldDecorator('fOrderid')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={6} sm={24}>
@@ -473,11 +485,24 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
           <Col md={6} sm={24}>
-            <FormItem label="对账流水">
-              {getFieldDecorator('fSystrace')(<Input placeholder="请输入" />)}
+            <FormItem label="订单号">
+              {getFieldDecorator('fOrderid')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={6} sm={24}>
+            <FormItem label="支付/退款">
+              {getFieldDecorator(
+                'fType'
+              )(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="1">支付</Option>
+                  <Option value="-1">退款</Option>
+                </Select>
+              )}
             </FormItem>
           </Col>
         </Row> 
+        
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '0px'}}>
           <Col md={6} sm={24}>
             <FormItem label="商户">
@@ -510,15 +535,25 @@ export default class TableList extends PureComponent {
             </FormItem>
           </Col>
           <Col md={6} sm={24}>
-            <FormItem label="订单号">
-              {getFieldDecorator('fOrderid')(<Input placeholder="请输入" />)}
+            <FormItem label="订单类型">
+              {getFieldDecorator(
+                'fOrdertype'
+              )(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  {T_ORDER_TYPE
+                    ? T_ORDER_TYPE.tv.map(d => (
+                      <Option value={d.value}>{d.text}</Option>
+                    ))
+                    : ''}
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
               <span style={{ 
                 // float: 'right',
-                 marginBottom: 24 }}>
+                marginBottom: 24 }}>
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
@@ -532,7 +567,6 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
         </Row>
-        
       </Form>
     );
   }
