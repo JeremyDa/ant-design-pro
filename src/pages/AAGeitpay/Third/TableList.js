@@ -95,7 +95,7 @@ const CreateForm = Form.create()(
               ],
             })(<Input placeholder="请输入" />)}
           </FormItem>
-          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="是否联机">
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="联机模式">
             {getFieldDecorator(
               'fComm',
             )(
@@ -132,7 +132,7 @@ export default class TableList extends PureComponent {
         dataIndex: 'fName',
       },
       {
-        title: '是否联机',
+        title: '联机模式',
         dataIndex: 'fComm',
         render(val) {
           return <span>{['否', '是'][val]}</span>;
