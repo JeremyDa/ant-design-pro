@@ -146,14 +146,14 @@ const CreateForm = Form.create()(props => {
                 )}
             </FormItem>
 
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="保留">
+            {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="保留">
                 {form.getFieldDecorator('fMem', {
                     initialValue:fMem,
                     rules: [{ required: true, message: 'Please input the title of collection!' }],
                 })(
                     <Input />
                 )}
-            </FormItem>
+            </FormItem> */}
 
 
         </Modal>
@@ -397,17 +397,19 @@ export default class TableList extends PureComponent {
                     return <Tag>{payStatus[val]}</Tag>;
                 },
 
+                // todo
             }, {
                 title: '照片',
                 key: 'fPhoteurl',
                 dataIndex: 'fPhoteurl',
 
-            }, {
-                title: '保留',
-                key: 'fMem',
-                dataIndex: 'fMem',
+            }, 
+            // {
+            //     title: '保留',
+            //     key: 'fMem',
+            //     dataIndex: 'fMem',
 
-            },
+            // },
             {
                 title: '操作',
                 render: (text, record) => (
