@@ -136,6 +136,9 @@ class BasicLayout extends React.PureComponent {
     const {
       route: { routes },
     } = this.props;
+    console.log('routes,%o',routes);
+    console.log('localStorage.getItem(menu),%o',JSON.parse(localStorage.getItem('menu')));
+    // return formatter(JSON.parse(localStorage.getItem('menu'))[0].routes);
     return formatter(routes);
   }
 
