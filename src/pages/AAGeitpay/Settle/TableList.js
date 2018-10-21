@@ -44,13 +44,11 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
+const payOrReturn = { '1': '支付', '-1': '退款' };
+const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payOrReturn = {'1':'支付', '-1' : '退款'};
-const payOrReturnColor = {'1':'green', '-1':'red'};
-
-const payStatus = {'0':'待确认', '1':'已确认', 'V':'订单关闭'};
-const payStatusColor = {'0':'orange', '1':'green', 'V':'grey'};
-
+const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
 
 const CreateForm = Form.create()(props => {
   const {
@@ -94,31 +92,21 @@ const CreateForm = Form.create()(props => {
       {/* // to update: form表单内容，修改字段名称 */}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户">
         {form.getFieldDecorator(
-          'merchantId',
+          'merchantId'
           // {
           //   initialValue: f_SELECT ? `${f_SELECT}` : ``,
           // }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
-            {T_MERCHANT
-              ? T_MERCHANT.tv.map(d => (
-                  <Option value={d.value}>{d.text}</Option>
-                ))
-              : ''}
+            {T_MERCHANT ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
           </Select>
         )}
       </FormItem>
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方">
-        {form.getFieldDecorator(
-          'thirdId',
-        )(
+        {form.getFieldDecorator('thirdId')(
           <Select placeholder="请选择" style={{ width: '100%' }}>
-            {T_THIRD
-              ? T_THIRD.tv.map(d => (
-                  <Option value={d.value}>{d.text}</Option>
-                ))
-              : ''}
+            {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
           </Select>
         )}
       </FormItem>
@@ -133,8 +121,6 @@ const CreateForm = Form.create()(props => {
 });
 
 @Form.create()
-
-
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, chart, loading }) => ({
   table,
@@ -143,28 +129,24 @@ const CreateForm = Form.create()(props => {
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-
-  
-
   getColumns = table => {
     // to update: 列名
-    const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
+    const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
 
     const renderContent = (value, row, index) => {
       const obj = {
         children: value,
         props: {},
       };
-      if (index%6 === 0) {
+      if (index % 6 === 0) {
         obj.props.rowSpan = 6;
-      }else{
+      } else {
         obj.props.rowSpan = 0;
       }
       return obj;
     };
 
     return [
-
       // {
       //   title: '交易日期',
       //   dataIndex: 'fTransdate',
@@ -179,42 +161,205 @@ export default class TableList extends PureComponent {
       //   dataIndex: 'fSystrace',
       //   render: renderContent,
       // },
-// todo 
-// 收款3行，退款3行，差异标红，分割线加粗
-// 不区分第三方，求合计金额
+      // todo
+      // 收款3行，退款3行，差异标红，分割线加粗
+      // 不区分第三方，求合计金额
       {
         title: '商户名称',
         dataIndex: 'fMerchantid',
-        render(val,row,index) {
-          return renderContent(<span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>,row,index);
+        align: 'center',
+        width: 80,
+        render: (val, row, index) => {
+          const {
+            table: {
+              data: { list },
+            },
+          } = this.props;
+          if (index < list.length - 1) {
+            return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
+          }
+          return {
+            children: <span>合&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;计</span>,
+            props: {
+              colSpan: 2,
+            },
+          };
         },
+        // render(val, row, index) {
+        //   return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
+        // },
       },
 
       {
         title: '第三方名称',
         dataIndex: 'fThirdid',
-        render(val,row,index) {
-          return renderContent(<span>{ T_THIRD && T_THIRD.kv[val] === '支付宝' && <Icon type="alipay" style={{color:'#00A3EE'}}/> }{ T_THIRD && T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{color:'green'}}/> }{T_THIRD ? '  '+T_THIRD.kv[val] : ''}</span>,row,index)
+        align: 'center',
+        width: 90,
+
+        render: (val, row, index) => {
+          const {
+            table: {
+              data: { list },
+            },
+          } = this.props;
+          if (index < list.length - 1) {
+            return (
+              <span>
+                {T_THIRD &&
+                  T_THIRD.kv[val] === '支付宝' && (
+                    <Icon type="alipay" style={{ color: '#00A3EE' }} />
+                  )}
+                {T_THIRD &&
+                  T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}
+                {T_THIRD ? '  ' + T_THIRD.kv[val] : ''}
+              </span>
+            );
+          }
+          return {
+            children: <span>合&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;计:</span>,
+            props: {
+              colSpan: 0,
+            },
+          };
         },
-      },
-      {
-        title: '项目',
-        dataIndex: 'fTitle',
-      },
-      {
-        title: '交易总笔数',
-        dataIndex: 'fCount',
-        align:'right',
+        // render(val, row, index) {
+        //   return <span>{T_THIRD && T_THIRD.kv[val] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}
+        //     {T_THIRD && T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}
+        //     {T_THIRD ? '  ' + T_THIRD.kv[val] : ''}</span>;
+        // },
       },
 
       {
-        title: '交易总金额',
-        dataIndex: 'fAmount',
-        align:'right',
-        render(val) {
-          return val+'元';
-        },
+        title: '平台收款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'fTranscount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'fTransamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
       },
+      {
+        title: '第三方收款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'f3transcount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'f3transamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
+      },
+      {
+        title: 'His收款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'fHistranscount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'fHistransamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
+      },
+      {
+        title: '平台退款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'fRefundcount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'fRefundamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
+      },
+
+      {
+        title: '第三方退款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'f3refundcount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'f3refundamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
+      },
+
+      {
+        title: 'His退款',
+        children: [
+          {
+            title: '笔数',
+            dataIndex: 'fHisrefundcount',
+            align: 'right',
+          },
+
+          {
+            title: '金额',
+            dataIndex: 'fHisrefundamount',
+            align: 'right',
+            render(val) {
+              return val + '元';
+            },
+          },
+        ],
+      },
+
+      // {
+      //   title: '交易总笔数',
+      //   dataIndex: 'fCount',
+      //   align: 'right',
+      // },
+
+      // {
+      //   title: '交易总金额',
+      //   dataIndex: 'fAmount',
+      //   align: 'right',
+      //   render(val) {
+      //     return val + '元';
+      //   },
+      // },
 
       // {
       //   title: '对账时间',
@@ -258,7 +403,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-
     dispatch({
       type: 'table/fetchKV',
       payload: {
@@ -269,7 +413,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-
     dispatch({
       type: 'table/fetch',
       payload: {
@@ -279,7 +422,6 @@ export default class TableList extends PureComponent {
         closePagination: true,
       },
     });
-
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -490,7 +632,7 @@ export default class TableList extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
-    const { tradeSpace,rangePickerValue } = this.state;
+    const { tradeSpace, rangePickerValue } = this.state;
     const values = {
       ...fields,
       accDate: (fields.accDate && fields.accDate.format('YYYYMMDD')) || null,
@@ -527,7 +669,7 @@ export default class TableList extends PureComponent {
       form: { getFieldDecorator },
     } = this.props;
 
-    const { rangePickerValue,expandForm } = this.state;
+    const { rangePickerValue, expandForm } = this.state;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
@@ -536,7 +678,7 @@ export default class TableList extends PureComponent {
               <RangePicker
                 value={rangePickerValue}
                 onChange={this.handleRangePickerChange}
-                style={{ width: 256 , marginBottom:'24px'}}
+                style={{ width: 256, marginBottom: '24px' }}
               />
               <div className={styles.salesExtra}>
                 <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
@@ -567,13 +709,11 @@ export default class TableList extends PureComponent {
                 重置
               </Button> */}
 
-              {
-              !expandForm &&
-              (<a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
+              {!expandForm && (
+                <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                  展开 <Icon type="down" />
                 </a>
-              )
-              }
+              )}
             </span>
           </Col>
         </Row>
@@ -587,93 +727,80 @@ export default class TableList extends PureComponent {
       table,
     } = this.props;
 
-    const { rangePickerValue,expandForm } = this.state;
+    const { rangePickerValue, expandForm } = this.state;
 
-    const { T_PAY_TYPE, T_THIRD,T_ORDER_TYPE,T_MERCHANT,T_CHANEL_TYPE } = table;
+    const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
 
     return (
       <div>
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={12} sm={24}>
-            <div className={styles.salesExtraWrap}>
-              <RangePicker
-                value={rangePickerValue}
-                onChange={this.handleRangePickerChange}
-                style={{ width: 256 }}
-              />
-              <div className={styles.salesExtra}>
-                <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
-                  <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
-                </a>
-                <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
-                  <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
-                </a>
-                <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
-                  <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
-                </a>
-                <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
-                  <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
-                </a>
-              </div>
-            </div>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}  style={{marginTop: '20px'}}>
-          <Col md={6} sm={24}>
-            <FormItem label="商户">
-              {getFieldDecorator(
-                'fMerchantid'
-              )(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_MERCHANT
-                    ? T_MERCHANT.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
-                    : ''}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-
-          <Col md={6} sm={24}>
-            <FormItem label="第三方">
-              {getFieldDecorator(
-                'fThirdid'
-              )(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD
-                    ? T_THIRD.tv.map(d => (
-                        <Option value={d.value}>{d.text}</Option>
-                      ))
-                    : ''}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <div style={{ overflow: 'hidden' }}>
-              <span style={{ float: 'right', marginBottom: 24 }}>
-                <Button type="primary" htmlType="submit">
-                  查询
-                </Button>
-                <Divider type="vertical" />
-                <Button type="primary" onClick={() => this.handleModalVisible(true)}>
-                  发起对账
-                </Button>
-                {
-                  expandForm &&
-                  (
-                  <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                    收起 <Icon type="up" />
+        <Form onSubmit={this.handleSearch} layout="inline">
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={12} sm={24}>
+              <div className={styles.salesExtraWrap}>
+                <RangePicker
+                  value={rangePickerValue}
+                  onChange={this.handleRangePickerChange}
+                  style={{ width: 256 }}
+                />
+                <div className={styles.salesExtra}>
+                  <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
+                    <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
                   </a>
-                  )
-                }
-              </span>
-            </div>
-          </Col>
-        </Row>
-      </Form>
+                  <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
+                    <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
+                  </a>
+                  <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
+                    <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
+                  </a>
+                  <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
+                    <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
+                  </a>
+                </div>
+              </div>
+            </Col>
+          </Row>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '20px' }}>
+            <Col md={6} sm={24}>
+              <FormItem label="商户">
+                {getFieldDecorator('fMerchantid')(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    {T_MERCHANT
+                      ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>)
+                      : ''}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+
+            <Col md={6} sm={24}>
+              <FormItem label="第三方">
+                {getFieldDecorator('fThirdid')(
+                  <Select placeholder="请选择" style={{ width: '100%' }}>
+                    {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col md={6} sm={24}>
+              <div style={{ overflow: 'hidden' }}>
+                <span style={{ float: 'right', marginBottom: 24 }}>
+                  <Button type="primary" htmlType="submit">
+                    查询
+                  </Button>
+                  <Divider type="vertical" />
+                  <Button type="primary" onClick={() => this.handleModalVisible(true)}>
+                    发起对账
+                  </Button>
+                  {expandForm && (
+                    <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                      收起 <Icon type="up" />
+                    </a>
+                  )}
+                </span>
+              </div>
+            </Col>
+          </Row>
+        </Form>
       </div>
     );
   }
@@ -723,11 +850,7 @@ export default class TableList extends PureComponent {
 
     const { selectedRows } = this.state;
 
-    const {
-      modalVisible,
-      addOrUpdate,
-      tableRow,
-    } = this.state;
+    const { modalVisible, addOrUpdate, tableRow } = this.state;
 
     const parentMethods = {
       handleAdd: this.handleAdd,
