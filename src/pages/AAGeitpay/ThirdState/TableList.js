@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -102,7 +101,7 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                <Option value={d.value}>{d.text}</Option>
+                  <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -145,7 +144,7 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                <Option value={d.value}>{d.text}</Option>
+                  <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -391,20 +390,20 @@ class TableList extends PureComponent {
           // return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
-      {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
+      // {
+      //   title: '操作',
+      //   render: (text, record) => (
+      //     <Fragment>
+      //       <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
 
-            <Divider type="vertical" />
+      //       <Divider type="vertical" />
 
-            <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
-              <a href="">删除</a>
-            </Popconfirm>
-          </Fragment>
-        ),
-      },
+      //       <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
+      //         <a href="">删除</a>
+      //       </Popconfirm>
+      //     </Fragment>
+      //   ),
+      // },
     ];
   };
 
@@ -449,7 +448,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   }
@@ -478,7 +477,7 @@ class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -493,7 +492,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -516,7 +515,7 @@ class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+            tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -539,7 +538,7 @@ class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -560,7 +559,7 @@ class TableList extends PureComponent {
         // to update: set primarykey
         fThirdid: record.fThirdid,
         f3state: record.f3state,
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -600,7 +599,7 @@ class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+          tradeCode: `${tradeSpace}.selectByPrimaryKey`,
         },
       });
     });
@@ -630,7 +629,7 @@ class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
+        tradeCode: `${tradeSpace}.updateByPrimaryKeySelective`,
       },
     });
 
@@ -655,7 +654,7 @@ class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.insertSelective`,
+        tradeCode: `${tradeSpace}.insertSelective`,
       },
     });
 
@@ -869,5 +868,5 @@ class TableList extends PureComponent {
       </PageHeaderWrapper>
     );
   }
-};
+}
 export default TableList;

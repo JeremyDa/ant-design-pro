@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -418,20 +417,20 @@ export default class TableList extends PureComponent {
           // return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
-      {
-        title: '操作',
-        render: (text, record) => (
-          <Fragment>
-            <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
+      // {
+      //   title: '操作',
+      //   render: (text, record) => (
+      //     <Fragment>
+      //       <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
 
-            <Divider type="vertical" />
+      //       <Divider type="vertical" />
 
-            <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
-              <a href="">删除</a>
-            </Popconfirm>
-          </Fragment>
-        ),
-      },
+      //       <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
+      //         <a href="">删除</a>
+      //       </Popconfirm>
+      //     </Fragment>
+      //   ),
+      // },
     ];
   };
 
