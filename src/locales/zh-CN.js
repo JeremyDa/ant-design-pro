@@ -1,9 +1,5 @@
 export default {
   'navBar.lang': '语言',
-  'lang.simplified-chinese': '🇨🇳 简体中文',
-  'lang.traditional-chinese': '🇭🇰 繁体中文',
-  'lang.english': '🇬🇧 English',
-  'lang.portuguese': '🇵🇹 Portuguese',
   'layout.user.link.help': '帮助',
   'layout.user.link.privacy': '隐私',
   'layout.user.link.terms': '条款',
@@ -76,9 +72,7 @@ export default {
   'menu.face.wall': '图片墙',
   'menu.face.facelist': '个人信息',
   'menu.face.facetype': '库类型',
-  'menu.face.facecapture': '人脸录入', 
-
-  
+  'menu.face.facecapture': '人脸录入',
 
   'menu.test': 'test',
   'menu.test.table-list': 'test',
@@ -103,7 +97,6 @@ export default {
   'menu.basic.merchant-channel': '渠道管理',
   'menu.basic.merchant-paytype': '支付类型',
   'menu.basic.merchant-acc': '商户信息',
-  
 
   'menu.init': '初始数据',
   'menu.init.merchant': '商户登记',
@@ -116,7 +109,7 @@ export default {
   'menu.init.trans-type': '交易类型',
   'menu.init.error-code': '平台错误代码',
   'menu.init.industry': '行业类型',
-  
+
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',
   'menu.dashboard.monitor': '监控页',
