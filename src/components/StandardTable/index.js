@@ -71,6 +71,7 @@ class StandardTable extends PureComponent {
       scroll,
       expandedRowRender,
       paginationBool,
+      rowSelection,
     } = this.props;
 
     const paginationProps = {
@@ -79,13 +80,13 @@ class StandardTable extends PureComponent {
       ...pagination,
     };
 
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.handleRowSelectChange,
-      getCheckboxProps: record => ({
-        disabled: record.disabled,
-      }),
-    };
+    // const rowSelection = {
+    //   selectedRowKeys,
+    //   onChange: this.handleRowSelectChange,
+    //   getCheckboxProps: record => ({
+    //     disabled: record.disabled,
+    //   }),
+    // };
 
     return (
       <div className={styles.standardTable}>
@@ -115,13 +116,13 @@ class StandardTable extends PureComponent {
         <Table
           loading={loading}
           rowKey={rowKey || 'key'}
-          // rowSelection={rowSelection}
           dataSource={list}
           columns={columns}
-          pagination={(paginationBool === undefined) && paginationProps}
+          pagination={paginationBool === undefined && paginationProps}
           onChange={this.handleTableChange}
           size="small"
           scroll={scroll || {}}
+          rowSelection={rowSelection}
           expandedRowRender={expandedRowRender || ''}
         />
       </div>
