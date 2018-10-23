@@ -11,7 +11,6 @@ export async function queryActivities() {
   return request('/api/activities');
 }
 
-
 export async function accountLogin(params) {
   return request(`${url}/login.account`, {
     method: 'POST',
@@ -25,7 +24,7 @@ export async function queryNotices() {
 
 export async function query(params) {
   // return request(url + `/api/${params.tradeCode}?${stringify(params)}`);
-  return request(`${url  }/api/${params.type?`${params.type}.`:''}${params.tradeCode}`, {
+  return request(`${url}/api/${params.type ? `${params.type}.` : ''}${params.tradeCode}`, {
     method: 'POST',
     headers: {
       token: params.token,
@@ -38,7 +37,7 @@ export async function query(params) {
 }
 
 export async function remove(params) {
-  return request(`${url  }/api/${params.type?`${params.type}.`:''}${params.tradeCode}`, {
+  return request(`${url}/api/${params.type ? `${params.type}.` : ''}${params.tradeCode}`, {
     method: 'POST',
     headers: {
       token: params.token,
@@ -51,7 +50,7 @@ export async function remove(params) {
 }
 
 export async function add(params) {
-  return request(`${url  }/api/${params.type?`${params.type}.`:''}${params.tradeCode}`, {
+  return request(`${url}/api/${params.type ? `${params.type}.` : ''}${params.tradeCode}`, {
     method: 'POST',
     headers: {
       token: params.token,
@@ -64,7 +63,7 @@ export async function add(params) {
 }
 
 export async function update(params) {
-  return request(`${url  }/api/${params.type?`${params.type}.`:''}${params.tradeCode}`, {
+  return request(`${url}/api/${params.type ? `${params.type}.` : ''}${params.tradeCode}`, {
     method: 'POST',
     headers: {
       token: params.token,
@@ -183,8 +182,6 @@ export async function fakeRegister(params) {
     body: params,
   });
 }
-
-
 
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
