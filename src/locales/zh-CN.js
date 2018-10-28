@@ -91,6 +91,7 @@ export default {
   'menu.trans.relation': '对账明细',
   'menu.trans.order': '订单明细',
   'menu.basic.casher': '收费员',
+  'menu.basic.cashereva': '收费员评价',
   'menu.chart': 'Dashboard',
   'menu.chart.dashboard': '分析',
   'menu.basic': '商户管理',
