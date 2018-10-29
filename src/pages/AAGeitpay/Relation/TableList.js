@@ -405,7 +405,7 @@ export default class TableList extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={12} sm={24}>
+          <Col md={15} sm={24}>
             <div className={styles.salesExtraWrap}>
               <RangePicker
                 value={rangePickerValue}
@@ -427,11 +427,6 @@ export default class TableList extends PureComponent {
                 </a>
               </div>
             </div>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="订单号">
-              {getFieldDecorator('fOrderid')(<Input placeholder="请输入" />)}
-            </FormItem>
           </Col>
           <Col md={6} sm={24}>
             <span className={styles.submitButtons}>
@@ -464,7 +459,7 @@ export default class TableList extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={12} sm={24}>
+          <Col md={24} sm={24}>
             <div className={styles.salesExtraWrap}>
               <RangePicker
                 value={rangePickerValue}
@@ -487,12 +482,15 @@ export default class TableList extends PureComponent {
               </div>
             </div>
           </Col>
-          <Col md={6} sm={24}>
+        </Row>
+
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '10px' }}>
+          <Col md={8} sm={24}>
             <FormItem label="订单号">
               {getFieldDecorator('fOrderid')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-          <Col md={6} sm={24}>
+          <Col md={8} sm={24}>
             <FormItem label="支付/退款">
               {getFieldDecorator('fType')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -502,30 +500,7 @@ export default class TableList extends PureComponent {
               )}
             </FormItem>
           </Col>
-        </Row>
-
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
-          <Col md={6} sm={24}>
-            <FormItem label="商户">
-              {getFieldDecorator('fMerchantid')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_MERCHANT
-                    ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>)
-                    : ''}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="第三方">
-              {getFieldDecorator('fThirdid')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
+          <Col md={8} sm={24}>
             <FormItem label="订单类型">
               {getFieldDecorator('fOrdertype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -536,7 +511,30 @@ export default class TableList extends PureComponent {
               )}
             </FormItem>
           </Col>
-          <Col md={6} sm={24}>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
+          <Col md={8} sm={24}>
+            <FormItem label="商户">
+              {getFieldDecorator('fMerchantid')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  {T_MERCHANT
+                    ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>)
+                    : ''}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="第三方">
+              {getFieldDecorator('fThirdid')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+
+          <Col md={8} sm={24}>
             <div style={{ overflow: 'hidden' }}>
               <span
                 style={{
@@ -621,7 +619,7 @@ export default class TableList extends PureComponent {
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{ x: 1175 }}
+              scroll={{ x: 1300 }}
             />
           </div>
         </Card>
