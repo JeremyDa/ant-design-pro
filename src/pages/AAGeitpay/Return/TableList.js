@@ -24,6 +24,7 @@ import {
   Tabs,
   Tag,
   Avatar,
+  Alert,
 } from 'antd';
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -49,20 +50,13 @@ const Search = Input.Search;
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = { '0': '待确认', '1': '已确认', 'V': '订单关闭' };
-const payStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
-const returnStatus = { '0': '待确认', '1': '已确认', 'V': '订单关闭' };
-const returnStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
-
-
+const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+const returnStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+const returnStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
 
 const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
 const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
-
-
-
-
-
 
 const ReturnModal = Form.create()(
   class extends React.Component {
@@ -75,12 +69,23 @@ const ReturnModal = Form.create()(
             title="退款原因"
             visible={returnVisible}
             onOk={handleReturn}
-            onCancel={handleCancel}>
+            onCancel={handleCancel}
+          >
             <FormItem>
               {getFieldDecorator('refundReason', {
                 rules: [{ required: true, message: '请输入退款原因' }],
-              }
-              )(<TextArea rows={4} placeholder="请输入退款原因" />)}
+              })(
+                <div>
+                  <Alert
+                    message="退款原因为所有需要退款单号的退款原因"
+                    type="warning"
+                    banner
+                    style={{ marginBottom: 10 }}
+                    closeText="Close"
+                  />
+                  <TextArea rows={4} placeholder="请输入退款原因" />
+                </div>
+              )}
             </FormItem>
           </Modal>
         </div>
@@ -94,33 +99,28 @@ const ReturnModal = Form.create()(
   chart,
   loading: loading.models.table,
 }))
-
 @Form.create()
 export default class TableList extends PureComponent {
-
   getColumns = table => {
     // to update: 列名
     const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
     return [
-
-      // {
-      //   title: '操作',
-      //   // fixed: 'left',
-      //   align: 'center',
-      //   width: 110,
-      //   render: (text, record) => (
-
-      //     record.fPayStatus === '1' && !record.fReturnStatus && record.fReturnStatus !== '0' &&
-      //     (
-      //       <Fragment>
-      //         {/* <Popconfirm title="确认退款吗?" onConfirm={this.handleReturn.bind(null, record)}> */}
-      //         <a onClick={this.returnVisible.bind(null, record)}>退款</a>
-      //         {/* </Popconfirm> */}
-      //       </Fragment>
-      //     )
-      //   ),
-      // },
-      
+      {
+        title: '操作',
+        // fixed: 'left',
+        align: 'center',
+        width: 110,
+        render: (text, record) =>
+          record.fPayStatus === '1' &&
+          !record.fReturnStatus &&
+          record.fReturnStatus !== '0' && (
+            <Fragment>
+              {/* <Popconfirm title="确认退款吗?" onConfirm={this.handleReturn.bind(null, record)}> */}
+              <a onClick={this.returnVisible.bind(null, record)}>退款</a>
+              {/* </Popconfirm> */}
+            </Fragment>
+          ),
+      },
       {
         title: '订单号',
         dataIndex: 'fOrdertrace',
@@ -149,10 +149,8 @@ export default class TableList extends PureComponent {
       {
         title: '退款状态',
         dataIndex: 'fReturnStatus',
-        render: (val) => (
-          payStatus[val] &&
-          <Tag color={returnStatusColor[val]}>{returnStatus[val]}</Tag> || '-'
-        ),
+        render: val =>
+          (payStatus[val] && <Tag color={returnStatusColor[val]}>{returnStatus[val]}</Tag>) || '-',
       },
       // {
       //   title: '电话',
@@ -194,7 +192,6 @@ export default class TableList extends PureComponent {
         },
       },
 
-
       // {
       //   title: '支付对账',
       //   dataIndex: 'fPayFlag',
@@ -203,7 +200,6 @@ export default class TableList extends PureComponent {
       //     <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
       //   ),
       // },
-
 
       // {
       //   title: '退款对账',
@@ -297,14 +293,12 @@ export default class TableList extends PureComponent {
       },
     });
 
-
     dispatch({
       type: 'table/fetch',
       payload: {
         tradeCode: tradeSpace + '.selectOrderAndPay',
       },
     });
-
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -428,27 +422,23 @@ export default class TableList extends PureComponent {
     });
   };
 
-  returnVisible = (record) => {
+  returnVisible = record => {
     this.setState({
       returnVisible: true,
       record: record,
     });
-  }
+  };
 
   returnVisible1 = () => {
     const { selectedRowKeys, selectedRows } = this.state;
     console.log(selectedRowKeys, selectedRows);
 
     selectedRowKeys == 0
-      ?
-      message.error('请选择退款的订单号')
-      :
-      this.setState({
-        returnVisible: true,
-      });
-    ;
-  }
-
+      ? message.error('请选择退款的订单号')
+      : this.setState({
+          returnVisible: true,
+        });
+  };
 
   handleReturn1 = () => {
     const { dispatch } = this.props;
@@ -495,20 +485,18 @@ export default class TableList extends PureComponent {
               if (!this.props.table.rspMsg) {
                 message.success('退款成功');
               }
-            }
+            },
           });
         },
       });
 
-
-
       if (fieldsValue.refundReason == null) {
-        message.success("输入退款原因");
+        message.success('输入退款原因');
       } else {
         this.setState({
           returnVisible: false,
         });
-      };
+      }
     });
   };
 
@@ -516,14 +504,11 @@ export default class TableList extends PureComponent {
     this.setState({
       returnVisible: false,
     });
-  }
+  };
 
-  saveFormRef = (formRef) => {
+  saveFormRef = formRef => {
     this.formRef = formRef;
-  }
-
-
-
+  };
 
   handleReturn = () => {
     const { dispatch } = this.props;
@@ -571,20 +556,18 @@ export default class TableList extends PureComponent {
               if (!this.props.table.rspMsg) {
                 message.success('退款成功');
               }
-            }
+            },
           });
-
         },
       });
 
-
       if (fieldsValue.refundReason == null) {
-        message.success("输入退款原因");
+        message.success('输入退款原因');
       } else {
         this.setState({
           returnVisible: false,
         });
-      };
+      }
     });
   };
 
@@ -599,7 +582,6 @@ export default class TableList extends PureComponent {
     const { dispatch, form } = this.props;
     const { tradeSpace, rangePickerValue } = this.state;
     form.validateFields((err, fieldsValue) => {
-
       if (err) return;
       // 处理起始日期
       console.log('rangePickerValue:' + rangePickerValue);
@@ -691,14 +673,9 @@ export default class TableList extends PureComponent {
       form: { getFieldDecorator },
     } = this.props;
 
-
-
-
     const { rangePickerValue } = this.state;
     return (
       <div>
-
-
         <div>
           <Form onSubmit={this.handleSearch} layout="inline">
             <Row gutter={{ md: 24, lg: 24, xl: 48 }}>
@@ -746,10 +723,10 @@ export default class TableList extends PureComponent {
                 <span className={styles.submitButtons}>
                   <Button type="primary" htmlType="submit">
                     查询
-              </Button>
+                  </Button>
                   <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                     重置
-              </Button>
+                  </Button>
                   <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                     展开 <Icon type="down" />
                   </a>
@@ -819,14 +796,10 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="商户">
-              {getFieldDecorator(
-                'fMerchantid'
-              )(
+              {getFieldDecorator('fMerchantid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_MERCHANT
-                    ? T_MERCHANT.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -835,14 +808,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="渠道类型">
-              {getFieldDecorator(
-                'fChannel'
-              )(
+              {getFieldDecorator('fChannel')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_CHANEL_TYPE
-                    ? T_CHANEL_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_CHANEL_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -851,14 +820,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="订单类型">
-              {getFieldDecorator(
-                'fOrdertype'
-              )(
+              {getFieldDecorator('fOrdertype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_ORDER_TYPE
-                    ? T_ORDER_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_ORDER_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -868,14 +833,10 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="支付类型">
-              {getFieldDecorator(
-                'fPaytype'
-              )(
+              {getFieldDecorator('fPaytype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_PAY_TYPE
-                    ? T_PAY_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_PAY_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -884,15 +845,9 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="第三方">
-              {getFieldDecorator(
-                'fThirdid'
-              )(
+              {getFieldDecorator('fThirdid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD
-                    ? T_THIRD.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
-                    : ''}
+                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
                 </Select>
               )}
             </FormItem>
@@ -900,12 +855,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="支付/退款">
-              {getFieldDecorator(
-                'fType'
-              )(
+              {getFieldDecorator('fReturnStatus')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="1">支付</Option>
-                  <Option value="-1">退款</Option>
+                  <Option value="1">已支付</Option>
+                  <Option value="9">可以退款</Option>
                 </Select>
               )}
             </FormItem>
@@ -913,10 +866,12 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
-              <span style={{
-                // float: 'right',
-                marginBottom: 24
-              }}>
+              <span
+                style={{
+                  // float: 'right',
+                  marginBottom: 24,
+                }}
+              >
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
@@ -930,7 +885,6 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
         </Row>
-
       </Form>
     );
   }
@@ -978,24 +932,20 @@ export default class TableList extends PureComponent {
     this.setState({ selectedRowKeys, selectedRows });
   };
 
-  returnReson = (value) => {
-    console.log("==", value);
-
-
+  returnReson = value => {
+    console.log('==', value);
   };
 
   render() {
-
     const {
       table: { data },
       table,
       loading,
     } = this.props;
-    const { list } = this.props.table.data;
 
-    for (let j = 0, len = list.length; j < len; j++) {
-      list[j].key = j;
-    };
+    // for (let j = 0, len = list.length; j < len; j++) {
+    //   list[j].key = j;
+    // };
 
     const { selectedRows, selectedRowKeys } = this.state;
 
@@ -1005,37 +955,85 @@ export default class TableList extends PureComponent {
       onChange: this.onSelectChange,
     };
 
-    const renderExpand = (record) => {
+    const renderExpand = record => {
       const { T_PAY_TYPE, T_THIRD, T_ORDER_TYPE, T_MERCHANT, T_CHANEL_TYPE } = table;
       return (
         <p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>患者信息</h2>
-            姓名:{record.fBuyername}
+            姓名：
+            {record.fBuyername}
             <br />
-            手机:{record.fBuyertel}
+            手机：
+            {record.fBuyertel}
             <br />
-            科室:{record.fDepart}
+            科室：
+            {record.fDepart}
           </p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>订单信息</h2>
-            订单号:{record.fOrdertrace}<br />
-            平台时间:{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
-            商户:{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br />
-            渠道:{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br />
-            订单类型:{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br />
-            支付类型:{T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}{T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}{T_THIRD ? '  ' + T_THIRD.kv[record.fThirdid] : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br />
-            金额:{record.f3totalFee / 100 + '元'}<br />
+            订单号：
+            {record.fOrdertrace}
+            <br />
+            平台时间：
+            {(record.fDate &&
+              moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
+              '-'}
+            <br />
+            商户：
+            {T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}
+            <br />
+            渠道：
+            {T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}
+            <br />
+            订单类型：
+            {T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}
+            <br />
+            支付类型：
+            {T_THIRD &&
+              T_THIRD.kv[record.fThirdid] === '支付宝' && (
+                <Icon type="alipay" style={{ color: '#00A3EE' }} />
+              )}
+            {T_THIRD &&
+              T_THIRD.kv[record.fThirdid] === '微信' && (
+                <Icon type="wechat" style={{ color: 'green' }} />
+              )}
+            {T_THIRD ? '  ' + T_THIRD.kv[record.fThirdid] : ''}-
+            {T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}
+            <br />
+            金额：
+            {record.f3totalFee / 100 + '元'}
+            <br />
           </p>
           {record.f3transactionId && (
-            <p style={{ float: 'left', width: '50%' }}>
-              <h2></h2>
-              第三方流水:{record.f3transactionId}<br />
-              第三方id:{record.f3openid}<br />
-              第三方时间:{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
+            <p style={{ float: 'left', width: '20%' }}>
+              <h2>第三方信息</h2>
+              第三方流水：
+              {record.f3transactionId}
+              <br />
+              第三方id：
+              {record.f3openid}
+              <br />
+              第三方时间：
+              {(record.f3dateEnd &&
+                moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
+                '-'}
+              <br />
             </p>
-          )
-          }
+          )}
+          <p style={{ float: 'left', width: '20%' }}>
+            <h2>退款详情</h2>
+            订单生成时间：
+            {(record.fDate &&
+              moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
+              '-'}
+            <br />
+            退款时间：
+            {(record.fReturnTime &&
+              moment(record.fReturnTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
+              '-'}
+            <br />
+          </p>
         </p>
       );
     };
@@ -1044,12 +1042,8 @@ export default class TableList extends PureComponent {
       form: { getFieldDecorator },
     } = this.props;
 
-
-
     return (
       <div>
-
-
         <PageHeaderWrapper title="查询表格">
           <ReturnModal
             wrappedComponentRef={this.saveFormRef}
@@ -1063,7 +1057,20 @@ export default class TableList extends PureComponent {
               <div className={styles.tableListForm}>{this.renderForm()}</div>
 
               {/* <div className={styles.tableListOperator} /> */}
-              <Button type="primary" onClick={this.returnVisible1}>退款</Button>
+              <Button
+                type="primary"
+                onClick={this.returnVisible1}
+                style={{ float: 'left', marginBottom: 10 }}
+              >
+                退款
+              </Button>
+              <Alert
+                message="批量退款: 先勾选，再点击左侧按钮"
+                type="warning"
+                banner
+                style={{ marginLeft: 100, width: 300 }}
+                closeText="close"
+              />
               <StandardTable
                 rowSelection={rowSelection}
                 selectedRows={selectedRows}
@@ -1072,14 +1079,13 @@ export default class TableList extends PureComponent {
                 columns={this.getColumns(table)}
                 onSelectRow={this.handleSelectRows}
                 onChange={this.handleStandardTableChange}
-                scroll={{ x: 1000 }}
+                scroll={{ x: 1200 }}
                 expandedRowRender={renderExpand}
               />
             </div>
           </Card>
         </PageHeaderWrapper>
       </div>
-
     );
   }
 }
