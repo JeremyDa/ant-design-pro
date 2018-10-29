@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -35,6 +34,9 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+
+const statusMap = ['default', 'processing', 'success', 'error'];
+const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(
   class extends React.Component {
@@ -57,16 +59,10 @@ const CreateForm = Form.create()(
       // to update: 字段名，用于双向绑定数据
       const { fThirdid, fName, fComm } = record;
 
-      const value1 = (`${  fComm}`).substring(0, 1);
-      const value2 = (`${  fComm}`).substring(1, 2);
-      const value3 = (`${  fComm}`).substring(2, 3);
-      const options = [
-        { label: '是', value: '1' },
-        { label: '否', value: '0' },
-      ];
-
-
-
+      const value1 = `${fComm}`.substring(0, 1);
+      const value2 = `${fComm}`.substring(1, 2);
+      const value3 = `${fComm}`.substring(2, 3);
+      const options = [{ label: '是', value: '1' }, { label: '否', value: '0' }];
 
       return (
         <Modal
@@ -96,21 +92,21 @@ const CreateForm = Form.create()(
             })(<Input placeholder="请输入" />)}
           </FormItem>
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="联机模式">
-            {getFieldDecorator(
-              'fComm',
-            )(
+            {getFieldDecorator('fComm')(
               <div>
-                支付:  <RadioGroup options={options} onChange={onChange1} defaultValue={value1} /><br />
-                退款:  <RadioGroup options={options} onChange={onChange2} defaultValue={value2} /><br />
-                对账:  <RadioGroup options={options} onChange={onChange3} defaultValue={value3} />
+                支付: <RadioGroup options={options} onChange={onChange1} defaultValue={value1} />
+                <br />
+                退款: <RadioGroup options={options} onChange={onChange2} defaultValue={value2} />
+                <br />
+                对账: <RadioGroup options={options} onChange={onChange3} defaultValue={value3} />
               </div>
             )}
           </FormItem>
         </Modal>
       );
     }
-  });
-
+  }
+);
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, loading }) => ({
@@ -119,10 +115,10 @@ const CreateForm = Form.create()(
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-  getColumns = table => 
+  getColumns = table =>
     // to update: 列名
     // const { T_INDUSTRY } = table;
-     [
+    [
       {
         title: '第三方代码',
         dataIndex: 'fThirdid',
@@ -134,8 +130,26 @@ export default class TableList extends PureComponent {
       {
         title: '联机模式',
         dataIndex: 'fComm',
+        align: 'center',
         render(val) {
-          return <span>{['否', '是'][val]}</span>;
+          const value1 = `${val}`.substring(0, 1);
+          const value2 = `${val}`.substring(1, 2);
+          const value3 = `${val}`.substring(2, 3);
+          return (
+            <div>
+              <span>支付：</span>
+              <Badge status={statusMap[value1]} text={status[value1]} />
+              &nbsp;
+              <Divider type="vertical" />
+              <span>退款：</span>
+              <Badge status={statusMap[value2]} text={status[value2]} />
+              &nbsp;
+              <Divider type="vertical" />
+              <span>对账：</span>
+              <Badge status={statusMap[value3]} text={status[value3]} />
+            </div>
+          );
+          // return <span>{['否', '是'][val]}</span>;
           // return <Badge status={statusMap[val]} text={status[val]} />;
         },
       },
@@ -153,8 +167,7 @@ export default class TableList extends PureComponent {
           </Fragment>
         ),
       },
-    ]
-  ;
+    ];
 
   state = {
     modalVisible: false,
@@ -172,7 +185,6 @@ export default class TableList extends PureComponent {
     value1: '1',
     value2: '2',
     value3: '3',
-
   };
 
   componentDidMount() {
@@ -182,7 +194,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   }
@@ -211,7 +223,7 @@ export default class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -226,7 +238,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -249,7 +261,7 @@ export default class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+            tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -272,7 +284,7 @@ export default class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -292,7 +304,7 @@ export default class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fThirdid: record.fThirdid,
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -332,7 +344,7 @@ export default class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+          tradeCode: `${tradeSpace}.selectByPrimaryKey`,
         },
       });
     });
@@ -359,8 +371,8 @@ export default class TableList extends PureComponent {
   handleUpdate = (fieldsValue, record) => {
     const { dispatch } = this.props;
     const { tradeSpace, fComm } = this.state;
-    console.log("------------", fieldsValue);
-    console.log("------------", record);
+    console.log('------------', fieldsValue);
+    console.log('------------', record);
 
     dispatch({
       type: 'table/update',
@@ -368,7 +380,7 @@ export default class TableList extends PureComponent {
         ...record,
         ...fieldsValue,
 
-        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
+        tradeCode: `${tradeSpace}.updateByPrimaryKeySelective`,
       },
     });
 
@@ -393,14 +405,13 @@ export default class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.insertSelective`,
+        tradeCode: `${tradeSpace}.insertSelective`,
       },
     });
 
     message.success('添加成功');
     this.handleModalVisible();
   };
-
 
   m = () => {
     const { value1, value2, value3, addOrUpdate } = this.state;
@@ -410,7 +421,7 @@ export default class TableList extends PureComponent {
       if (err) return;
       form.resetFields();
       console.log(value1, value2, value3);
-      values.fComm = `${  value1  }${value2  }${value3}`;
+      values.fComm = `${value1}${value2}${value3}`;
       console.log('++========', values);
 
       if (addOrUpdate === 1) this.handleAdd(values);
@@ -418,31 +429,30 @@ export default class TableList extends PureComponent {
     });
   };
 
-  saveFormRef = (formRef) => {
+  saveFormRef = formRef => {
     this.formRef = formRef;
-  }
+  };
 
-
-  onChange1 = (e) => {
+  onChange1 = e => {
     console.log('radio1 checked', e.target.value);
     this.setState({
       value1: e.target.value,
     });
-  }
+  };
 
-  onChange2 = (e) => {
+  onChange2 = e => {
     console.log('radio2 checked', e.target.value);
     this.setState({
       value2: e.target.value,
     });
-  }
+  };
 
-  onChange3 = (e) => {
+  onChange3 = e => {
     console.log('radio3 checked', e.target.value);
     this.setState({
       value3: e.target.value,
     });
-  }
+  };
 
   render() {
     const {
@@ -460,7 +470,6 @@ export default class TableList extends PureComponent {
       tableRow,
       info,
     } = this.state;
-    
 
     const parentMethods = {
       handleAdd: this.handleAdd,
@@ -482,10 +491,8 @@ export default class TableList extends PureComponent {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
-
             </div>
             <StandardTable
-              
               selectedRows={selectedRows}
               loading={loading}
               data={data}
