@@ -157,7 +157,7 @@ class TableList extends PureComponent {
       },
 
       {
-        title: '状态',
+        title: '支付状态',
         dataIndex: 'fPayStatus',
         render(val) {
           return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
@@ -843,35 +843,35 @@ class TableList extends PureComponent {
         <p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>患者信息</h2>
-            姓名:
+            姓名：
             {record.fBuyername}
             <br />
-            手机:
+            手机：
             {record.fBuyertel}
             <br />
-            科室:
+            科室：
             {record.fDepart}
           </p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>订单信息</h2>
-            订单号:
+            订单号：
             {record.fOrdertrace}
             <br />
-            平台时间:
+            平台时间：
             {(record.fDate &&
               moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
               '-'}
             <br />
-            商户:
+            商户：
             {T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}
             <br />
-            渠道:
+            渠道：
             {T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}
             <br />
-            订单类型:
+            订单类型：
             {T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}
             <br />
-            支付类型:
+            支付类型：
             {T_THIRD &&
               T_THIRD.kv[record.fThirdid] === '支付宝' && (
                 <Icon type="alipay" style={{ color: '#00A3EE' }} />
@@ -883,20 +883,20 @@ class TableList extends PureComponent {
             {T_THIRD ? `  ${T_THIRD.kv[record.fThirdid]}` : ''}-
             {T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}
             <br />
-            金额:
+            金额：
             {`${record.f3totalFee / 100}元`}
             <br />
           </p>
           {record.f3transactionId && (
             <p style={{ float: 'left', width: '50%' }}>
               <h2 />
-              第三方流水:
+              第三方流水：
               {record.f3transactionId}
               <br />
-              第三方id:
+              第三方id：
               {record.f3openid}
               <br />
-              第三方时间:
+              第三方时间：
               {(record.f3dateEnd &&
                 moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
                 '-'}
@@ -922,7 +922,7 @@ class TableList extends PureComponent {
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              // scroll={{ x: 1000 }}
+              scroll={{ x: 1500 }}
               expandedRowRender={renderExpand}
             />
           </div>
