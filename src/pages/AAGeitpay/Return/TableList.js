@@ -77,7 +77,7 @@ const ReturnModal = Form.create()(
               })(
                 <div>
                   <Alert
-                    message="退款原因为所有需要退款单号的退款原因"
+                    message="将统一使用下方填写的退款原因"
                     type="warning"
                     banner
                     style={{ marginBottom: 10 }}
