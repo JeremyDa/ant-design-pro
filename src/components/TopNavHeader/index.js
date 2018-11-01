@@ -3,6 +3,7 @@ import Link from 'umi/link';
 import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import styles from './index.less';
+import logo from '../../../public/logo.png';
 
 export default class TopNavHeader extends PureComponent {
   state = {
@@ -16,7 +17,7 @@ export default class TopNavHeader extends PureComponent {
   }
 
   render() {
-    const { theme, contentWidth, logo } = this.props;
+    const { theme, contentWidth } = this.props;
     const { maxWidth } = this.state;
     return (
       <div className={`${styles.head} ${theme === 'light' ? styles.light : ''}`}>
@@ -30,7 +31,8 @@ export default class TopNavHeader extends PureComponent {
             <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
                 <img src={logo} alt="logo" />
-                <h1>Ant Design Pro</h1>
+                {/* <h1>Ant Design Pro</h1> */}
+                <h1>Geit Pay</h1>
               </Link>
             </div>
             <div
