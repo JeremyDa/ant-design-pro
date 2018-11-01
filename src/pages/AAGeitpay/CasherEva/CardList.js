@@ -169,14 +169,16 @@ class CardList extends PureComponent {
               )
             }
           />
-          <Pagination
-            className={styles.container}
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            defaultCurrent={3}
-            total={500}
-            onChange={onChange}
-          />
+          <div style={{ paddingBottom: '30px' }}>
+            <Pagination
+              className={styles.container}
+              showSizeChanger
+              onShowSizeChange={onShowSizeChange}
+              defaultCurrent={3}
+              total={500}
+              onChange={onChange}
+            />
+          </div>
         </div>
       </PageHeaderWrapper>
     );
