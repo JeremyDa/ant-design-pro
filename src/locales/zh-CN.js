@@ -74,6 +74,8 @@ export default {
   'menu.face.facetype': '库类型',
   'menu.face.facecapture': '人脸录入',
 
+  'menu.trans.viser': '首页',
+
   'menu.test': 'test',
   'menu.test.table-list': 'test',
   'menu.test.advanced-form': 'form',
@@ -223,8 +225,8 @@ export default {
   'app.settings.basic.change-avatar': '更换头像',
   'app.settings.basic.email': '邮箱',
   'app.settings.basic.email-message': '请输入您的邮箱!',
-  'app.settings.basic.nickname': '昵称',
-  'app.settings.basic.nickname-message': '请输入您的昵称!',
+  'app.settings.basic.nickname': '登录名',
+  'app.settings.basic.nickname-message': '请输入您的登录名!',
   'app.settings.basic.profile': '个人简介',
   'app.settings.basic.profile-message': '请输入个人简介!',
   'app.settings.basic.profile-placeholder': '个人简介',
