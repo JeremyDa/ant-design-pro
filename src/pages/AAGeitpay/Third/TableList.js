@@ -122,39 +122,92 @@ export default class TableList extends PureComponent {
       {
         title: '第三方代码',
         dataIndex: 'fThirdid',
+        width: 100,
       },
       {
         title: '第三方名称',
         dataIndex: 'fName',
+        width: 100,
       },
       {
         title: '联机模式',
-        dataIndex: 'fComm',
-        align: 'center',
-        render(val) {
-          const value1 = `${val}`.substring(0, 1);
-          const value2 = `${val}`.substring(1, 2);
-          const value3 = `${val}`.substring(2, 3);
-          return (
-            <div>
-              <span>支付：</span>
-              <Badge status={statusMap[value1]} text={status[value1]} />
-              &nbsp;
-              <Divider type="vertical" />
-              <span>退款：</span>
-              <Badge status={statusMap[value2]} text={status[value2]} />
-              &nbsp;
-              <Divider type="vertical" />
-              <span>对账：</span>
-              <Badge status={statusMap[value3]} text={status[value3]} />
-            </div>
-          );
-          // return <span>{['否', '是'][val]}</span>;
-          // return <Badge status={statusMap[val]} text={status[val]} />;
-        },
+
+        children: [
+          {
+            title: '支付',
+            dataIndex: 'fComm',
+            key: 'fComm0',
+            width: 100,
+            align: 'center',
+            render(val) {
+              const value = `${val}`.substring(0, 1);
+              return (
+                <div>
+                  <Badge status={statusMap[value]} text={status[value]} />
+                </div>
+              );
+            },
+          },
+          {
+            title: '退款',
+            dataIndex: 'fComm',
+            key: 'fComm1',
+            width: 100,
+            align: 'center',
+            render(val) {
+              const value = `${val}`.substring(1, 2);
+              return (
+                <div>
+                  <Badge status={statusMap[value]} text={status[value]} />
+                </div>
+              );
+            },
+          },
+          {
+            title: '对账',
+            dataIndex: 'fComm',
+            key: 'fComm2',
+            width: 100,
+            align: 'center',
+            render(val) {
+              const value = `${val}`.substring(2, 3);
+              return (
+                <div>
+                  <Badge status={statusMap[value]} text={status[value]} />
+                </div>
+              );
+            },
+          },
+        ],
+
+        // dataIndex: 'fComm',
+        // align: 'center',
+        // render(val) {
+        //   const value1 = `${val}`.substring(0, 1);
+        //   const value2 = `${val}`.substring(1, 2);
+        //   const value3 = `${val}`.substring(2, 3);
+        //   return (
+        //     <div>
+        //       <span>支付：</span>
+        //       <Badge status={statusMap[value1]} text={status[value1]} />
+        //       &nbsp;
+        //       <Divider type="vertical" />
+        //       <span>退款：</span>
+        //       <Badge status={statusMap[value2]} text={status[value2]} />
+        //       &nbsp;
+        //       <Divider type="vertical" />
+        //       <span>对账：</span>
+        //       <Badge status={statusMap[value3]} text={status[value3]} />
+        //     </div>
+        //   );
+        //   // return <span>{['否', '是'][val]}</span>;
+        //   // return <Badge status={statusMap[val]} text={status[val]} />;
+        // },
       },
       {
         title: '操作',
+        align: 'center',
+        width: 100,
         render: (text, record) => (
           <Fragment>
             <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
@@ -166,6 +219,11 @@ export default class TableList extends PureComponent {
             </Popconfirm>
           </Fragment>
         ),
+      },
+      {
+        title: '',
+        align: 'center',
+        // width: 100,
       },
     ];
 
