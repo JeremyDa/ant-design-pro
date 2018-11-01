@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -60,12 +59,13 @@ const CreateForm = Form.create()(props => {
     T_INDUSTRY,
     T_PAY_TYPE,
     T_CHANEL_TYPE,
+    fMerchant,
   } = props;
 
   // to update: 字段名，用于双向绑定数据
   const { fMerchantid, fName, fCitycode, fIndustryCode, fChanneltype, fPaytype } = record;
-  const arr_fChanneltype = fChanneltype && (''+fChanneltype).split(',') || [];
-  const arr_fPaytype =  fPaytype && (''+fPaytype).split(',') || [];
+  // const arr_fChanneltype = fChanneltype && ('' + fChanneltype).split(',') || [];
+  // const arr_fPaytype = fPaytype && ('' + fPaytype).split(',') || [];
 
   const getMDate = date => {
     if (date) return moment(date);
@@ -99,6 +99,9 @@ const CreateForm = Form.create()(props => {
           ],
         })(<Input placeholder="请输入" />)}
       </FormItem> */}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户代码">
+        <Input placeholder="请输入" disabled defaultValue={fMerchant} />
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="商户名称">
         {form.getFieldDecorator('fName', {
           initialValue: fName,
@@ -394,7 +397,7 @@ class UpdateForm extends PureComponent {
 export default class TableList extends PureComponent {
   getColumns = table => {
     // to update: 列名
-    const {T_INDUSTRY, T_CITY}  = table;
+    const { T_INDUSTRY, T_CITY } = table;
 
     return [
       {
@@ -453,15 +456,15 @@ export default class TableList extends PureComponent {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
 
-    dispatch({
-      type: 'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_CODE',
-        value: 'F_NAME',
-        table: 'T_CITY',
-      },
-    });
+    // dispatch({
+    //   type: 'table/fetchKV',
+    //   payload: {
+    //     tradeCode: 'selectKeyValue',
+    //     key: 'F_CODE',
+    //     value: 'F_NAME',
+    //     table: 'T_CITY',
+    //   },
+    // });
 
     dispatch({
       type: 'table/fetchKV',
@@ -473,25 +476,25 @@ export default class TableList extends PureComponent {
       },
     });
 
-    dispatch({
-      type:'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_TYPE',
-        value: 'F_NAME',
-        table: 'T_PAY_TYPE',
-      },
-    });
+    // dispatch({
+    //   type: 'table/fetchKV',
+    //   payload: {
+    //     tradeCode: 'selectKeyValue',
+    //     key: 'F_TYPE',
+    //     value: 'F_NAME',
+    //     table: 'T_PAY_TYPE',
+    //   },
+    // });
 
-    dispatch({
-      type:'table/fetchKV',
-      payload: {
-        tradeCode: 'selectKeyValue',
-        key: 'F_TYPE',
-        value: 'F_NAME',
-        table: 'T_CHANEL_TYPE',
-      },
-    });
+    // dispatch({
+    //   type: 'table/fetchKV',
+    //   payload: {
+    //     tradeCode: 'selectKeyValue',
+    //     key: 'F_TYPE',
+    //     value: 'F_NAME',
+    //     table: 'T_CHANEL_TYPE',
+    //   },
+    // });
 
     dispatch({
       type: 'table/fetch',
@@ -651,12 +654,28 @@ export default class TableList extends PureComponent {
       });
     });
   };
-
   handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
-      addOrUpdate: 1,
-    });
+    const { dispatch } = this.props;
+
+    if (flag) {
+      dispatch({
+        type: 'table/fetchKV',
+        payload: {
+          tradeCode: 'tmerchant.getMerchantid',
+        },
+        callback: () => {
+          this.setState({
+            modalVisible: !!flag,
+            addOrUpdate: 1,
+          });
+        },
+      });
+    } else {
+      this.setState({
+        modalVisible: !!flag,
+        addOrUpdate: 1,
+      });
+    }
   };
 
   handleModalUpdate = (flag, tableRow) => {
@@ -703,11 +722,12 @@ export default class TableList extends PureComponent {
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.insertSelective',
         // toList: 'fChanneltype,fPaytype',
-        returnSelect: tradeSpace+'.selectByPrimaryKey',
+        returnSelect: tradeSpace + '.selectByPrimaryKey',
+      },
+      callback: () => {
+        message.success('添加成功');
       },
     });
-
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -902,8 +922,8 @@ export default class TableList extends PureComponent {
           T_INDUSTRY={table.T_INDUSTRY}
           T_CITY={table.T_CITY}
           T_PAY_TYPE={table.T_PAY_TYPE}
-          T_CHANEL_TYPE = {table.T_CHANEL_TYPE}
-
+          T_CHANEL_TYPE={table.T_CHANEL_TYPE}
+          fMerchant={table.fMerchantid}
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
           record={(addOrUpdate === 2 && tableRow) || {}}
