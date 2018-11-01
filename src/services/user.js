@@ -7,5 +7,14 @@ export async function query() {
 }
 
 export async function queryCurrent() {
-  return request(`${url}/currentUser`);
+  return request(`${url}/currentUser`, {
+    method: 'POST',
+    headers: {
+      token: localStorage.getItem('token'),
+    },
+    body: {
+      userName: localStorage.getItem('userName'),
+      // method: 'get',
+    },
+  });
 }
