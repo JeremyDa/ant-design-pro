@@ -7,25 +7,33 @@ export default {
     data: {
       list: [],
       pagination: {},
-    }
+    },
   },
 
   effects: {
-    *fetchKV({ payload }, { call, put }) {
+    *fetchKV({ payload, callback }, { call, put }) {
       // payload.showError = false;
       const response = yield call(query, payload);
       yield put({
         type: 'saveKV',
         payload: response,
       });
+      if (callback) callback();
     },
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       // payload.showError = true;
       const response = yield call(query, payload);
       yield put({
         type: 'save',
         payload: response,
       });
+      if (callback) callback();
+    },
+    *fetchExcel({ payload }, { call }) {
+      // payload.showError = true;
+      const response = yield call(query, payload);
+
+      return window.open(response.name);
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(add, payload);
@@ -69,12 +77,12 @@ export default {
 
   reducers: {
     save(state, action) {
-      if(action.payload.list){
+      if (action.payload.list) {
         return {
           ...state,
           data: action.payload,
         };
-      } 
+      }
       return {
         ...state,
         ...action.payload,
@@ -86,13 +94,13 @@ export default {
         ...action.payload,
       };
     },
-    clean(){
+    clean() {
       return {
         data: {
           list: [],
           pagination: {},
         },
-      }
+      };
     },
   },
 };
