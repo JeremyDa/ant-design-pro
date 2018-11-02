@@ -929,7 +929,7 @@ export default class TableList extends PureComponent {
 
   writeExcel = table => {
     const { dispatch } = this.props;
-    const { tradeSpace } = this.state;
+    const { tradeSpace, formValues } = this.state;
     const columns = this.getColumns(table);
     const titleKey = [];
     const title = [];
@@ -947,6 +947,7 @@ export default class TableList extends PureComponent {
       payload: {
         //to update
         name: name,
+        ...formValues,
         titleKey: JSON.stringify(titleKey),
         title: JSON.stringify(title),
         tradeCode: 'excel.' + tradeSpace + '.selectAllForExcel',

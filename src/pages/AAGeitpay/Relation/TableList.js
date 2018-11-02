@@ -46,8 +46,8 @@ const getValue = obj =>
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = { '0': '待确认', '1': '已确认', 'V': '订单关闭' };
-const payStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
+const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, chart, loading }) => ({
@@ -69,9 +69,7 @@ export default class TableList extends PureComponent {
         title: '交易日期',
         dataIndex: 'fTransdate',
         fixed: 'left',
-        render: val => (
-          <span>{(val && moment(val, 'YYYYMMDD').format('YYYY-MM-DD')) || '-'}</span>
-        ),
+        render: val => <span>{(val && moment(val, 'YYYYMMDD').format('YYYY-MM-DD')) || '-'}</span>,
       },
       {
         title: '对账流水号',
@@ -90,7 +88,15 @@ export default class TableList extends PureComponent {
         title: '第三方',
         dataIndex: 'fThirdid',
         render(val) {
-          return <span>{T_THIRD && T_THIRD.kv[val] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}{T_THIRD && T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}{T_THIRD ? '  ' + T_THIRD.kv[val] : ''}</span>;
+          return (
+            <span>
+              {T_THIRD &&
+                T_THIRD.kv[val] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}
+              {T_THIRD &&
+                T_THIRD.kv[val] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}
+              {T_THIRD ? '  ' + T_THIRD.kv[val] : ''}
+            </span>
+          );
         },
       },
 
@@ -435,7 +441,14 @@ export default class TableList extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <Button style={{ marginLeft: 8 }} icon="download" type="primary" onClick={this.writeExcel}>Excel</Button>
+              <Button
+                style={{ marginLeft: 8 }}
+                icon="download"
+                type="primary"
+                onClick={this.writeExcel}
+              >
+                Excel
+              </Button>
               <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                 展开 <Icon type="down" />
               </a>
@@ -489,11 +502,11 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <FormItem label="支付/退款">
-              {getFieldDecorator('fType')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="1">支付</Option>
-                  <Option value="-1">退款</Option>
-                </Select>
+              getFieldDecorator('fType')(
+              <Select placeholder="请选择" style={{ width: '100%' }}>
+                <Option value="1">支付</Option>
+                <Option value="-1">退款</Option>
+              </Select>
               )}
             </FormItem>
           </Col>
@@ -515,9 +528,7 @@ export default class TableList extends PureComponent {
             <FormItem label="第三方">
               {getFieldDecorator('fThirdid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD
-                    ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>)
-                    : ''}
+                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
                 </Select>
               )}
             </FormItem>
@@ -527,9 +538,7 @@ export default class TableList extends PureComponent {
               {getFieldDecorator('fOrdertype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_ORDER_TYPE
-                    ? T_ORDER_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_ORDER_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -537,14 +546,21 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
-              <span style={{marginBottom: 24}}>
+              <span style={{ marginBottom: 24 }}>
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                   重置
                 </Button>
-                <Button style={{ marginLeft: 8 }} icon="download" type="primary" onClick={this.writeExcel}>Excel</Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  icon="download"
+                  type="primary"
+                  onClick={this.writeExcel}
+                >
+                  Excel
+                </Button>
                 <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                   收起 <Icon type="up" />
                 </a>
@@ -592,29 +608,26 @@ export default class TableList extends PureComponent {
     });
   };
 
-  writeExcel = (table) => {
+  writeExcel = table => {
     const { dispatch } = this.props;
-    const { tradeSpace } = this.state;
+    const { tradeSpace, formValues } = this.state;
     const columns = this.getColumns(table);
     const titleKey = [];
     const title = [];
 
     for (var key in this.getColumns(table)) {
-      titleKey.push(
-        columns[key].dataIndex,
-      );
+      titleKey.push(columns[key].dataIndex);
     }
     for (var value in this.getColumns(table)) {
-      title.push(
-        columns[value].title,
-      );
+      title.push(columns[value].title);
     }
 
-    const name = "relation.xlsx";
+    const name = 'relation.xlsx';
     dispatch({
       type: 'table/fetchExcel',
       payload: {
         //to update
+        ...formValues,
         name: name,
         titleKey: JSON.stringify(titleKey),
         title: JSON.stringify(title),
@@ -639,7 +652,7 @@ export default class TableList extends PureComponent {
             {/* to update */}
             {/* // to choose: 设置查询条件 */}
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-            
+
             <div className={styles.tableListOperator} />
             <StandardTable
               selectedRows={selectedRows}
