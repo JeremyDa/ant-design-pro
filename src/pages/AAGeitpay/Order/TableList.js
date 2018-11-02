@@ -2,7 +2,6 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
-
   Tag,
   Row,
   Col,
@@ -50,8 +49,7 @@ const getValue = obj =>
 // });
 // console.log(gradeName);
 
-
-// todo 
+// todo
 // 完善
 
 // 多渠道，多商户，多支付方式，订单类型，进出账
@@ -68,14 +66,31 @@ const CreateForm = Form.create()(props => {
 
     // to update: value to text的数据源，这里是表名
     T_INDUSTRY,
-
   } = props;
 
   // to update: 字段名，用于双向绑定数据
-  const { fMerchantid, fOrdertrace, fChannel, fOperid, fTermid, fTermtrace,
-    fRegdate, fRegtime, fOrdertype, fThirdid, fProduct,
-    fPaytype, fTradetype, fStatus, fDepart,
-    fYbflag, fOrderamt, fSettleamt, fBuyername, fBuyertel } = record;
+  const {
+    fMerchantid,
+    fOrdertrace,
+    fChannel,
+    fOperid,
+    fTermid,
+    fTermtrace,
+    fRegdate,
+    fRegtime,
+    fOrdertype,
+    fThirdid,
+    fProduct,
+    fPaytype,
+    fTradetype,
+    fStatus,
+    fDepart,
+    fYbflag,
+    fOrderamt,
+    fSettleamt,
+    fBuyername,
+    fBuyertel,
+  } = record;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -191,7 +206,6 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
-
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型代码">
         {form.getFieldDecorator('fMerchantid', {
           initialValue: fMerchantid,
@@ -240,14 +254,18 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入类型id' }, { max: 7, message: '不超过7位' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
-
-
     </Modal>
   );
 });
 
-const orderStatus = { '0': '待创建', '1': '未支付', '2': '正在支付', '3': '已支付', '4': '已关闭', '5': '已退款' }
+const orderStatus = {
+  '0': '待创建',
+  '1': '未支付',
+  '2': '正在支付',
+  '3': '已支付',
+  '4': '已关闭',
+  '5': '已退款',
+};
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, loading }) => ({
@@ -311,7 +329,6 @@ export default class TableList extends PureComponent {
         dataIndex: 'fDepart',
       },
 
-
       {
         title: '订单类型',
         dataIndex: 'fOrdertype',
@@ -350,15 +367,12 @@ export default class TableList extends PureComponent {
       {
         title: '订单金额',
         dataIndex: 'fOrderamt',
-        render:
-          val => val / 100 + '元',
-
+        render: val => val / 100 + '元',
       },
       {
         title: '付款金额',
         dataIndex: 'fSettleamt',
-        render:
-          val => val / 100 + '元',
+        render: val => val / 100 + '元',
       },
       {
         title: '订单状态',
@@ -367,7 +381,6 @@ export default class TableList extends PureComponent {
           return <Tag>{orderStatus[val]}</Tag>;
         },
       },
-
     ];
   };
 
@@ -416,7 +429,6 @@ export default class TableList extends PureComponent {
         table: 'T_PAY_TYPE',
       },
     });
-
 
     dispatch({
       type: 'table/fetch',
@@ -557,7 +569,7 @@ export default class TableList extends PureComponent {
     e.preventDefault();
 
     const { dispatch, form } = this.props;
-    const { tradeSpace,rangePickerValue } = this.state;
+    const { tradeSpace, rangePickerValue } = this.state;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -700,6 +712,14 @@ export default class TableList extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
+              <Button
+                style={{ marginLeft: 8 }}
+                icon="download"
+                type="primary"
+                onClick={this.writeExcel}
+              >
+                Excel
+              </Button>
               <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                 展开 <Icon type="down" />
               </a>
@@ -767,14 +787,10 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="商户">
-              {getFieldDecorator(
-                'fMerchantid'
-              )(
+              {getFieldDecorator('fMerchantid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_MERCHANT
-                    ? T_MERCHANT.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -783,14 +799,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="登记途径">
-              {getFieldDecorator(
-                'fChannel'
-              )(
+              {getFieldDecorator('fChannel')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_CHANEL_TYPE
-                    ? T_CHANEL_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_CHANEL_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -799,14 +811,10 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="订单类型">
-              {getFieldDecorator(
-                'fOrdertype'
-              )(
+              {getFieldDecorator('fOrdertype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_ORDER_TYPE
-                    ? T_ORDER_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_ORDER_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -816,14 +824,10 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }} style={{ marginTop: '0px' }}>
           <Col md={6} sm={24}>
             <FormItem label="支付类型">
-              {getFieldDecorator(
-                'fPaytype'
-              )(
+              {getFieldDecorator('fPaytype')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {T_PAY_TYPE
-                    ? T_PAY_TYPE.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
+                    ? T_PAY_TYPE.tv.map(d => <Option value={d.value}>{d.text}</Option>)
                     : ''}
                 </Select>
               )}
@@ -832,15 +836,9 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="第三方">
-              {getFieldDecorator(
-                'fThirdid'
-              )(
+              {getFieldDecorator('fThirdid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD
-                    ? T_THIRD.tv.map(d => (
-                      <Option value={d.value}>{d.text}</Option>
-                    ))
-                    : ''}
+                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
                 </Select>
               )}
             </FormItem>
@@ -848,11 +846,8 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <FormItem label="订单状态">
-              {getFieldDecorator(
-                'fStatus'
-              )(
+              {getFieldDecorator('fStatus')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                
                   <Option value="0">待创建</Option>
                   <Option value="1">未支付</Option>
                   <Option value="2">正在支付</Option>
@@ -866,15 +861,25 @@ export default class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
-              <span style={{
-                // float: 'right',
-                marginBottom: 24
-              }}>
+              <span
+                style={{
+                  // float: 'right',
+                  marginBottom: 24,
+                }}
+              >
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                   重置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  icon="download"
+                  type="primary"
+                  onClick={this.writeExcel}
+                >
+                  Excel
                 </Button>
                 <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                   收起 <Icon type="up" />
@@ -883,7 +888,6 @@ export default class TableList extends PureComponent {
             </div>
           </Col>
         </Row>
-
       </Form>
     );
   }
@@ -918,14 +922,37 @@ export default class TableList extends PureComponent {
     });
   };
   handleRangePickerChange = rangePickerValue => {
-    console.log('----------',rangePickerValue);
     this.setState({
       rangePickerValue,
     });
   };
 
+  writeExcel = table => {
+    const { dispatch } = this.props;
+    const { tradeSpace } = this.state;
+    const columns = this.getColumns(table);
+    const titleKey = [];
+    const title = [];
 
-
+    for (var key in this.getColumns(table)) {
+      titleKey.push(columns[key].dataIndex);
+    }
+    for (var value in this.getColumns(table)) {
+      title.push(columns[value].title);
+    }
+    //to update
+    const name = '交易明细.xlsx';
+    dispatch({
+      type: 'table/fetchExcel',
+      payload: {
+        //to update
+        name: name,
+        titleKey: JSON.stringify(titleKey),
+        title: JSON.stringify(title),
+        tradeCode: 'excel.' + tradeSpace + '.selectAllForExcel',
+      },
+    });
+  };
 
   render() {
     const {
@@ -964,6 +991,7 @@ export default class TableList extends PureComponent {
       <PageHeaderWrapper title="查询表格">
         <Card bordered={false}>
           <div className={styles.tableList}>
+            {/* to update */}
             {/* // to choose: 设置查询条件 */}
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <StandardTable
@@ -973,8 +1001,8 @@ export default class TableList extends PureComponent {
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{ x: 2500 }}
-            //  expandedRowRender={renderExpand}
+              scroll={{ x: 1800 }}
+              //  expandedRowRender={renderExpand}
             />
           </div>
         </Card>
