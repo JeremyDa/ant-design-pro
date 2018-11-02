@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -62,7 +61,7 @@ const CreateForm = Form.create()(props => {
   } = props;
 
   // to update: 字段名，用于双向绑定数据
-  const { f_CHAR, f_SELECT, f_DATE, f_NUMBER } = record;
+  const { fChar, fSelect, fDate, fNumber } = record;
 
   const getMDate = date => {
     if (date) return moment(date);
@@ -87,17 +86,17 @@ const CreateForm = Form.create()(props => {
     >
       {/* // to update: form表单内容，修改字段名称 */}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字符串">
-        {form.getFieldDecorator('f_CHAR', {
-          initialValue: f_CHAR,
-          rules: [{ required: true, message: 'Please input some f_CHAR...' }],
+        {form.getFieldDecorator('fChar', {
+          initialValue: fChar,
+          rules: [{ required: true, message: 'Please input some fChar...' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="下拉框">
         {form.getFieldDecorator(
-          'f_SELECT',
-          // f_SELECT && { initialValue: `${f_SELECT}`,
+          'fSelect',
+          // fSelect && { initialValue: `${fSelect}`,
           {
-            initialValue: f_SELECT ? `${f_SELECT}` : ``,
+            initialValue: fSelect ? `${fSelect}` : ``,
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -108,10 +107,10 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="行业">
         {form.getFieldDecorator(
-          'f_SELECT',
-          // f_SELECT && { initialValue: `${f_SELECT}`,
+          'fSelect',
+          // fSelect && { initialValue: `${fSelect}`,
           {
-            initialValue: f_SELECT ? `${f_SELECT}` : ``,
+            initialValue: fSelect ? `${fSelect}` : ``,
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -128,13 +127,13 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="数字">
-        {form.getFieldDecorator('f_NUMBER', {
-          initialValue: f_NUMBER,
+        {form.getFieldDecorator('fNumber', {
+          initialValue: fNumber,
         })(<InputNumber style={{ width: '100%' }} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="日期">
-        {form.getFieldDecorator('f_DATE', {
-          initialValue: getMDate(f_DATE),
+        {form.getFieldDecorator('fDate', {
+          initialValue: getMDate(fDate),
         })(<DatePicker style={{ width: '100%' }} placeholder="请输入日期" />)}
       </FormItem>
     </Modal>
@@ -356,11 +355,11 @@ export default class TableList extends PureComponent {
     return [
       {
         title: '字符串',
-        dataIndex: 'f_CHAR',
+        dataIndex: 'fChar',
       },
       {
         title: '数字',
-        dataIndex: 'f_NUMBER',
+        dataIndex: 'fNumber',
         sorter: true,
         align: 'right',
         render: val => `${val} 万`,
@@ -371,7 +370,7 @@ export default class TableList extends PureComponent {
       // to update: value翻译成key
       {
         title: '下拉框',
-        dataIndex: 'f_SELECT',
+        dataIndex: 'fSelect',
         filters: T_TESTKV ? T_TESTKV.tv : [],
         // filters: [
         //   {
@@ -398,7 +397,7 @@ export default class TableList extends PureComponent {
       },
       {
         title: '日期时间',
-        dataIndex: 'f_DATE',
+        dataIndex: 'fDate',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
@@ -524,7 +523,7 @@ export default class TableList extends PureComponent {
         dispatch({
           type: 'table/remove',
           payload: {
-            f_IDList: selectedRows.map(row => row.f_ID).join(','),
+            fIdList: selectedRows.map(row => row.fId).join(','),
             tradeCode: tradeSpace + '.deleteByPrimaryKey',
           },
           callback: () => {
@@ -547,7 +546,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/remove',
       payload: {
-        f_IDList: selectedRows.map(row => row.f_ID).join(','),
+        fIdList: selectedRows.map(row => row.fId).join(','),
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
       callback: () => {
@@ -567,7 +566,7 @@ export default class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         // to update: set primarykey
-        f_ID: record.f_ID,
+        fId: record.fId,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
       callback: () => {
@@ -595,7 +594,7 @@ export default class TableList extends PureComponent {
 
       const values = {
         ...fieldsValue,
-        f_DATE: (fieldsValue.f_DATE && fieldsValue.f_DATE.format('YYYYMMDD')) || null,
+        fDate: (fieldsValue.fDate && fieldsValue.fDate.format('YYYYMMDD')) || null,
         date_start: (fieldsValue.date_start && fieldsValue.date_start.format('YYYYMMDD')) || null,
         date_end: (fieldsValue.date_end && fieldsValue.date_end.format('YYYYMMDD')) || null,
       };
@@ -637,7 +636,7 @@ export default class TableList extends PureComponent {
       payload: {
         ...record,
         ...fields,
-        f_DATE: fields.f_DATE.format('YYYYMMDD'),
+        fDate: fields.fDate.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
       },
     });
@@ -662,7 +661,7 @@ export default class TableList extends PureComponent {
       type: 'table/add',
       payload: {
         ...fields,
-        f_DATE: fields.f_DATE.format('YYYYMMDD'),
+        fDate: fields.fDate.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.insertSelective',
       },
     });
@@ -696,12 +695,12 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="字符串">
-              {getFieldDecorator('f_CHAR')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('fChar')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="下拉框">
-              {getFieldDecorator('f_SELECT')(
+              {getFieldDecorator('fSelect')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
@@ -737,12 +736,12 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="字符串">
-              {getFieldDecorator('f_CHAR')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('fChar')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="下拉框">
-              {getFieldDecorator('f_SELECT')(
+              {getFieldDecorator('fSelect')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="0">关闭</Option>
                   <Option value="1">运行中</Option>
@@ -752,14 +751,14 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="数字">
-              {getFieldDecorator('f_NUMBER')(<InputNumber style={{ width: '100%' }} />)}
+              {getFieldDecorator('fNumber')(<InputNumber style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="日期">
-              {getFieldDecorator('f_DATE')(
+              {getFieldDecorator('fDate')(
                 <DatePicker style={{ width: '100%' }} placeholder="请输入日期" />
               )}
             </FormItem>
