@@ -48,8 +48,8 @@ const getValue = obj =>
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+const payStatus = { '0': '待确认', '1': '已确认', 'V': '订单关闭' };
+const payStatusColor = { '0': 'orange', '1': 'green', 'V': 'grey' };
 
 const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
 const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
@@ -168,7 +168,7 @@ class TableList extends PureComponent {
       //   title: '支付对账',
       //   dataIndex: 'fPayFlag',
       //   render: (val) => (
-      //     relationFlag[val] &&
+      //     relationFlag[val] && 
       //     <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
       //   ),
       // },
@@ -177,7 +177,7 @@ class TableList extends PureComponent {
       //   title: '退款状态',
       //   dataIndex: 'fReturnStatus',
       //   render: (val) => (
-      //     payStatus[val] &&
+      //     payStatus[val] && 
       //     <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag> || '-'
       //   ),
       // },
@@ -186,7 +186,7 @@ class TableList extends PureComponent {
       //   title: '退款对账',
       //   dataIndex: 'fReturnFlag',
       //   render: (val) => (
-      //     relationFlag[val] &&
+      //     relationFlag[val] && 
       //     <Tag color={relationFlagColor[val]}>{relationFlag[val]}</Tag> || '-'
       //   ),
       // },
@@ -632,6 +632,7 @@ class TableList extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
+              <Button style={{ marginLeft: 8 }} icon="download" type="primary" onClick={this.writeExcel}>Excel</Button>
               <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                 展开 <Icon type="down" />
               </a>
@@ -750,7 +751,9 @@ class TableList extends PureComponent {
             <FormItem label="第三方">
               {getFieldDecorator('fThirdid')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
+                  {T_THIRD
+                    ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>)
+                    : ''}
                 </Select>
               )}
             </FormItem>
@@ -769,11 +772,11 @@ class TableList extends PureComponent {
 
           <Col md={6} sm={24}>
             <div style={{ overflow: 'hidden' }}>
-              <span
+              <span 
                 style={{
-                  // float: 'right',
-                  marginBottom: 24,
-                }}
+                // float: 'right',
+                marginBottom: 24,
+              }}
               >
                 <Button type="primary" htmlType="submit">
                   查询
@@ -781,6 +784,7 @@ class TableList extends PureComponent {
                 <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                   重置
                 </Button>
+                <Button style={{ marginLeft: 8 }} icon="download" type="primary" onClick={this.writeExcel}>Excel</Button>
                 <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                   收起 <Icon type="up" />
                 </a>
@@ -822,6 +826,37 @@ class TableList extends PureComponent {
     });
   };
 
+  writeExcel = (table) => {
+    const { dispatch } = this.props;
+    const { tradeSpace } = this.state;
+    const columns = this.getColumns(table);
+    const titleKey = [];
+    const title = [];
+
+    for (var key in this.getColumns(table)) {
+      titleKey.push(
+        columns[key].dataIndex,
+      );
+    }
+    for (var value in this.getColumns(table)) {
+      title.push(
+        columns[value].title,
+      );
+    }
+
+    const name = "ORDERPAY.xlsx";
+    dispatch({
+      type: 'table/fetchExcel',
+      payload: {
+        //to update
+        name: name,
+        titleKey: JSON.stringify(titleKey),
+        title: JSON.stringify(title),
+        tradeCode: 'excel.' + tradeSpace + '.selectAllForExcel',
+      },
+    });
+  };
+
   handleRangePickerChange = rangePickerValue => {
     this.setState({
       rangePickerValue,
@@ -843,66 +878,30 @@ class TableList extends PureComponent {
         <p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>患者信息</h2>
-            姓名：
-            {record.fBuyername}
+            姓名：{record.fBuyername}
             <br />
-            手机：
-            {record.fBuyertel}
+            手机：{record.fBuyertel}
             <br />
-            科室：
-            {record.fDepart}
+            科室：{record.fDepart}
           </p>
           <p style={{ float: 'left', width: '20%' }}>
             <h2>订单信息</h2>
-            订单号：
-            {record.fOrdertrace}
-            <br />
-            平台时间：
-            {(record.fDate &&
-              moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
-              '-'}
-            <br />
-            商户：
-            {T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}
-            <br />
-            渠道：
-            {T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}
-            <br />
-            订单类型：
-            {T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}
-            <br />
-            支付类型：
-            {T_THIRD &&
-              T_THIRD.kv[record.fThirdid] === '支付宝' && (
-                <Icon type="alipay" style={{ color: '#00A3EE' }} />
-              )}
-            {T_THIRD &&
-              T_THIRD.kv[record.fThirdid] === '微信' && (
-                <Icon type="wechat" style={{ color: 'green' }} />
-              )}
-            {T_THIRD ? `  ${T_THIRD.kv[record.fThirdid]}` : ''}-
-            {T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}
-            <br />
-            金额：
-            {`${record.f3totalFee / 100}元`}
-            <br />
+            订单号：{record.fOrdertrace}<br />
+            平台时间：{(record.fDate && moment(record.fDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
+            商户：{T_MERCHANT ? T_MERCHANT.kv[record.fMerchantid] : ''}<br />
+            渠道：{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[record.fChannel] : ''}<br />
+            订单类型：{T_ORDER_TYPE ? T_ORDER_TYPE.kv[record.fOrdertype] : ''}<br />
+            支付类型：{T_THIRD && T_THIRD.kv[record.fThirdid] === '支付宝' && <Icon type="alipay" style={{ color: '#00A3EE' }} />}{T_THIRD && T_THIRD.kv[record.fThirdid] === '微信' && <Icon type="wechat" style={{ color: 'green' }} />}{T_THIRD ? `  ${T_THIRD.kv[record.fThirdid]}` : ''}-{T_PAY_TYPE ? T_PAY_TYPE.kv[record.fPaytype] : ''}<br />
+            金额：{`${record.f3totalFee / 100}元`}<br />
           </p>
           {record.f3transactionId && (
             <p style={{ float: 'left', width: '50%' }}>
-              <h2 />
-              第三方流水：
-              {record.f3transactionId}
-              <br />
-              第三方id：
-              {record.f3openid}
-              <br />
-              第三方时间：
-              {(record.f3dateEnd &&
-                moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) ||
-                '-'}
-              <br />
+              第三方流水：{record.f3transactionId}<br />
+              第三方id：{record.f3openid}<br />
+              第三方时间：{(record.f3dateEnd && moment(record.f3dateEnd, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm:ss')) || '-'}<br />
             </p>
-          )}
+            )
+          }
         </p>
       );
     };
@@ -911,9 +910,9 @@ class TableList extends PureComponent {
       <PageHeaderWrapper title="查询表格">
         <Card bordered={false}>
           <div className={styles.tableList}>
+            {/* to update */}
             {/* // to choose: 设置查询条件 */}
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-
             {/* <div className={styles.tableListOperator} /> */}
             <StandardTable
               selectedRows={selectedRows}
@@ -922,7 +921,7 @@ class TableList extends PureComponent {
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{ x: 1500 }}
+              scroll={{ x: 1200 }}
               expandedRowRender={renderExpand}
             />
           </div>
