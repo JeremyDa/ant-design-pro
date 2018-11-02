@@ -4,7 +4,6 @@ import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
 
-
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -64,10 +63,7 @@ const cachedSave = (response, hashcode) => {
  * @param  {object} [option] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(
-  url,
-  option,
-) {
+export default function request(url, option) {
   const options = {
     expirys: isAntdPro(),
     ...option,
@@ -87,6 +83,14 @@ export default function request(
     // credentials: 'include',
   };
   const newOptions = { ...defaultOptions, ...options };
+
+  if (url.indexOf('login.account') < 0) {
+    newOptions.body.userName = localStorage.getItem('userName');
+    if (!localStorage.getItem('token') || !localStorage.getItem('userName')) {
+      router.push('/user/login');
+      return;
+    }
+  }
   if (
     newOptions.method === 'POST' ||
     newOptions.method === 'PUT' ||
@@ -123,7 +127,7 @@ export default function request(
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
   }
-  if(!newOptions.headers){
+  if (!newOptions.headers) {
     newOptions.headers = {};
   }
   newOptions.headers.token = localStorage.getItem('token');
@@ -140,7 +144,7 @@ export default function request(
       return response.json();
     })
     .then(data => {
-      if(data.rspMsg){
+      if (data.rspMsg) {
         notification.error({
           message: `请求错误 : `,
           description: data.rspMsg,
@@ -149,7 +153,7 @@ export default function request(
       return data;
     })
     .catch(e => {
-      if( options.body && options.body.showError && e == 'TypeError: Failed to fetch'){
+      if (options.body && options.body.showError && e == 'TypeError: Failed to fetch') {
         notification.error({
           message: `请求错误 : `,
           description: `网络异常`,
