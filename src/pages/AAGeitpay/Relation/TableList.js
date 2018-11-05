@@ -502,11 +502,11 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <FormItem label="支付/退款">
-              getFieldDecorator('fType')(
-              <Select placeholder="请选择" style={{ width: '100%' }}>
-                <Option value="1">支付</Option>
-                <Option value="-1">退款</Option>
-              </Select>
+              {getFieldDecorator('fType')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="1">支付</Option>
+                  <Option value="-1">退款</Option>
+                </Select>
               )}
             </FormItem>
           </Col>
