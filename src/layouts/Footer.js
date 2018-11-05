@@ -28,7 +28,7 @@ const FooterView = () => (
       // ]}
       copyright={
         <Fragment>
-          Copyright <Icon type="copyright" /> 2018 江苏国光信息产业股份有限公司
+          Copyright <Icon type="copyright" /> 2018 常州国光软件系统工程有限公司
         </Fragment>
       }
     />
