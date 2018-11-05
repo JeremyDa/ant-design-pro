@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -23,6 +24,7 @@ import {
   Radio,
   Popconfirm,
   Avatar,
+  Upload,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -76,6 +78,36 @@ const CreateForm = Form.create()(props => {
     });
   };
 
+  const handlePreview = (file) => {
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  }
+
+  const handleChange = ({ fileList }) => {
+
+    console.log(fileList);
+    
+  }
+
+  // 头像组件 方便以后独立，增加裁剪之类的功能
+  const AvatarView = ({ avatar }) => (
+    <Fragment>
+      <div className={styles.avatar}>
+        <img src={avatar} alt="avatar" />
+      </div>
+      <Upload fileList={[]} action="http://localhost:8011/uploadCasherImg"
+              onChange={handleChange}>
+        <div className={styles.button_view}>
+          <Button icon="upload">
+            <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+          </Button>
+        </div>
+      </Upload>
+    </Fragment>
+  );
+
   return (
     <Modal
       destroyOnClose
@@ -124,10 +156,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="照片">
-        {form.getFieldDecorator('fPhoteurl', {
-          initialValue: fPhoteurl,
-          rules: [{ required: true, message: 'Please input the title of collection!' }],
-        })(<Input />)}
+        <AvatarView avatar="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
       </FormItem>
 
       {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="保留">
