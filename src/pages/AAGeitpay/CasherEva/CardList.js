@@ -13,13 +13,13 @@ import styles from './CardList.less';
 }))
 class CardList extends PureComponent {
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'list/fetch',
-      payload: {
-        count: 8,
-      },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'list/fetch',
+    //   payload: {
+    //     count: 8,
+    //   },
+    // });
   }
 
   render() {
@@ -59,8 +59,6 @@ class CardList extends PureComponent {
         />
       </div>
     );
-
-    console.log('%o', list);
 
     let data = [
       {
