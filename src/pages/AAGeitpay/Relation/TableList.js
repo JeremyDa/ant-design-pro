@@ -79,6 +79,7 @@ export default class TableList extends PureComponent {
       {
         title: '商户',
         dataIndex: 'fMerchantid',
+        filters: T_MERCHANT ? T_MERCHANT.tv : [],
         render(val) {
           return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
@@ -87,6 +88,7 @@ export default class TableList extends PureComponent {
       {
         title: '第三方',
         dataIndex: 'fThirdid',
+        filters: T_THIRD ? T_THIRD.tv : [],
         render(val) {
           return (
             <span>
@@ -107,10 +109,18 @@ export default class TableList extends PureComponent {
       {
         title: '商户订单号',
         dataIndex: 'fOrderid',
+        // sorter: true,
       },
       {
         title: '支付/退款',
         dataIndex: 'fTranstype',
+        filters: [{
+          value: '1',
+          text: '支付',
+        }, {
+          value: '-1',
+          text: '退款',
+        }],
         render(val) {
           return <Tag color={payOrReturnColor[val]}>{payOrReturn[val]}</Tag>;
         },
@@ -118,6 +128,7 @@ export default class TableList extends PureComponent {
       {
         title: '订单类型',
         dataIndex: 'fOrdertype',
+        filters: T_ORDER_TYPE ? T_ORDER_TYPE.tv : [],
         render(val) {
           return <span>{T_ORDER_TYPE ? T_ORDER_TYPE.kv[val] : ''}</span>;
         },
@@ -238,7 +249,7 @@ export default class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -449,9 +460,9 @@ export default class TableList extends PureComponent {
               >
                 Excel
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              {/* <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                 展开 <Icon type="down" />
-              </a>
+              </a> */}
             </span>
           </Col>
         </Row>
@@ -574,7 +585,8 @@ export default class TableList extends PureComponent {
 
   renderForm() {
     const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    // return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    return this.renderSimpleForm();
   }
 
   isActive(type) {

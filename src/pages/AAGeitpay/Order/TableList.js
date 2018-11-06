@@ -296,17 +296,21 @@ export default class TableList extends PureComponent {
       {
         title: '商户号',
         dataIndex: 'fMerchantid',
+        filters: T_MERCHANT ? T_MERCHANT.tv : [],
         render(val) {
           return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
+
       },
       {
         title: '订单号',
         dataIndex: 'fOrdertrace',
+        // sorter: true,
       },
       {
         title: '登记途径',
         dataIndex: 'fChannel',
+        filters: T_CHANEL_TYPE ? T_CHANEL_TYPE.tv : [],
         render(val) {
           return <span>{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[val] : ''}</span>;
         },
@@ -332,6 +336,7 @@ export default class TableList extends PureComponent {
       {
         title: '订单类型',
         dataIndex: 'fOrdertype',
+        filters: T_ORDER_TYPE ? T_ORDER_TYPE.tv : [],
         render(val) {
           return <span>{T_ORDER_TYPE ? T_ORDER_TYPE.kv[val] : ''}</span>;
         },
@@ -340,6 +345,7 @@ export default class TableList extends PureComponent {
       {
         title: '第三方',
         dataIndex: 'fThirdid',
+        filters: T_THIRD ? T_THIRD.tv : [],
         render(val) {
           return <span>{T_THIRD ? T_THIRD.kv[val] : ''}</span>;
         },
@@ -377,6 +383,31 @@ export default class TableList extends PureComponent {
       {
         title: '订单状态',
         dataIndex: 'fStatus',
+        filters: [{
+          value: '0',
+          text: '待创建',
+        },
+        {
+          value: '1',
+          text: '未支付',
+        },
+        {
+          value: '2',
+          text: '正在支付',
+        },
+        {
+          value: '3',
+          text: '已支付',
+        },
+        {
+          value: '4',
+          text: '已关闭',
+        },
+        {
+          value: '5',
+          text: '已退款',
+        }
+        ],
         render(val) {
           return <Tag>{orderStatus[val]}</Tag>;
         },
@@ -438,34 +469,7 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues, tradeSpace } = this.state;
 
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
-    dispatch({
-      type: 'table/fetch',
-      payload: {
-        ...params,
-        tradeCode: tradeSpace + '.selectByPrimaryKey',
-      },
-    });
-  };
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -720,9 +724,9 @@ export default class TableList extends PureComponent {
               >
                 Excel
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              {/* <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                 展开 <Icon type="down" />
-              </a>
+              </a> */}
             </span>
           </Col>
         </Row>
@@ -894,7 +898,8 @@ export default class TableList extends PureComponent {
 
   renderForm() {
     const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    // return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    return this.renderSimpleForm();
   }
 
   isActive(type) {
@@ -955,6 +960,35 @@ export default class TableList extends PureComponent {
     });
   };
 
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch } = this.props;
+    const { formValues, tradeSpace } = this.state;
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      ...formValues,
+      ...filters,
+    };
+    if (sorter.field) {
+      params.sorter = `${sorter.field}_${sorter.order}`;
+    }
+
+    dispatch({
+      type: 'table/fetch',
+      payload: {
+        ...params,
+        tradeCode: tradeSpace + '.selectByPrimaryKey',
+      },
+    });
+  };
+
   render() {
     const {
       table: { data },
@@ -1002,8 +1036,8 @@ export default class TableList extends PureComponent {
               columns={this.getColumns(table)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              scroll={{ x: 1800 }}
-              //  expandedRowRender={renderExpand}
+              scroll={{ x: 2100 }}
+            //  expandedRowRender={renderExpand}
             />
           </div>
         </Card>

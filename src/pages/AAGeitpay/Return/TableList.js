@@ -142,6 +142,17 @@ export default class TableList extends PureComponent {
       {
         title: '支付状态',
         dataIndex: 'fPayStatus',
+        // filters: [{
+        //   value: '0',
+        //   text: '待确认',
+        // },
+        // {
+        //   value: '1',
+        //   text: '已确认',
+        // }, {
+        //   value: 'V',
+        //   text: '订单关闭',
+        // }],
         render(val) {
           return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
         },
@@ -173,6 +184,7 @@ export default class TableList extends PureComponent {
       {
         title: '渠道',
         dataIndex: 'fChannel',
+        filters: T_CHANEL_TYPE ? T_CHANEL_TYPE.tv : [],
         render(val) {
           return <span>{T_CHANEL_TYPE ? T_CHANEL_TYPE.kv[val] : ''}</span>;
         },
@@ -180,6 +192,7 @@ export default class TableList extends PureComponent {
       {
         title: '支付类型',
         dataIndex: 'fPaytype',
+        filters: T_PAY_TYPE ? T_PAY_TYPE.tv : [],
         render(val) {
           return <span>{T_PAY_TYPE ? T_PAY_TYPE.kv[val] : ''}</span>;
         },
@@ -188,6 +201,7 @@ export default class TableList extends PureComponent {
       {
         title: '订单类型',
         dataIndex: 'fOrdertype',
+        filters: T_ORDER_TYPE ? T_ORDER_TYPE.tv : [],
         render(val) {
           return <span>{T_ORDER_TYPE ? T_ORDER_TYPE.kv[val] : ''}</span>;
         },
@@ -437,8 +451,8 @@ export default class TableList extends PureComponent {
     selectedRowKeys == 0
       ? message.error('请选择退款的订单号')
       : this.setState({
-          returnVisible: true,
-        });
+        returnVisible: true,
+      });
   };
 
   handleReturn1 = () => {
@@ -736,9 +750,9 @@ export default class TableList extends PureComponent {
                   >
                     Excel
                   </Button>
-                  <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                  {/* <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
                     展开 <Icon type="down" />
-                  </a>
+                  </a> */}
                 </span>
               </Col>
             </Row>
@@ -903,7 +917,8 @@ export default class TableList extends PureComponent {
 
   renderForm() {
     const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    // return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    return this.renderSimpleForm();
   }
 
   isActive(type) {
