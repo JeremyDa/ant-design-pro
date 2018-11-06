@@ -85,11 +85,92 @@ const CreateForm = Form.create()(props => {
     });
   }
 
-  const handleChange = ({ fileList }) => {
+  let avatarUrl = "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png";
 
-    console.log(fileList);
-    
-  }
+  //文件上传改变事件
+  const handleChange = (e) => {
+      const saveType = 'file';
+      let fileList = e.fileList;
+      let fileStatus = e.file.status;
+
+      if (fileStatus === 'uploading') {    //上传中
+          console.log('uploading....');
+      } else if (fileStatus === 'done') {  //上传成功
+          let response = e.file.response;
+          if (!response) {
+              message.error("抱歉，文件由于未知原因上传失败!");
+              return;
+          }
+          let responseMeta = response.meta;
+          if (saveType === 'file') {   //上传到文档库
+              //上传成功(success为true并且响应码为200)
+              if (responseMeta && responseMeta.success && responseMeta.statusCode === 200) {
+                  fileList = fileList.map((file) => {
+                      if (file.uid === e.file.uid) {
+                          // file.uuid = response.data.ssbh;
+                          file.uuid = response.data.bh;
+                      }
+                      return file;
+                  });
+
+                  this.getUploadedImage(fileList, 'file');
+              } else {
+                  message.error("抱歉，文件由于未知原因上传失败!");
+                  //过滤上传失败的图片
+                  fileList = this.filterUploadFailFile(e.fileList, e.file);
+              }
+
+          } else if (saveType === 'redis') { //缓存Redis
+              //缓存成功(响应码为200)
+              if (response.code === 200) {
+                  fileList = fileList.map((file) => {
+                      if (file.uid === e.file.uid) {
+                          file.uuid = response.data;
+                      }
+                      return file;
+                  });
+                  this.getUploadedImage(fileList, 'redis');
+              } else {
+                  message.error("抱歉，文件由于未知原因上传失败!");
+                  //过滤上传失败的图片
+                  fileList = this.filterUploadFailFile(e.fileList, e.file);
+              }
+          } else if (saveType === 'base64') {  //用于保存数据库
+              this.getImageBase64(e.file.originFileObj, (imageUrl) => {
+                  // console.log(imageUrl);
+                  //上传成功
+                  if (response.code === 200) {
+                      fileList = fileList.map((file) => {
+                          if (file.uid === e.file.uid) {
+                              file.uuid = imageUrl;
+                              file.base64Url = imageUrl;
+                          } else {
+                              file.base64Url = file.thumbUrl || file.url;
+                          }
+                          return file;
+                      });
+                      this.getUploadedImage(fileList, 'base64');
+                  } else {
+                      message.error("抱歉，文件由于未知原因上传失败!");
+                      //过滤上传失败的图片
+                      fileList = this.filterUploadFailFile(e.fileList, e.file);
+                  }
+              });
+
+          }
+      } else if (fileStatus === 'error') {  //上传出错
+          message.error("抱歉，文件由于未知原因上传失败!");
+          //过滤上传失败的图片
+          fileList = this.filterUploadFailFile(e.fileList, e.file);
+      }
+      if (fileStatus) {
+          // this.setState({
+          //     uploadedImageList: fileList
+          // });
+      }
+
+      console.log('%o',fileList);
+  };
 
   // 头像组件 方便以后独立，增加裁剪之类的功能
   const AvatarView = ({ avatar }) => (
@@ -156,7 +237,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="照片">
-        <AvatarView avatar="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
+        <AvatarView avatar={{avatarUrl}} />
       </FormItem>
 
       {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="保留">
