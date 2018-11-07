@@ -30,6 +30,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TableList.less';
+import user from '../../../../public/user.svg';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -78,116 +79,183 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  const handlePreview = (file) => {
+  const handlePreview = file => {
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
     });
-  }
+  };
 
-  let avatarUrl = "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png";
+  const handleAvatarChange = value => {
+    console.log(value);
+    form.setFieldsValue({
+      fPhoteurl: value,
+    });
+  };
+
+  let avatarUrl = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
 
   //文件上传改变事件
-  const handleChange = (e) => {
-      const saveType = 'file';
-      let fileList = e.fileList;
-      let fileStatus = e.file.status;
+  const handleChange = e => {
+    const saveType = 'file';
+    let fileList = e.fileList;
+    let fileStatus = e.file.status;
 
-      if (fileStatus === 'uploading') {    //上传中
-          console.log('uploading....');
-      } else if (fileStatus === 'done') {  //上传成功
-          let response = e.file.response;
-          if (!response) {
-              message.error("抱歉，文件由于未知原因上传失败!");
-              return;
-          }
-          let responseMeta = response.meta;
-          if (saveType === 'file') {   //上传到文档库
-              //上传成功(success为true并且响应码为200)
-              if (responseMeta && responseMeta.success && responseMeta.statusCode === 200) {
-                  fileList = fileList.map((file) => {
-                      if (file.uid === e.file.uid) {
-                          // file.uuid = response.data.ssbh;
-                          file.uuid = response.data.bh;
-                      }
-                      return file;
-                  });
+    if (fileStatus === 'uploading') {
+      //上传中
+      console.log('uploading....');
+    } else if (fileStatus === 'done') {
+      //上传成功
+      let response = e.file.response;
+      if (!response) {
+        message.error('抱歉，文件由于未知原因上传失败!');
+        return;
+      }
+      let responseMeta = response.meta;
+      if (saveType === 'file') {
+        //上传到文档库
+        //上传成功(success为true并且响应码为200)
+        if (responseMeta && responseMeta.success && responseMeta.statusCode === 200) {
+          fileList = fileList.map(file => {
+            if (file.uid === e.file.uid) {
+              // file.uuid = response.data.ssbh;
+              file.uuid = response.data.bh;
+            }
+            return file;
+          });
 
-                  this.getUploadedImage(fileList, 'file');
-              } else {
-                  message.error("抱歉，文件由于未知原因上传失败!");
-                  //过滤上传失败的图片
-                  fileList = this.filterUploadFailFile(e.fileList, e.file);
-              }
-
-          } else if (saveType === 'redis') { //缓存Redis
-              //缓存成功(响应码为200)
-              if (response.code === 200) {
-                  fileList = fileList.map((file) => {
-                      if (file.uid === e.file.uid) {
-                          file.uuid = response.data;
-                      }
-                      return file;
-                  });
-                  this.getUploadedImage(fileList, 'redis');
-              } else {
-                  message.error("抱歉，文件由于未知原因上传失败!");
-                  //过滤上传失败的图片
-                  fileList = this.filterUploadFailFile(e.fileList, e.file);
-              }
-          } else if (saveType === 'base64') {  //用于保存数据库
-              this.getImageBase64(e.file.originFileObj, (imageUrl) => {
-                  // console.log(imageUrl);
-                  //上传成功
-                  if (response.code === 200) {
-                      fileList = fileList.map((file) => {
-                          if (file.uid === e.file.uid) {
-                              file.uuid = imageUrl;
-                              file.base64Url = imageUrl;
-                          } else {
-                              file.base64Url = file.thumbUrl || file.url;
-                          }
-                          return file;
-                      });
-                      this.getUploadedImage(fileList, 'base64');
-                  } else {
-                      message.error("抱歉，文件由于未知原因上传失败!");
-                      //过滤上传失败的图片
-                      fileList = this.filterUploadFailFile(e.fileList, e.file);
-                  }
-              });
-
-          }
-      } else if (fileStatus === 'error') {  //上传出错
-          message.error("抱歉，文件由于未知原因上传失败!");
+          this.getUploadedImage(fileList, 'file');
+        } else {
+          message.error('抱歉，文件由于未知原因上传失败!');
           //过滤上传失败的图片
           fileList = this.filterUploadFailFile(e.fileList, e.file);
+        }
+      } else if (saveType === 'redis') {
+        //缓存Redis
+        //缓存成功(响应码为200)
+        if (response.code === 200) {
+          fileList = fileList.map(file => {
+            if (file.uid === e.file.uid) {
+              file.uuid = response.data;
+            }
+            return file;
+          });
+          this.getUploadedImage(fileList, 'redis');
+        } else {
+          message.error('抱歉，文件由于未知原因上传失败!');
+          //过滤上传失败的图片
+          fileList = this.filterUploadFailFile(e.fileList, e.file);
+        }
+      } else if (saveType === 'base64') {
+        //用于保存数据库
+        this.getImageBase64(e.file.originFileObj, imageUrl => {
+          // console.log(imageUrl);
+          //上传成功
+          if (response.code === 200) {
+            fileList = fileList.map(file => {
+              if (file.uid === e.file.uid) {
+                file.uuid = imageUrl;
+                file.base64Url = imageUrl;
+              } else {
+                file.base64Url = file.thumbUrl || file.url;
+              }
+              return file;
+            });
+            this.getUploadedImage(fileList, 'base64');
+          } else {
+            message.error('抱歉，文件由于未知原因上传失败!');
+            //过滤上传失败的图片
+            fileList = this.filterUploadFailFile(e.fileList, e.file);
+          }
+        });
       }
-      if (fileStatus) {
-          // this.setState({
-          //     uploadedImageList: fileList
-          // });
-      }
+    } else if (fileStatus === 'error') {
+      //上传出错
+      message.error('抱歉，文件由于未知原因上传失败!');
+      //过滤上传失败的图片
+      fileList = this.filterUploadFailFile(e.fileList, e.file);
+    }
+    if (fileStatus) {
+      // this.setState({
+      //     uploadedImageList: fileList
+      // });
+    }
 
-      console.log('%o',fileList);
+    console.log('%o', fileList);
   };
 
   // 头像组件 方便以后独立，增加裁剪之类的功能
-  const AvatarView = ({ avatar }) => (
-    <Fragment>
-      <div className={styles.avatar}>
-        <img src={avatar} alt="avatar" />
-      </div>
-      <Upload fileList={[]} action="http://localhost:8011/uploadCasherImg"
-              onChange={handleChange}>
-        <div className={styles.button_view}>
-          <Button icon="upload">
-            <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-          </Button>
+  class AvatarView extends React.Component {
+    state = {
+      fileDownloadUri: '',
+    };
+
+    constructor(props) {
+      super(props);
+
+      console.log('%o', props);
+
+      this.state = {
+        fileDownloadUri: props.value,
+      };
+    }
+
+    onSuccess = file => {
+      this.setState({
+        fileDownloadUri: file.fileDownloadUri,
+      });
+      this.props.handleChange(file.fileDownloadUri);
+    };
+
+    render() {
+      const { fileDownloadUri } = this.state;
+      return (
+        // <Fragment>
+        <div className={styles.baseView}>
+          {/* <div className={styles.right}> */}
+          <div className={styles.avatar}>
+            <img src={fileDownloadUri || user} alt="avatar" />
+          </div>
+          <Upload
+            // fileList={[]}
+            action="http://localhost:8011/uploadCasherImg"
+            onSuccess={this.onSuccess}
+            showUploadList={false}
+            //         onChange={handleChange}
+            // {...this.uploaderProps}
+            ref="inner"
+            fileDownloadUri={fileDownloadUri}
+          >
+            <div className={styles.button_view}>
+              <Button icon="upload" style={{ textAlign: 'center' }}>
+                <FormattedMessage
+                  id="app.settings.basic.change-avatar"
+                  defaultMessage="Change avatar"
+                />
+              </Button>
+            </div>
+          </Upload>
         </div>
-      </Upload>
-    </Fragment>
-  );
+        // </div>
+        // </Fragment>
+      );
+    }
+  }
+  // const AvatarView = ({ avatar }) => (
+  //   <Fragment>
+  //     <div className={styles.avatar}>
+  //       <img src={avatar} alt="avatar" />
+  //     </div>
+  //     <Upload fileList={[]} action="http://localhost:8011/uploadCasherImg"
+  //             onChange={handleChange}>
+  //       <div className={styles.button_view}>
+  //         <Button icon="upload">
+  //           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+  //         </Button>
+  //       </div>
+  //     </Upload>
+  //   </Fragment>
+  // );
 
   return (
     <Modal
@@ -237,7 +305,9 @@ const CreateForm = Form.create()(props => {
       </FormItem>
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="照片">
-        <AvatarView avatar={{avatarUrl}} />
+        {form.getFieldDecorator('fPhoteurl', {
+          initialValue: fPhoteurl,
+        })(<AvatarView avatar={{ fPhoteurl }} handleChange={handleAvatarChange} />)}
       </FormItem>
 
       {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="保留">
@@ -664,6 +734,7 @@ export default class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fWid: record.fWid,
+        fMerchantid: record.fMerchantid,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
       callback: () => {
@@ -728,6 +799,7 @@ export default class TableList extends PureComponent {
   handleUpdate = (fields, record) => {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
+    console.log('handleUpdate:%o,%o', fields, record);
     dispatch({
       type: 'table/update',
       payload: {
