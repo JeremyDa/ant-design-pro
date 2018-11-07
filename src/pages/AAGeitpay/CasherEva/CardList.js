@@ -7,26 +7,50 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './CardList.less';
 
-@connect(({ list, loading }) => ({
-  list,
-  loading: loading.models.list,
+@connect(({ table, loading }) => ({
+  table,
+  loading: loading.models.table,
 }))
 class CardList extends PureComponent {
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'list/fetch',
-    //   payload: {
-    //     count: 8,
-    //   },
-    // });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'table/fetch',
+      payload: {
+        pageSize: 12,
+        currentPage: 1,
+        tradeCode: 'tcasher.selectByPrimaryKey',
+      },
+    });
   }
+
+  onChange = pageNumber => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'table/fetch',
+      payload: {
+        pageSize: 12,
+        currentPage: pageNumber,
+        tradeCode: 'tcasher.selectByPrimaryKey',
+      },
+    });
+  };
 
   render() {
     const {
-      list: { list },
+      table: { data },
       loading,
     } = this.props;
+
+    function reverse(item, index) {
+      return {
+        id: index,
+        title: item.fName,
+        avatar: item.fPhoteurl,
+      };
+    }
+
+    const list = data.list.map(reverse);
 
     const content = (
       <div className={styles.pageHeaderContent}>
@@ -60,79 +84,75 @@ class CardList extends PureComponent {
       </div>
     );
 
-    let data = [
-      {
-        id: 'fake-list-0',
-        owner: '付小小',
-        title: '玉伯',
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        cover: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-1',
-        owner: '曲丽丽',
-        title: '他山',
-        avatar: 'http://img.72qq.com/file/201603/29/21da82a916.jpg',
-        cover: 'http://img.72qq.com/file/201603/29/21da82a916.jpg',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-2',
-        owner: '林东东',
-        title: '偏右',
-        avatar: 'http://img.72qq.com/file/201603/29/b6f6928b15.jpg',
-        cover: 'http://img.72qq.com/file/201603/29/b6f6928b15.jpg',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-3',
-        owner: '周星星',
-        title: '周星星',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
-        cover: 'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-4',
-        owner: '吴加好',
-        title: 'Bootstrap',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png',
-        cover: 'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-5',
-        owner: '朱偏右',
-        title: 'React',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png',
-        cover: 'https://gw.alipayobjects.com/zos/rmsportal/iXjVmWVHbCJAyqvDxdtx.png',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-6',
-        owner: '鱼酱',
-        title: 'Vue',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png',
-        cover: 'https://gw.alipayobjects.com/zos/rmsportal/iZBVOIhGJiAnhplqjvZW.png',
-        description: '所属商户：国光',
-      },
-      {
-        id: 'fake-list-7',
-        owner: '乐哥',
-        title: 'Webpack',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png',
-        cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
-        description: '所属商户：国光',
-      },
-    ];
+    // const data = [
+    //   {
+    //     id: 'fake-list-0',
+    //     owner: '付小小',
+    //     title: '玉伯',
+    //     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    //     cover: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-1',
+    //     owner: '曲丽丽',
+    //     title: '他山',
+    //     avatar: 'http://img.72qq.com/file/201603/29/21da82a916.jpg',
+    //     cover: 'http://img.72qq.com/file/201603/29/21da82a916.jpg',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-2',
+    //     owner: '林东东',
+    //     title: '偏右',
+    //     avatar: 'http://img.72qq.com/file/201603/29/b6f6928b15.jpg',
+    //     cover: 'http://img.72qq.com/file/201603/29/b6f6928b15.jpg',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-3',
+    //     owner: '周星星',
+    //     title: '周星星',
+    //     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
+    //     cover: 'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-4',
+    //     owner: '吴加好',
+    //     title: 'Bootstrap',
+    //     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png',
+    //     cover: 'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-5',
+    //     owner: '朱偏右',
+    //     title: 'React',
+    //     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png',
+    //     cover: 'https://gw.alipayobjects.com/zos/rmsportal/iXjVmWVHbCJAyqvDxdtx.png',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-6',
+    //     owner: '鱼酱',
+    //     title: 'Vue',
+    //     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png',
+    //     cover: 'https://gw.alipayobjects.com/zos/rmsportal/iZBVOIhGJiAnhplqjvZW.png',
+    //     description: '所属商户：国光',
+    //   },
+    //   {
+    //     id: 'fake-list-7',
+    //     owner: '乐哥',
+    //     title: 'Webpack',
+    //     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png',
+    //     cover: 'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
+    //     description: '所属商户：国光',
+    //   },
+    // ];
 
     function onShowSizeChange(current, pageSize) {
       console.log(current, pageSize);
-    }
-
-    function onChange(pageNumber) {
-      console.log('Page: ', pageNumber);
     }
 
     return (
@@ -142,7 +162,7 @@ class CardList extends PureComponent {
             rowKey="id"
             loading={loading}
             grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
-            dataSource={['', ...data]}
+            dataSource={(list.length > 0 && ['', ...list]) || []}
             renderItem={item =>
               item ? (
                 <List.Item key={item.id}>
@@ -170,11 +190,9 @@ class CardList extends PureComponent {
           <div style={{ paddingBottom: '30px' }}>
             <Pagination
               className={styles.container}
-              showSizeChanger
-              onShowSizeChange={onShowSizeChange}
-              defaultCurrent={3}
-              total={500}
-              onChange={onChange}
+              defaultCurrent={1}
+              total={data.pagination.total}
+              onChange={this.onChange}
             />
           </div>
         </div>
