@@ -35,24 +35,27 @@ export default {
 
       return window.open(response.name);
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(add, payload);
+    *add({ payload, callback }, { select, call, put }) {
+      const pagination = yield select(state => state.table.data.pagination);
+      const response = yield call(add, { ...payload, ...pagination });
       yield put({
         type: 'save',
         payload: response,
       });
       if (callback) callback();
     },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(remove, payload);
+    *remove({ payload, callback }, { select, call, put }) {
+      const pagination = yield select(state => state.table.data.pagination);
+      const response = yield call(remove, { ...payload, ...pagination });
       yield put({
         type: 'save',
         payload: response,
       });
       if (callback) callback();
     },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(update, payload);
+    *update({ payload, callback }, { select, call, put }) {
+      const pagination = yield select(state => state.table.data.pagination);
+      const response = yield call(update, { ...payload, ...pagination });
       yield put({
         type: 'save',
         payload: response,
