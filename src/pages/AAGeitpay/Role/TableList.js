@@ -75,14 +75,14 @@ const CreateForm = Form.create()(props => {
   };
 
   const renderTree = (data,idx) =>data.map(item => {
-      if (!item.routes) {
+      if (!item.children) {
         return (
           <TreeNode title={item.namezh} key={item.id} />
         )
       } 
         return (
           <TreeNode title={item.namezh} key={item.id}>
-            {renderTree(item.routes)}
+            {renderTree(item.children)}
           </TreeNode>
         )
       
