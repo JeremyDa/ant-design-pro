@@ -172,6 +172,7 @@ export default class TableList extends PureComponent {
       payload: {
         tradeCode: tradeSpace + '.selectTree',
         type: 'menu',
+        closePagination: true,
       },
     });
   }
