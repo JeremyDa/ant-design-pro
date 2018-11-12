@@ -75,14 +75,14 @@ const CreateForm = Form.create()(props => {
   };
 
   const renderTree = (data,idx) =>data.map(item => {
-      if (!item.children) {
+      if (!item.routes) {
         return (
           <TreeNode title={item.namezh} key={item.id} />
         )
       } 
         return (
           <TreeNode title={item.namezh} key={item.id}>
-            {renderTree(item.children)}
+            {renderTree(item.routes)}
           </TreeNode>
         )
       
@@ -135,8 +135,8 @@ const CreateForm = Form.create()(props => {
           <FormItem labelCol={{ span: 5}} wrapperCol={{ span: 15 }} label="菜单">
             <Tree
               checkable
-              defaultExpandedKeys={[]}
-              defaultSelectedKeys={[]}
+              // defaultExpandedKeys={[]}
+              // defaultSelectedKeys={[]}
               defaultCheckedKeys={defaultCheckedKeys}
               onCheck={onCheck}
               defaultExpandAll
@@ -214,6 +214,7 @@ export default class TableList extends PureComponent {
       payload: {
         tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
         type: 'menu',
+        childName: 'routes',
       },
     });
 
