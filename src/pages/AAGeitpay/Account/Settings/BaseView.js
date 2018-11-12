@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { Form, Input, Upload, Select, Button } from 'antd';
 import { connect } from 'dva';
+import AvatarView from '../../Component/Avatar';
+
 import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
@@ -11,23 +13,28 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }) => (
-  <Fragment>
-    <div className={styles.avatar_title}>
-      <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload fileList={[]}>
-      <div className={styles.button_view}>
-        <Button icon="upload">
-          <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-        </Button>
-      </div>
-    </Upload>
-  </Fragment>
-);
+// const AvatarView = ({ avatar }) => (
+//   <Fragment>
+//     <div className={styles.avatar_title}>
+//       <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
+//     </div>
+//     <div className={styles.avatar}>
+//       <img src={avatar} alt="avatar" />
+//     </div>
+//     <Upload
+//       action="http://localhost:8011/uploadCasherImg"
+//       onSuccess={this.onSuccess}
+//       showUploadList={false}
+//       fileDownloadUri={fileDownloadUri}
+//     >
+//       <div className={styles.button_view}>
+//         <Button icon="upload">
+//           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
+//         </Button>
+//       </div>
+//     </Upload>
+//   </Fragment>
+// );
 
 const validatorGeographic = (rule, value, callback) => {
   const { province, city } = value;
@@ -56,8 +63,12 @@ const validatorPhone = (rule, value, callback) => {
 }))
 @Form.create()
 class BaseView extends Component {
+  state = {
+    fPhotourl: '',
+  };
+
   componentDidMount() {
-    this.setBaseInfo();
+    // this.setBaseInfo();
   }
 
   setBaseInfo = () => {
@@ -78,6 +89,41 @@ class BaseView extends Component {
     return url;
   }
 
+  handleSubmit = () => {
+    const {
+      dispatch,
+      form,
+      currentUser: { userid },
+    } = this.props;
+    const { fPhotourl } = this.state;
+    dispatch({
+      type: 'table/update',
+      payload: {
+        tradeCode: 'tuser.updateByPrimaryKeySelective',
+        fPhotourl,
+        fId: userid,
+        fName: form.getFieldValue('name'),
+        fTel: form.getFieldValue('phone'),
+      },
+      callback: () => {
+        this.currentUser();
+      },
+    });
+  };
+
+  currentUser = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'user/fetchCurrent',
+    });
+  };
+
+  handleAvatarChange = value => {
+    this.setState({
+      fPhotourl: value,
+    });
+  };
+
   getViewDom = ref => {
     this.view = ref;
   };
@@ -85,6 +131,7 @@ class BaseView extends Component {
   render() {
     const {
       form: { getFieldDecorator },
+      currentUser,
     } = this.props;
 
     const prefixSelector = getFieldDecorator('prefix', {
@@ -113,6 +160,7 @@ class BaseView extends Component {
             </FormItem> */}
             <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
               {getFieldDecorator('name', {
+                initialValue: currentUser.name,
                 rules: [
                   {
                     required: true,
@@ -186,6 +234,7 @@ class BaseView extends Component {
             </FormItem> */}
             <FormItem label={formatMessage({ id: 'app.settings.basic.phone' })}>
               {getFieldDecorator('phone', {
+                initialValue: currentUser.phone,
                 rules: [
                   {
                     required: true,
@@ -195,7 +244,7 @@ class BaseView extends Component {
                 ],
               })(<Input type="number" style={{ width: '100%' }} />)}
             </FormItem>
-            <Button type="primary" onClick={{}}>
+            <Button type="primary" onClick={this.handleSubmit}>
               <FormattedMessage
                 id="app.settings.basic.update"
                 defaultMessage="Update Information"
@@ -204,7 +253,7 @@ class BaseView extends Component {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+          <AvatarView avatar={this.getAvatarURL()} handleChange={this.handleAvatarChange} />
         </div>
       </div>
     );
