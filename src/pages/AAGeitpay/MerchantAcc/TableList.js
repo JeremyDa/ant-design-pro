@@ -26,7 +26,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -58,7 +57,6 @@ const CreateForm = Form.create()(props => {
 
     // to update: value to text的数据源，这里是表名
     T_THIRD,
-    
   } = props;
 
   // to update: 字段名，用于双向绑定数据
@@ -97,7 +95,6 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方名称">
-        
         {form.getFieldDecorator(
           'fThirdid',
           // f_SELECT && { initialValue: `${f_SELECT}`,
@@ -106,16 +103,9 @@ const CreateForm = Form.create()(props => {
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}>
-            {T_THIRD
-              ? T_THIRD.tv.map(d => (
-                  
-
-                <Option value={d.value}>{d.text}</Option>
-                ))
-              : ''}
+            {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
           </Select>
         )}
-
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方ID">
         {form.getFieldDecorator('fAppid', {
@@ -129,8 +119,6 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入第三方商户号' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
-      
 
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="备注">
         {form.getFieldDecorator('fMem', {
@@ -344,10 +332,17 @@ class UpdateForm extends PureComponent {
 }
 
 const InTable = () => {
-  return(
+  return (
     <div>
-      <span>支付类型(已启用): </span><Tag>支付宝商户扫码</Tag><Tag>EPOS刷卡</Tag><Tag>微信商户被扫</Tag><br />
-      <span>渠道类型(已启用): </span><Tag>自助终端</Tag><Tag>人工窗口</Tag><Tag>手机APP</Tag>
+      <span>支付类型(已启用): </span>
+      <Tag>支付宝商户扫码</Tag>
+      <Tag>EPOS刷卡</Tag>
+      <Tag>微信商户被扫</Tag>
+      <br />
+      <span>渠道类型(已启用): </span>
+      <Tag>自助终端</Tag>
+      <Tag>人工窗口</Tag>
+      <Tag>手机APP</Tag>
     </div>
   );
 };
@@ -361,7 +356,7 @@ const InTable = () => {
 export default class TableList extends PureComponent {
   getColumns = table => {
     // to update: 列名
-    const { T_THIRD,T_MERCHANT, T_PAY_TYPE } = table;
+    const { T_THIRD, T_MERCHANT, T_PAY_TYPE } = table;
     return [
       {
         title: '商户名称',
@@ -460,17 +455,17 @@ export default class TableList extends PureComponent {
     });
 
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'F_MERCHANTID',
         value: 'F_PAYTYPE',
-        table: 'T_MERCHANT_PAYMODEL', 
+        table: 'T_MERCHANT_PAYMODEL',
       },
     });
 
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'F_TYPE',
@@ -479,19 +474,18 @@ export default class TableList extends PureComponent {
       },
     });
 
-
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'f_merchantid',
         value: 'f_chaneltype',
-        table: 't_merchant_chanel', 
+        table: 't_merchant_chanel',
       },
     });
 
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'F_TYPE',
@@ -500,12 +494,10 @@ export default class TableList extends PureComponent {
       },
     });
 
-    
-
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   }
@@ -534,7 +526,7 @@ export default class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -549,7 +541,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -572,7 +564,7 @@ export default class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+            tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -595,7 +587,7 @@ export default class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -615,7 +607,7 @@ export default class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fMerchantid: record.fMerchantid,
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -655,7 +647,7 @@ export default class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+          tradeCode: `${tradeSpace}.selectByPrimaryKey`,
         },
       });
     });
@@ -685,11 +677,10 @@ export default class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
+        tradeCode: `${tradeSpace}.updateByPrimaryKeySelective`,
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -710,11 +701,10 @@ export default class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.insertSelective`,
+        tradeCode: `${tradeSpace}.insertSelective`,
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -909,7 +899,6 @@ export default class TableList extends PureComponent {
           // to update: 中文翻译
           // T_INDUSTRY={table.T_INDUSTRY}
           T_THIRD={table.T_THIRD}
-
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
           record={(addOrUpdate === 2 && tableRow) || {}}

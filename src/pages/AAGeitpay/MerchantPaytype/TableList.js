@@ -27,7 +27,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -46,7 +45,7 @@ const EditableFormRow = Form.create()(EditableRow);
 class EditableCell extends React.Component {
   state = {
     editing: false,
-  }
+  };
 
   componentDidMount() {
     if (this.props.editable) {
@@ -67,14 +66,14 @@ class EditableCell extends React.Component {
         this.input.focus();
       }
     });
-  }
+  };
 
-  handleClickOutside = (e) => {
+  handleClickOutside = e => {
     const { editing } = this.state;
     if (editing && this.cell !== e.target && !this.cell.contains(e.target)) {
       this.save();
     }
-  }
+  };
 
   save = () => {
     const { record, handleSave } = this.props;
@@ -85,54 +84,43 @@ class EditableCell extends React.Component {
       this.toggleEdit();
       handleSave({ ...record, ...values });
     });
-  }
+  };
 
   render() {
     const { editing } = this.state;
-    const {
-      editable,
-      dataIndex,
-      title,
-      record,
-      index,
-      handleSave,
-      ...restProps
-    } = this.props;
+    const { editable, dataIndex, title, record, index, handleSave, ...restProps } = this.props;
     return (
       <td ref={node => (this.cell = node)} {...restProps}>
         {editable ? (
           <EditableContext.Consumer>
-            {(form) => {
+            {form => {
               this.form = form;
-              return (
-                editing ? (
-                  <FormItem style={{ margin: 0 }}>
-                    {form.getFieldDecorator(dataIndex, {
-                      rules: [{
+              return editing ? (
+                <FormItem style={{ margin: 0 }}>
+                  {form.getFieldDecorator(dataIndex, {
+                    rules: [
+                      {
                         required: true,
                         message: `${title} is required.`,
-                      }],
-                      initialValue: record[dataIndex],
-                    })(
-                      <Input
-                        ref={node => (this.input = node)}
-                        onPressEnter={this.save}
-                      />
-                    )}
-                  </FormItem>
-                ) : (
-                  <div
-                    className="editable-cell-value-wrap"
-                    style={{ paddingRight: 24 }}
-                    onClick={this.toggleEdit}
-                  >
-                    {restProps.children}
-                  </div>
-                )
+                      },
+                    ],
+                    initialValue: record[dataIndex],
+                  })(<Input ref={node => (this.input = node)} onPressEnter={this.save} />)}
+                </FormItem>
+              ) : (
+                <div
+                  className="editable-cell-value-wrap"
+                  style={{ paddingRight: 24 }}
+                  onClick={this.toggleEdit}
+                >
+                  {restProps.children}
+                </div>
               );
             }}
           </EditableContext.Consumer>
-        ) : restProps.children}
+        ) : (
+          restProps.children
+        )}
       </td>
     );
   }
@@ -141,52 +129,57 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props);
-    this.columns = [{
-      title: 'name',
-      dataIndex: 'name',
-      width: '30%',
-      editable: true,
-    }, {
-      title: 'age',
-      dataIndex: 'age',
-    }, {
-      title: 'address',
-      dataIndex: 'address',
-    }, {
-      title: 'operation',
-      dataIndex: 'operation',
-      render: (text, record) => {
-        return (
-          this.state.dataSource.length >= 1
-            ? (
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <a href="javascript:;">Delete</a>
-              </Popconfirm>
-            ) : null
-        );
+    this.columns = [
+      {
+        title: 'name',
+        dataIndex: 'name',
+        width: '30%',
+        editable: true,
       },
-    }];
+      {
+        title: 'age',
+        dataIndex: 'age',
+      },
+      {
+        title: 'address',
+        dataIndex: 'address',
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        render: (text, record) => {
+          return this.state.dataSource.length >= 1 ? (
+            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+              <a href="javascript:;">Delete</a>
+            </Popconfirm>
+          ) : null;
+        },
+      },
+    ];
 
     this.state = {
-      dataSource: [{
-        key: '0',
-        name: 'Edward King 0',
-        age: '32',
-        address: 'London, Park Lane no. 0',
-      }, {
-        key: '1',
-        name: 'Edward King 1',
-        age: '32',
-        address: 'London, Park Lane no. 1',
-      }],
+      dataSource: [
+        {
+          key: '0',
+          name: 'Edward King 0',
+          age: '32',
+          address: 'London, Park Lane no. 0',
+        },
+        {
+          key: '1',
+          name: 'Edward King 1',
+          age: '32',
+          address: 'London, Park Lane no. 1',
+        },
+      ],
       count: 2,
     };
   }
 
-  handleDelete = (key) => {
+  handleDelete = key => {
     const dataSource = [...this.state.dataSource];
     this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
-  }
+  };
 
   handleAdd = () => {
     const { count, dataSource } = this.state;
@@ -200,9 +193,9 @@ class EditableTable extends React.Component {
       dataSource: [...dataSource, newData],
       count: count + 1,
     });
-  }
+  };
 
-  handleSave = (row) => {
+  handleSave = row => {
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
@@ -211,7 +204,7 @@ class EditableTable extends React.Component {
       ...row,
     });
     this.setState({ dataSource: newData });
-  }
+  };
 
   render() {
     const { dataSource } = this.state;
@@ -221,7 +214,7 @@ class EditableTable extends React.Component {
         cell: EditableCell,
       },
     };
-    const columns = this.columns.map((col) => {
+    const columns = this.columns.map(col => {
       if (!col.editable) {
         return col;
       }
@@ -258,11 +251,10 @@ class EditableTable extends React.Component {
   table,
   loading: loading.models.table,
 }))
-
 export default class TableList extends PureComponent {
-  getColumns = (table,checkUse) => {
+  getColumns = (table, checkUse) => {
     // to update: 列名
-    const {T_INDUSTRY, T_CITY,T_PAY_TYPE,T_MERCHANT}  = table;
+    const { T_INDUSTRY, T_CITY, T_PAY_TYPE, T_MERCHANT } = table;
 
     return [
       {
@@ -286,9 +278,9 @@ export default class TableList extends PureComponent {
       {
         title: '开通状态',
         dataIndex: 'fUse',
-        render(val,record) {
-          const ischeck = (val==='1'?true:false);
-          return <Switch checked={ischeck} onChange={(checked) => checkUse(checked,record)} />;
+        render(val, record) {
+          const ischeck = val === '1' ? true : false;
+          return <Switch checked={ischeck} onChange={checked => checkUse(checked, record)} />;
         },
       },
     ];
@@ -312,7 +304,7 @@ export default class TableList extends PureComponent {
     const { tradeSpace } = this.state;
 
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'F_TYPE',
@@ -519,7 +511,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -542,28 +533,25 @@ export default class TableList extends PureComponent {
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.insertSelective',
         // toList: 'fChanneltype,fPaytype',
-        returnSelect: tradeSpace+'.selectByPrimaryKey',
+        returnSelect: tradeSpace + '.selectByPrimaryKey',
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
-  checkUse = (checked,record) => {
+  checkUse = (checked, record) => {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
     dispatch({
       type: 'table/update',
       payload: {
         ...record,
-        fUse: checked?1:0,
+        fUse: checked ? 1 : 0,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
       },
     });
-
-    message.success('更新成功');
   };
 
   // handleUpdate = fields => {
@@ -720,7 +708,7 @@ export default class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              columns={this.getColumns(table,this.checkUse)}
+              columns={this.getColumns(table, this.checkUse)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
               paginationBool={false}

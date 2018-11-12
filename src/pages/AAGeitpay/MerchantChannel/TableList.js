@@ -26,7 +26,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -136,7 +135,6 @@ const CreateForm = Form.create()(props => {
         </Select>
         )}
       </FormItem> */}
-
     </Modal>
   );
 });
@@ -349,9 +347,9 @@ class UpdateForm extends PureComponent {
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-  getColumns = (table,checkUse) => {
+  getColumns = (table, checkUse) => {
     // to update: 列名
-    const {T_INDUSTRY, T_CITY,T_CHANEL_TYPE,T_MERCHANT}  = table;
+    const { T_INDUSTRY, T_CITY, T_CHANEL_TYPE, T_MERCHANT } = table;
 
     return [
       {
@@ -371,9 +369,9 @@ export default class TableList extends PureComponent {
       {
         title: '开通状态',
         dataIndex: 'fUse',
-        render(val,record) {
-          const ischeck = (val==='1'?true:false);
-          return <Switch checked={ischeck} onChange={(checked) => checkUse(checked,record)} />;
+        render(val, record) {
+          const ischeck = val === '1' ? true : false;
+          return <Switch checked={ischeck} onChange={checked => checkUse(checked, record)} />;
         },
       },
     ];
@@ -397,7 +395,7 @@ export default class TableList extends PureComponent {
     const { tradeSpace } = this.state;
 
     dispatch({
-      type:'table/fetchKV',
+      type: 'table/fetchKV',
       payload: {
         tradeCode: 'selectKeyValue',
         key: 'F_TYPE',
@@ -604,7 +602,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -627,28 +624,25 @@ export default class TableList extends PureComponent {
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.insertSelective',
         // toList: 'fChanneltype,fPaytype',
-        returnSelect: tradeSpace+'.selectByPrimaryKey',
+        returnSelect: tradeSpace + '.selectByPrimaryKey',
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
-  checkUse = (checked,record) => {
+  checkUse = (checked, record) => {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
     dispatch({
       type: 'table/update',
       payload: {
         ...record,
-        fUse: checked?1:0,
+        fUse: checked ? 1 : 0,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
       },
     });
-
-    message.success('更新成功');
   };
 
   // handleUpdate = fields => {
@@ -805,7 +799,7 @@ export default class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              columns={this.getColumns(table,this.checkUse)}
+              columns={this.getColumns(table, this.checkUse)}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
               paginationBool={false}
@@ -817,9 +811,8 @@ export default class TableList extends PureComponent {
           T_INDUSTRY={table.T_INDUSTRY}
           T_CITY={table.T_CITY}
           T_PAY_TYPE={table.T_PAY_TYPE}
-          T_CHANEL_TYPE = {table.T_CHANEL_TYPE}
-          T_MERCHANT = {table.T_MERCHANT}
-
+          T_CHANEL_TYPE={table.T_CHANEL_TYPE}
+          T_MERCHANT={table.T_MERCHANT}
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
           record={(addOrUpdate === 2 && tableRow) || {}}

@@ -633,7 +633,6 @@ class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -658,7 +657,6 @@ class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 

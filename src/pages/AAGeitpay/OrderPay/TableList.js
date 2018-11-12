@@ -154,13 +154,16 @@ class TableList extends PureComponent {
       {
         title: '入账/出账',
         dataIndex: 'fType',
-        filters: [{
-          value: '1',
-          text: '入账',
-        }, {
-          value: '-1',
-          text: '出账',
-        }],
+        filters: [
+          {
+            value: '1',
+            text: '入账',
+          },
+          {
+            value: '-1',
+            text: '出账',
+          },
+        ],
         render(val) {
           return <Tag color={typeFlagColor[val]}>{typeFlag[val]}</Tag>;
         },
@@ -566,7 +569,6 @@ class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -591,7 +593,6 @@ class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 

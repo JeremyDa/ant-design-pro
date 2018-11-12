@@ -300,7 +300,6 @@ export default class TableList extends PureComponent {
         render(val) {
           return <span>{T_MERCHANT ? T_MERCHANT.kv[val] : ''}</span>;
         },
-
       },
       {
         title: '订单号',
@@ -383,30 +382,31 @@ export default class TableList extends PureComponent {
       {
         title: '订单状态',
         dataIndex: 'fStatus',
-        filters: [{
-          value: '0',
-          text: '待创建',
-        },
-        {
-          value: '1',
-          text: '未支付',
-        },
-        {
-          value: '2',
-          text: '正在支付',
-        },
-        {
-          value: '3',
-          text: '已支付',
-        },
-        {
-          value: '4',
-          text: '已关闭',
-        },
-        {
-          value: '5',
-          text: '已退款',
-        }
+        filters: [
+          {
+            value: '0',
+            text: '待创建',
+          },
+          {
+            value: '1',
+            text: '未支付',
+          },
+          {
+            value: '2',
+            text: '正在支付',
+          },
+          {
+            value: '3',
+            text: '已支付',
+          },
+          {
+            value: '4',
+            text: '已关闭',
+          },
+          {
+            value: '5',
+            text: '已退款',
+          },
         ],
         render(val) {
           return <Tag>{orderStatus[val]}</Tag>;
@@ -468,8 +468,6 @@ export default class TableList extends PureComponent {
       },
     });
   }
-
-
 
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -630,7 +628,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -655,7 +652,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -1037,7 +1033,7 @@ export default class TableList extends PureComponent {
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
               scroll={{ x: 2100 }}
-            //  expandedRowRender={renderExpand}
+              //  expandedRowRender={renderExpand}
             />
           </div>
         </Card>

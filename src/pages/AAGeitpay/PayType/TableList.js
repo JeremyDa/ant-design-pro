@@ -589,7 +589,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -614,7 +613,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 

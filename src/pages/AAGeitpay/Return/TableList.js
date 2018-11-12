@@ -451,8 +451,8 @@ export default class TableList extends PureComponent {
     selectedRowKeys == 0
       ? message.error('请选择退款的订单号')
       : this.setState({
-        returnVisible: true,
-      });
+          returnVisible: true,
+        });
   };
 
   handleReturn1 = () => {
@@ -550,10 +550,6 @@ export default class TableList extends PureComponent {
           returnSelect: tradeSpace + '.selectOrderAndPay',
         },
         callback: () => {
-          // if (!this.props.table.rspMsg) {
-          // message.warning('退款申请发起成功');
-          // }
-
           dispatch({
             type: 'table/update',
             payload: {
@@ -654,7 +650,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -679,7 +674,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 

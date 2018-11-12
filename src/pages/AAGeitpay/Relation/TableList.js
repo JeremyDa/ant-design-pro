@@ -114,13 +114,16 @@ export default class TableList extends PureComponent {
       {
         title: '支付/退款',
         dataIndex: 'fTranstype',
-        filters: [{
-          value: '1',
-          text: '支付',
-        }, {
-          value: '-1',
-          text: '退款',
-        }],
+        filters: [
+          {
+            value: '1',
+            text: '支付',
+          },
+          {
+            value: '-1',
+            text: '退款',
+          },
+        ],
         render(val) {
           return <Tag color={payOrReturnColor[val]}>{payOrReturn[val]}</Tag>;
         },
@@ -378,7 +381,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -403,7 +405,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 

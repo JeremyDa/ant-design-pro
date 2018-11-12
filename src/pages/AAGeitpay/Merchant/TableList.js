@@ -699,7 +699,6 @@ export default class TableList extends PureComponent {
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -724,9 +723,7 @@ export default class TableList extends PureComponent {
         // toList: 'fChanneltype,fPaytype',
         returnSelect: tradeSpace + '.selectByPrimaryKey',
       },
-      callback: () => {
-        message.success('添加成功');
-      },
+      callback: () => {},
     });
     this.handleModalVisible();
   };

@@ -25,7 +25,6 @@ import {
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -84,17 +83,18 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title={(addOrUpdate === 1 && '新建') || (index === 1 && '请求参数') || (index === 2 && '执行sql')}
+      title={
+        (addOrUpdate === 1 && '新建') || (index === 1 && '请求参数') || (index === 2 && '执行sql')
+      }
       visible={modalVisible}
       // onOk={okHandle}
       onOk={() => handleModalVisible()}
       onCancel={() => handleModalVisible()}
-      width={index ===1 && 500 || index=== 2 && 800}
+      width={(index === 1 && 500) || (index === 2 && 800)}
     >
       {/* {array.forEach((item) => <p>{item}</p>)} */}
-      {index === 1 && array.map((item,index)=> <p>{item}</p>)}
-      {index === 2 && sqlArray.map((item,index)=> <p>{item}</p>)}
-
+      {index === 1 && array.map((item, index) => <p>{item}</p>)}
+      {index === 2 && sqlArray.map((item, index) => <p>{item}</p>)}
     </Modal>
   );
 });
@@ -307,8 +307,6 @@ class UpdateForm extends PureComponent {
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-  
-
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -329,7 +327,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   }
@@ -358,7 +356,7 @@ export default class TableList extends PureComponent {
         title: 'sql',
         render: (text, record) => (
           <Fragment>
-            <a onClick={() => this.handleModalUpdate(true, record ,2)}>查看</a>
+            <a onClick={() => this.handleModalUpdate(true, record, 2)}>查看</a>
           </Fragment>
         ),
       },
@@ -397,7 +395,7 @@ export default class TableList extends PureComponent {
       type: 'table/fetch',
       payload: {
         ...params,
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -412,7 +410,7 @@ export default class TableList extends PureComponent {
     dispatch({
       type: 'table/fetch',
       payload: {
-        tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+        tradeCode: `${tradeSpace}.selectByPrimaryKey`,
       },
     });
   };
@@ -435,7 +433,7 @@ export default class TableList extends PureComponent {
           type: 'table/remove',
           payload: {
             fTypeList: selectedRows.map(row => row.fType).join(','),
-            tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+            tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
           },
           callback: () => {
             this.setState({
@@ -458,7 +456,7 @@ export default class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         fErrnoList: selectedRows.map(row => row.fErrno).join(','),
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -478,7 +476,7 @@ export default class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fType: record.fType,
-        tradeCode: `${tradeSpace  }.deleteByPrimaryKey`,
+        tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
       callback: () => {
         this.setState({
@@ -518,7 +516,7 @@ export default class TableList extends PureComponent {
         type: 'table/fetch',
         payload: {
           ...values,
-          tradeCode: `${tradeSpace  }.selectByPrimaryKey`,
+          tradeCode: `${tradeSpace}.selectByPrimaryKey`,
         },
       });
     });
@@ -549,11 +547,10 @@ export default class TableList extends PureComponent {
         ...record,
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.updateByPrimaryKeySelective`,
+        tradeCode: `${tradeSpace}.updateByPrimaryKeySelective`,
       },
     });
 
-    message.success('更新成功');
     this.setState({
       modalVisible: false,
     });
@@ -574,11 +571,10 @@ export default class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        tradeCode: `${tradeSpace  }.insertSelective`,
+        tradeCode: `${tradeSpace}.insertSelective`,
       },
     });
 
-    message.success('添加成功');
     this.handleModalVisible();
   };
 
