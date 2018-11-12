@@ -77,26 +77,28 @@ export default class TableList extends PureComponent {
               <Bar height={350} title="销售额趋势" data={table[2]} style={{ float: 'left' }} />
             </Col>
             <Col span={12} sm={12}>
-              <Pie
-                tooltip={false}
-                animate={false}
-                inner={0.55}
-                margin={[0, 0, 0, 0]}
-                height={320}
-                hasLegend
-                title="销售额"
-                subTitle="销售额"
-                padding={10}
-                total={() => (
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: yuan(table[1].reduce((pre, now) => now.y + pre, 0)),
-                    }}
-                  />
-                )}
-                data={table[1]}
-                valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
-              />
+              <div style={{ marginTop: 20 }}>
+                <Pie
+                  tooltip={false}
+                  animate={false}
+                  inner={0.55}
+                  margin={[0, 0, 0, 0]}
+                  height={320}
+                  hasLegend
+                  title="销售额"
+                  subTitle="销售额"
+                  padding={10}
+                  total={() => (
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: yuan(table[1].reduce((pre, now) => now.y + pre, 0)),
+                      }}
+                    />
+                  )}
+                  data={table[1]}
+                  valueFormat={val => <span dangerouslySetInnerHTML={{ __html: yuan(val) }} />}
+                />
+              </div>
             </Col>
           </Row>
         </Card>
