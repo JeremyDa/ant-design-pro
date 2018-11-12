@@ -60,7 +60,7 @@ const CreateForm = Form.create()(props => {
   } = props;
 
   // to update: 字段名，用于双向绑定数据
-  const { fErrno, fErrmsg } = record;
+  const { id, name, path, icon, component, redirect, namezh } = record;
 
   const getMDate = date => {
     if (date) return moment(date);
@@ -71,7 +71,7 @@ const CreateForm = Form.create()(props => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      if (addOrUpdate === 1) handleAdd(fieldsValue);
+      if (addOrUpdate === 1) handleAdd(fieldsValue, record);
       if (addOrUpdate === 2) handleUpdate(fieldsValue, record);
     });
   };
@@ -84,19 +84,40 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="错误码">
-        {form.getFieldDecorator('fErrno', {
-          initialValue: fErrno,
-          rules: [{ required: true, message: '请输入错误码' }, { max: 4, message: '不超过4位' }],
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单">
+        {form.getFieldDecorator('name', {
+          initialValue: name,
+
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="错误描述">
-        {form.getFieldDecorator('fErrmsg', {
-          initialValue: fErrmsg,
-          rules: [
-            { required: true, message: '请输入错误描述' },
-            { max: 33, message: '不超过33位' },
-          ],
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路径">
+        {form.getFieldDecorator('path', {
+          initialValue: path,
+
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图标">
+        {form.getFieldDecorator('icon', {
+          initialValue: icon,
+
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="组件">
+        {form.getFieldDecorator('component', {
+          initialValue: component,
+
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="重定向">
+        {form.getFieldDecorator('redirect', {
+          initialValue: redirect,
+
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="中文名称">
+        {form.getFieldDecorator('namezh', {
+          initialValue: namezh,
+
         })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
@@ -133,12 +154,21 @@ export default class TableList extends PureComponent {
         title: '重定向',
         dataIndex: 'redirect',
       },
+      // {
+      //   title: '添加子菜单',
+      //   // render: (text, record) => (
+      //   //   <Fragment>
+      //   //     <a onClick={() => this.handleModalUpdate(true, record)}>添加子菜单</a>
+      //   //   </Fragment>
+      //   // ),
+      // },
       {
         title: '操作',
         render: (text, record) => (
           <Fragment>
+            <a onClick={() => this.handleModalUpdate(true, record)}>添加子菜单</a>
+            <Divider type="vertical" />
             <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
-
             <Divider type="vertical" />
 
             <Popconfirm title="确认删除吗?" onConfirm={this.handleDelete.bind(null, record)}>
@@ -173,6 +203,7 @@ export default class TableList extends PureComponent {
         tradeCode: tradeSpace + '.selectTree',
         type: 'menu',
         closePagination: true,
+        childName: 'children',
       },
     });
   }
@@ -286,12 +317,22 @@ export default class TableList extends PureComponent {
       type: 'table/remove',
       payload: {
         // to update: set primarykey
-        fErrno: record.fErrno,
+        id: record.id,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
+        returnSelect: 'null'
       },
       callback: () => {
         this.setState({
           selectedRows: [],
+        });
+        dispatch({
+          type: 'table/fetch',
+          payload: {
+            tradeCode: tradeSpace + '.selectTree',
+            type: 'menu',
+            closePagination: true,
+            childName: 'children',
+          },
         });
       },
     });
@@ -335,14 +376,17 @@ export default class TableList extends PureComponent {
     });
   };
 
-  handleModalVisible = flag => {
+  handleModalVisible = (flag, tableRow) => {
+    console.log("Add:", tableRow);
     this.setState({
       modalVisible: !!flag,
+      tableRow: tableRow,
       addOrUpdate: 1,
     });
   };
 
   handleModalUpdate = (flag, tableRow) => {
+    console.log("Update:", tableRow);
     this.setState({
       modalVisible: !!flag,
       tableRow: tableRow,
@@ -350,9 +394,12 @@ export default class TableList extends PureComponent {
     });
   };
 
+
+
   handleUpdate = (fields, record) => {
     const { dispatch } = this.props;
     const { tradeSpace } = this.state;
+    console.log("++++:", record);
     dispatch({
       type: 'table/update',
       payload: {
@@ -361,7 +408,19 @@ export default class TableList extends PureComponent {
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         // to update:tradeCode更新
         tradeCode: tradeSpace + '.updateByPrimaryKeySelective',
+        returnSelect: 'null'
       },
+      callback: () => {
+        dispatch({
+          type: 'table/fetch',
+          payload: {
+            tradeCode: tradeSpace + '.selectTree',
+            type: 'menu',
+            closePagination: true,
+            childName: 'children',
+          },
+        });
+      }
     });
 
     this.setState({
@@ -369,27 +428,41 @@ export default class TableList extends PureComponent {
     });
   };
 
+  handleAdd = (fields, record) => {
+    const { dispatch } = this.props;
+    const { tradeSpace } = this.state;
+    console.log("++++:::", record);
+    dispatch({
+      type: 'table/add',
+      payload: {
+        parentid: record.id,
+        ...fields,
+        // f_DATE: fields.f_DATE.format('YYYYMMDD'),
+        // to update:tradeCode更新
+        tradeCode: tradeSpace + '.insertSelective',
+        returnSelect: 'null'
+      },
+      callback: () => {
+        dispatch({
+          type: 'table/fetch',
+          payload: {
+            tradeCode: tradeSpace + '.selectTree',
+            type: 'menu',
+            closePagination: true,
+            childName: 'children',
+          },
+        });
+      }
+    });
+
+    this.handleModalVisible();
+  };
+
   handleUpdateModalVisible = (flag, record) => {
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
     });
-  };
-
-  handleAdd = fields => {
-    const { dispatch } = this.props;
-    const { tradeSpace } = this.state;
-    dispatch({
-      type: 'table/add',
-      payload: {
-        ...fields,
-        // f_DATE: fields.f_DATE.format('YYYYMMDD'),
-        // to update:tradeCode更新
-        tradeCode: tradeSpace + '.insertSelective',
-      },
-    });
-
-    this.handleModalVisible();
   };
 
   // handleUpdate = fields => {
@@ -551,6 +624,8 @@ export default class TableList extends PureComponent {
         title: '操作',
         render: (text, record) => (
           <Fragment>
+            <a onClick={() => this.handleModalVisible(true, record)}>添加子菜单</a>
+            <Divider type="vertical" />
             <a onClick={() => this.handleModalUpdate(true, record)}>更新</a>
 
             <Divider type="vertical" />
@@ -812,7 +887,7 @@ export default class TableList extends PureComponent {
 
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
-          record={(addOrUpdate === 2 && tableRow) || {}}
+          record={(tableRow) || {}}
           {...parentMethods}
           modalVisible={modalVisible}
         />
