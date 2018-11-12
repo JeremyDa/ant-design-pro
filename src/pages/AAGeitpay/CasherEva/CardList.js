@@ -4,6 +4,7 @@ import { Card, Button, Icon, List, Rate, Pagination } from 'antd';
 
 import Ellipsis from '@/components/Ellipsis';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import user from '../../../../public/user.svg';
 
 import styles from './CardList.less';
 
@@ -168,7 +169,7 @@ class CardList extends PureComponent {
                 <List.Item key={item.id}>
                   <Card hoverable className={styles.card}>
                     <Card.Meta
-                      avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
+                      avatar={<img alt="" className={styles.cardAvatar} src={item.avatar || user} />}
                       title={<a>{item.title}</a>}
                       description={
                         <Ellipsis className={styles.item} lines={3}>
