@@ -85,7 +85,7 @@ const CreateForm = Form.create()(props => {
     >
       {/* // to update: form表单内容，修改字段名称 */}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="第三方">
         {form.getFieldDecorator(
           'fThirdid',
           // f_SELECT && { initialValue: `${f_SELECT}`,
@@ -101,14 +101,14 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
         )}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方交易状态">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="第三方交易状态">
         {form.getFieldDecorator('f3state', {
           initialValue: f3state,
           rules: [
@@ -118,7 +118,7 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="响应描述">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="响应描述">
         {form.getFieldDecorator('fDisc', {
           initialValue: fDisc,
           rules: [
@@ -128,7 +128,7 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="平台响应描述">
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 15 }} label="平台响应描述">
         {form.getFieldDecorator(
           'fCode',
           // f_SELECT && { initialValue: `${f_SELECT}`,
@@ -144,7 +144,7 @@ const CreateForm = Form.create()(props => {
                   //   {d.text}
                   // </Option>
 
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -560,11 +560,6 @@ class TableList extends PureComponent {
         fThirdid: record.fThirdid,
         f3state: record.f3state,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };

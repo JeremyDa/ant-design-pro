@@ -84,18 +84,11 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      {addOrUpdate === 2 ? (
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="id">
-          {form.getFieldDecorator('fId', {
-            initialValue: fId,
-          })(<Input placeholder="请输入" disabled="true" />)}
-        </FormItem>
-      ) : null}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
         {form.getFieldDecorator('fName', {
           initialValue: fName,
           rules: [{ required: true, message: '请输入姓名' }, { max: 10, message: '不超过10位' }],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)}  />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色">
         {form.getFieldDecorator(
@@ -111,7 +104,7 @@ const CreateForm = Form.create()(props => {
                   // <Option key={d.value} title={d.text}>
                   //   {d.text}
                   // </Option>
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -131,7 +124,7 @@ const CreateForm = Form.create()(props => {
                   // <Option key={d.value} title={d.text}>
                   //   {d.text}
                   // </Option>
-                  <Option value={d.value}>{d.text}</Option>
+                <Option value={d.value}>{d.text}</Option>
                 ))
               : ''}
           </Select>
@@ -364,10 +357,6 @@ class TableList extends PureComponent {
     const { T_ROLE, T_MERCHANT } = table;
     return [
       {
-        title: 'id',
-        dataIndex: 'fId',
-      },
-      {
         title: '姓名',
         dataIndex: 'fName',
         sorter: true,
@@ -564,11 +553,6 @@ class TableList extends PureComponent {
         fId: record.fId,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
@@ -656,6 +640,7 @@ class TableList extends PureComponent {
       type: 'table/add',
       payload: {
         ...fields,
+        fPassword: 'bb5a7ce6f4d105233b26d13b7eec2975',
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
         tradeCode: `${tradeSpace}.insertSelective`,
       },

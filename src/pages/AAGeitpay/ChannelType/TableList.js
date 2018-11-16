@@ -88,7 +88,7 @@ const CreateForm = Form.create()(props => {
         {form.getFieldDecorator('fType', {
           initialValue: fType,
           rules: [{ required: true, message: '请输入类型代码' }, { max: 2, message: '不超过2位' }],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入"  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型名称">
         {form.getFieldDecorator('fName', {
@@ -484,11 +484,6 @@ export default class TableList extends PureComponent {
         // to update: set primarykey
         fType: record.fType,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };

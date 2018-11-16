@@ -80,7 +80,7 @@ const CreateForm = Form.create()(
                 { required: true, message: '请输入第三方代码' },
                 { max: 2, message: '不超过2位' },
               ],
-            })(<Input placeholder="请输入" />)}
+            })(<Input placeholder="请输入"  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} />)}
           </FormItem>
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="第三方名称">
             {getFieldDecorator('fName', {
@@ -363,11 +363,6 @@ export default class TableList extends PureComponent {
         // to update: set primarykey
         fThirdid: record.fThirdid,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };

@@ -132,7 +132,7 @@ const CreateForm = Form.create()(props => {
         {form.getFieldDecorator('fReason', {
           initialValue: fReason,
           rules: [
-            { required: true, message: '请输入响应描述' },
+            { message: '请输入响应描述' },
             { max: 16, message: '不超过16位' },
           ],
         })(<Input placeholder="请输入" />)}
@@ -142,7 +142,7 @@ const CreateForm = Form.create()(props => {
         {form.getFieldDecorator('fResolve', {
           initialValue: fResolve,
           rules: [
-            { required: true, message: '请输入响应描述' },
+            { message: '请输入响应描述' },
             { max: 33, message: '不超过33位' },
           ],
         })(<Input placeholder="请输入" />)}
@@ -587,11 +587,6 @@ export default class TableList extends PureComponent {
         fThirdid: record.fThirdid,
         f3code: record.f3code,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };

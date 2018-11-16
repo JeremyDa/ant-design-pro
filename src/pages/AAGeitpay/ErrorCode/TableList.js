@@ -88,7 +88,7 @@ const CreateForm = Form.create()(props => {
         {form.getFieldDecorator('fErrno', {
           initialValue: fErrno,
           rules: [{ required: true, message: '请输入错误码' }, { max: 4, message: '不超过4位' }],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="错误描述">
         {form.getFieldDecorator('fErrmsg', {
@@ -476,11 +476,6 @@ export default class TableList extends PureComponent {
         // to update: set primarykey
         fErrno: record.fErrno,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };
