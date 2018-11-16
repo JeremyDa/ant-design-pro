@@ -10,7 +10,7 @@ const codeMessage = {
   202: '一个请求已经进入后台排队（异步任务）。',
   204: '删除数据成功。',
   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
+  401: '用户没有权限（用户名、密码错误）。',
   403: '用户得到授权，但是访问是被禁止的。',
   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
   406: '请求的格式不可得。',
@@ -26,11 +26,24 @@ const checkStatus = response => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
+
+  console.log(response);
+  if(response.status === 401 && response.url.indexOf('login.account')>0){
+    return response;
+  }
+  if(response.status >= 500){
+    console.log('500');
+    return response;
+  }
   const errortext = codeMessage[response.status] || response.statusText;
   notification.error({
     message: `请求错误 ${response.status}: ${response.url}`,
     description: errortext,
   });
+  // notification.error({
+  //   message: `请求错误 ${response.status}: `,
+  //   description: response.json().details,
+  // });
   const error = new Error(errortext);
   error.name = response.status;
   error.response = response;
@@ -64,6 +77,18 @@ const cachedSave = (response, hashcode) => {
  * @return {object}           An object containing either "data" or "err"
  */
 export default function request(url, option) {
+
+  console.log(url);
+  console.log(new Date().getTime() - localStorage.getItem('time'));
+  if ( url.indexOf('login')< 0 && new Date().getTime() - localStorage.getItem('time')>3600*1000) {
+    console.log('信息已过期');
+    window.g_app._store.dispatch({
+      type: 'login/logout',
+    });
+    // router.push('/user/login');
+    return;
+  }
+
   const options = {
     expirys: isAntdPro(),
     ...option,
@@ -143,15 +168,6 @@ export default function request(url, option) {
       // return {json:response.json(),url:response.url };
       return response.json();
     })
-    .then(data => {
-      if (data.rspMsg) {
-        notification.error({
-          message: `请求错误 : `,
-          description: data.rspMsg,
-        });
-      }
-      return data;
-    })
     .catch(e => {
       if (options.body && options.body.showError && e == 'TypeError: Failed to fetch') {
         notification.error({
@@ -160,12 +176,14 @@ export default function request(url, option) {
         });
       }
       const status = e.name;
+      console.log(status);
       if (status === 401) {
         // @HACK
         /* eslint-disable no-underscore-dangle */
         window.g_app._store.dispatch({
           type: 'login/logout',
         });
+        // router.push('/user/login');
         return;
       }
       // environment should not be used
@@ -180,5 +198,6 @@ export default function request(url, option) {
       if (status >= 404 && status < 422) {
         router.push('/exception/404');
       }
+      return Promise.reject(new Error(''));
     });
 }
