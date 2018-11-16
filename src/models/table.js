@@ -21,57 +21,108 @@ export default {
       });
       if (callback) callback();
     },
-    *fetch({ payload, callback }, { call, put }) {
+    *fetch({ payload, callback, success }, { call, put }) {
       // payload.showError = true;
       const response = yield call(query, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
+      if(response.details){
+        yield put({
+          type: 'showError',
+          payload: response,
+        });
+      }else{
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        if (callback) callback();
+        if(success){
+          success();
+        }
+      }
+      
     },
     *fetchExcel({ payload }, { call }) {
       // payload.showError = true;
       const response = yield call(query, payload);
 
-      return window.open(response.name);
+      window.open(response.name);
+      
     },
-    *add({ payload, callback }, { select, call, put }) {
+    *add({ payload, callback, success }, { select, call, put }) {
       const pagination = yield select(state => state.table.data.pagination);
       const response = yield call(add, { ...payload, ...pagination });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-      yield put({
-        type: 'new',
-      });
+
+      if(response.details){
+        yield put({
+          type: 'showError',
+          payload: response,
+        });
+      }else{
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        if (callback) callback();
+        if(success){
+          success();
+        }else{
+          yield put({
+            type: 'new',
+          });
+        }
+      }
+
+      
+      
     },
-    *remove({ payload, callback }, { select, call, put }) {
+    *remove({ payload, callback, success }, { select, call, put }) {
       const pagination = yield select(state => state.table.data.pagination);
       const response = yield call(remove, { ...payload, ...pagination });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-      yield put({
-        type: 'delete',
-      });
+
+      if(response.details){
+        yield put({
+          type: 'showError',
+          payload: response,
+        });
+      }else{
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        if (callback) callback();
+        if(success){
+          success();
+        }else{
+          yield put({
+            type: 'delete',
+          });
+        }
+      }
     },
-    *update({ payload, callback }, { select, call, put }) {
+    *update({ payload, callback, success }, { select, call, put }) {
       const pagination = yield select(state => state.table.data.pagination);
       const response = yield call(update, { ...payload, ...pagination });
-      yield put({
-        type: 'save',
-        payload: response,
-      });
 
-      if (callback) callback();
-      yield put({
-        type: 'edit',
-      });
+      if(response.details){
+        yield put({
+          type: 'showError',
+          payload: response,
+        });
+      }else{
+        yield put({
+          type: 'save',
+          payload: response,
+        });
+        if (callback) callback();
+        if(success){
+          success();
+        }else{
+          yield put({
+            type: 'edit'
+          });
+        }
+      }
+
     },
     *return({ payload, callback }, { call, put }) {
       const response = yield call(update, payload);
@@ -117,6 +168,12 @@ export default {
         ...state,
         ...action.payload,
       };
+    },
+    showError(state, {payload}){
+      message.error(payload.details);
+      return {
+        ...state,
+      }
     },
     clean() {
       return {
