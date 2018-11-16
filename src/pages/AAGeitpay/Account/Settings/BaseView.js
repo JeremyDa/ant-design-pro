@@ -7,34 +7,11 @@ import AvatarView from '../../Component/Avatar';
 import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
+import user from '../../../../../public/user.png';
 // import { getTimeDistance } from '@/utils/utils';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-
-// 头像组件 方便以后独立，增加裁剪之类的功能
-// const AvatarView = ({ avatar }) => (
-//   <Fragment>
-//     <div className={styles.avatar_title}>
-//       <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
-//     </div>
-//     <div className={styles.avatar}>
-//       <img src={avatar} alt="avatar" />
-//     </div>
-//     <Upload
-//       action="http://localhost:8011/uploadCasherImg"
-//       onSuccess={this.onSuccess}
-//       showUploadList={false}
-//       fileDownloadUri={fileDownloadUri}
-//     >
-//       <div className={styles.button_view}>
-//         <Button icon="upload">
-//           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-//         </Button>
-//       </div>
-//     </Upload>
-//   </Fragment>
-// );
 
 const validatorGeographic = (rule, value, callback) => {
   const { province, city } = value;
@@ -82,11 +59,10 @@ class BaseView extends Component {
 
   getAvatarURL() {
     const { currentUser } = this.props;
-    if (currentUser.avatar) {
+    if (currentUser.avatar && currentUser.avatar !== 'null') {
       return currentUser.avatar;
     }
-    const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-    return url;
+    return null;
   }
 
   handleSubmit = () => {
@@ -253,7 +229,7 @@ class BaseView extends Component {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} handleChange={this.handleAvatarChange} />
+          <AvatarView avatar={this.getAvatarURL()||user} handleChange={this.handleAvatarChange} />
         </div>
       </div>
     );
