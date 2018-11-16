@@ -4,7 +4,7 @@ import { Card, Button, Icon, List, Rate, Pagination } from 'antd';
 
 import Ellipsis from '@/components/Ellipsis';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import user from '../../../../public/user.svg';
+import user from '../../../../public/user.png';
 
 import styles from './CardList.less';
 
