@@ -4,6 +4,7 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import { Checkbox, Alert, Icon } from 'antd';
 import Login from '@/components/Login';
+import md5 from 'md5';
 import styles from './Login.less';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
@@ -47,6 +48,7 @@ class LoginPage extends Component {
         type: 'login/login',
         payload: {
           ...values,
+          password: md5(values.password),
           type,
         },
       });
@@ -81,10 +83,10 @@ class LoginPage extends Component {
               login.type === 'account' &&
               !submitting &&
               this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
-            <UserName name="userName" placeholder="admin/user" />
+            <UserName name="userName" placeholder="admin" />
             <Password
               name="password"
-              placeholder="888888/123456"
+              placeholder="tuanfeng"
               onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
           </Tab>
