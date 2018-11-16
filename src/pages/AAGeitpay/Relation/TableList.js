@@ -29,6 +29,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { getTimeDistance } from '../../../utils/utils';
+import { flagStatusMap, flagStatus } from '../Component/PayStatus';
 
 import styles from './TableList.less';
 
@@ -157,19 +158,19 @@ export default class TableList extends PureComponent {
       {
         title: '平台记账',
         dataIndex: 'fPtflag',
-        render: val => (val ? '有' : '无'),
+        render: val => (<Badge status={flagStatusMap[val]} text={flagStatus[val]} />),
         align: 'center',
       },
       {
         title: '第三方记账',
         dataIndex: 'fThirdflag',
-        render: val => (val ? '有' : '无'),
+        render: val => (<Badge status={flagStatusMap[val]} text={flagStatus[val]} />),
         align: 'center',
       },
       {
         title: 'HIS记账',
         dataIndex: 'fHisflag',
-        render: val => (val ? '有' : '无'),
+        render: val => (<Badge status={flagStatusMap[val]} text={flagStatus[val]} />),
         align: 'center',
       },
 
@@ -447,10 +448,10 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
+              <Button icon="search" type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} icon="reload" onClick={this.handleFormReset}>
                 重置
               </Button>
               <Button

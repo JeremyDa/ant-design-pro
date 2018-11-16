@@ -30,8 +30,12 @@ import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import { getTimeDistance } from '../../../utils/utils';
+import { payStatusMap, payStatus } from '../Component/PayStatus';
 
 import styles from './TableList.less';
+
+console.log(payStatusMap);
+console.log(payStatus);
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -48,8 +52,11 @@ const getValue = obj =>
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+// const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+// const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+
+// const payStatusMap = [ 'processing', 'success', 'default'];
+// const payStatus = ['待确认', '已确认', '订单关闭'];
 
 const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
 const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
@@ -183,7 +190,7 @@ class TableList extends PureComponent {
         //   text: '订单关闭',
         // }],
         render(val) {
-          return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
+          return <Badge status={payStatusMap[val]} text={payStatus[val]} />;
         },
       },
 
@@ -447,11 +454,6 @@ class TableList extends PureComponent {
         fOrdertrace: record.fOrdertrace,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
@@ -647,10 +649,10 @@ class TableList extends PureComponent {
           </Col>
           <Col md={4} sm={24}>
             <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
+              <Button icon="search" type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} icon="reload" onClick={this.handleFormReset}>
                 重置
               </Button>
               <Button
@@ -867,23 +869,23 @@ class TableList extends PureComponent {
     const titleKey = [];
     const title = [];
 
-    for (var key in this.getColumns(table)) {
+    for (const key in this.getColumns(table)) {
       titleKey.push(columns[key].dataIndex);
     }
-    for (var value in this.getColumns(table)) {
+    for (const value in this.getColumns(table)) {
       title.push(columns[value].title);
     }
 
-    const name = 'ORDERPAY.xlsx';
+    const name = 'orderpay.xlsx';
     dispatch({
       type: 'table/fetchExcel',
       payload: {
-        //to update
+        // to update
         ...formValues,
-        name: name,
+        name,
         titleKey: JSON.stringify(titleKey),
         title: JSON.stringify(title),
-        tradeCode: 'excel.' + tradeSpace + '.selectAllForExcel',
+        tradeCode: `excel.${  tradeSpace  }.selectAllForExcel`,
       },
     });
   };

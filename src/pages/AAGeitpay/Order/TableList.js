@@ -28,6 +28,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import { getTimeDistance } from '../../../utils/utils';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import { orderStatusMap, orderStatus } from '../Component/PayStatus';
 
 import styles from './TableList.less';
 
@@ -258,15 +259,6 @@ const CreateForm = Form.create()(props => {
   );
 });
 
-const orderStatus = {
-  '0': '待创建',
-  '1': '未支付',
-  '2': '正在支付',
-  '3': '已支付',
-  '4': '已关闭',
-  '5': '已退款',
-};
-
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, loading }) => ({
   table,
@@ -409,7 +401,7 @@ export default class TableList extends PureComponent {
           },
         ],
         render(val) {
-          return <Tag>{orderStatus[val]}</Tag>;
+          return <Badge status={orderStatusMap[val]} text={orderStatus[val]} />;
         },
       },
     ];
@@ -552,11 +544,6 @@ export default class TableList extends PureComponent {
         // to update: set primarykey
         fOrdertrace: record.fOrdertrace,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };
@@ -706,10 +693,10 @@ export default class TableList extends PureComponent {
           </Col>
           <Col md={4} sm={24}>
             <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
+              <Button icon="search" type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              <Button style={{ marginLeft: 8 }} icon="reload" onClick={this.handleFormReset}>
                 重置
               </Button>
               <Button
@@ -942,7 +929,7 @@ export default class TableList extends PureComponent {
       title.push(columns[value].title);
     }
     //to update
-    const name = '交易明细.xlsx';
+    const name = 'order.xlsx';
     dispatch({
       type: 'table/fetchExcel',
       payload: {

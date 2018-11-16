@@ -31,6 +31,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { getTimeDistance } from '../../../utils/utils';
+import { payStatusMap, payStatus } from '../Component/PayStatus';
 
 import styles from './TableList.less';
 
@@ -50,10 +51,10 @@ const Search = Input.Search;
 const payOrReturn = { '1': '支付', '-1': '退款' };
 const payOrReturnColor = { '1': 'green', '-1': 'red' };
 
-const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
-const returnStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-const returnStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+// const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+// const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
+// const returnStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
+// const returnStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
 
 const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
 const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
@@ -154,7 +155,7 @@ export default class TableList extends PureComponent {
         //   text: '订单关闭',
         // }],
         render(val) {
-          return <Tag color={payStatusColor[val]}>{payStatus[val]}</Tag>;
+          return <Badge status={payStatusMap[val]} text={payStatus[val]} />;
         },
       },
 
@@ -162,7 +163,7 @@ export default class TableList extends PureComponent {
         title: '退款状态',
         dataIndex: 'fReturnStatus',
         render: val =>
-          (payStatus[val] && <Tag color={returnStatusColor[val]}>{returnStatus[val]}</Tag>) || '-',
+          (payStatus[val] && <Badge status={payStatusMap[val]} text={payStatus[val]} />) || '-',
       },
       // {
       //   title: '电话',
@@ -429,11 +430,6 @@ export default class TableList extends PureComponent {
         fOrdertrace: record.fOrdertrace,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
@@ -455,7 +451,7 @@ export default class TableList extends PureComponent {
         });
   };
 
-  handleReturn1 = () => {
+  handleReturnBatch = () => {
     const { dispatch } = this.props;
     const form = this.formRef.props.form;
     const { tradeSpace } = this.state;
@@ -478,28 +474,36 @@ export default class TableList extends PureComponent {
       //   var returnFund = [];
       //   returnFund.push(map);
       // }
+
+      console.log('selectedRows',selectedRows);
       dispatch({
         type: 'table/update',
         payload: {
           // to update: set primarykey
-          ...selectedRows,
+          records: selectedRows,
           refundReason: fieldsValue.refundReason,
           tradeCode: 'trans/return',
           returnSelect: tradeSpace + '.selectOrderAndPay',
+          batch: true,
+        },
+        success: ()=> {
+
         },
         callback: () => {
           dispatch({
             type: 'table/update',
             payload: {
               // to update: set primarykey
-              ...selectedRows,
+              records: selectedRows,
               tradeCode: 'trans/returnQuery',
               returnSelect: tradeSpace + '.selectOrderAndPay',
+              batch: true,
             },
             callback: () => {
-              if (!this.props.table.rspMsg) {
-                message.success('退款成功');
-              }
+              
+            },
+            success: ()=> {
+              message.success('退款成功');
             },
           });
         },
@@ -967,7 +971,7 @@ export default class TableList extends PureComponent {
       title.push(columns[value].title);
     }
     //to update
-    const name = 'RETURN.xlsx';
+    const name = 'return.xlsx';
     dispatch({
       type: 'table/fetchExcel',
       payload: {
@@ -1091,7 +1095,7 @@ export default class TableList extends PureComponent {
         <PageHeaderWrapper title="查询表格">
           <ReturnModal
             wrappedComponentRef={this.saveFormRef}
-            handleReturn={this.handleReturn1}
+            handleReturn={this.handleReturnBatch}
             handleCancel={this.handleCancel}
             returnVisible={this.state.returnVisible}
           />
