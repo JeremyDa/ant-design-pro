@@ -347,20 +347,20 @@ module.exports = [
       //     },
       //   ],
       // },
-      // {
-      //   name: 'result',
-      //   icon: 'check-circle-o',
-      //   path: '/result',
-      //   routes: [
-      //     // result
-      //     {
-      //       path: '/result/success',
-      //       name: 'success',
-      //       component: './Result/Success',
-      //     },
-      //     { path: '/result/fail', name: 'fail', component: './Result/Error' },
-      //   ],
-      // },
+      {
+        name: 'result',
+        icon: 'check-circle-o',
+        path: '/result',
+        routes: [
+          // result
+          {
+            path: '/result/success',
+            name: 'success',
+            component: './Result/Success',
+          },
+          { path: '/result/fail', name: 'fail', component: './Result/Error' },
+        ],
+      },
       // {
       //   name: 'exception',
       //   icon: 'warning',
