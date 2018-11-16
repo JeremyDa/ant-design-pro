@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { List } from 'antd';
+import { connect } from 'dva';
+import { List,Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete,message } from 'antd';
+import md5 from 'md5';
+import WrappedModifyPassword from "../../Component/ModifyPassword";
 // import { getTimeDistance } from '@/utils/utils';
 
 const passwordStrength = {
@@ -22,7 +25,21 @@ const passwordStrength = {
   ),
 };
 
+@connect(({ user }) => ({
+  currentUser: user.currentUser,
+}))
 class SecurityView extends Component {
+
+  state = {
+    visible: false,
+  }
+
+  showConfig = (flag) => {
+    this.setState({
+      visible: !flag
+    });
+  }
+
   getData = () => [
     {
       title: formatMessage({ id: 'app.settings.security.password' }, {}),
@@ -33,67 +50,59 @@ class SecurityView extends Component {
         </Fragment>
       ),
       actions: [
-        <a>
+        <a onClick={() => this.showConfig(true)}>
           <FormattedMessage id="app.settings.security.modify" defaultMessage="Modify" />
         </a>,
       ],
     },
-    // {
-    //   title: formatMessage({ id: 'app.settings.security.phone' }, {}),
-    //   description: `${formatMessage(
-    //     { id: 'app.settings.security.phone-description' },
-    //     {}
-    //   )}：138****8293`,
-    //   actions: [
-    //     <a>
-    //       <FormattedMessage id="app.settings.security.modify" defaultMessage="Modify" />
-    //     </a>,
-    //   ],
-    // },
-    // {
-    //   title: formatMessage({ id: 'app.settings.security.question' }, {}),
-    //   description: formatMessage({ id: 'app.settings.security.question-description' }, {}),
-    //   actions: [
-    //     <a>
-    //       <FormattedMessage id="app.settings.security.set" defaultMessage="Set" />
-    //     </a>,
-    //   ],
-    // },
-    // {
-    //   title: formatMessage({ id: 'app.settings.security.email' }, {}),
-    //   description: `${formatMessage(
-    //     { id: 'app.settings.security.email-description' },
-    //     {}
-    //   )}：ant***sign.com`,
-    //   actions: [
-    //     <a>
-    //       <FormattedMessage id="app.settings.security.modify" defaultMessage="Modify" />
-    //     </a>,
-    //   ],
-    // },
-    // {
-    //   title: formatMessage({ id: 'app.settings.security.mfa' }, {}),
-    //   description: formatMessage({ id: 'app.settings.security.mfa-description' }, {}),
-    //   actions: [
-    //     <a>
-    //       <FormattedMessage id="app.settings.security.bind" defaultMessage="Bind" />
-    //     </a>,
-    //   ],
-    // },
   ];
 
+  
+  submit = (values) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'table/fetch',
+      payload: {
+        tradeCode: 'login.user.modifyPassword',
+        ...values,
+        oldpassword: md5(values.oldpassword),
+        password: md5(values.password),
+      },
+      callback: ()=>{
+        // this.showConfig(false);
+      },
+      success: ()=>{
+        message.success('密码修改成功');
+        window.g_app._store.dispatch({
+          type: 'login/logout',
+        });
+      },
+    });
+  }
+
   render() {
+    const { visible } = this.state;
+    
     return (
       <Fragment>
-        <List
-          itemLayout="horizontal"
-          dataSource={this.getData()}
-          renderItem={item => (
-            <List.Item actions={item.actions}>
-              <List.Item.Meta title={item.title} description={item.description} />
-            </List.Item>
-          )}
-        />
+        {
+          visible && 
+          (<List
+            itemLayout="horizontal"
+            dataSource={this.getData()}
+            renderItem={item => (
+              <List.Item actions={item.actions}>
+                <List.Item.Meta title={item.title} description={item.description} />
+              </List.Item>
+            )}
+          />)
+        }
+        {
+          !visible &&
+          (
+            <WrappedModifyPassword submit={this.submit} />
+          )
+        }
       </Fragment>
     );
   }
