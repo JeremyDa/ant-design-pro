@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { connect } from 'dva';
+import url from '../../../services/url';
 import moment from 'moment';
 import {
   Tag,
@@ -30,7 +31,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TableList.less';
-import user from '../../../../public/user.svg';
+import user from '../../../../public/user.png';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -218,7 +219,7 @@ const CreateForm = Form.create()(props => {
           </div>
           <Upload
             // fileList={[]}
-            action="http://localhost:8011/uploadCasherImg"
+            action={`${url}/uploadCasherImg`}
             onSuccess={this.onSuccess}
             showUploadList={false}
             //         onChange={handleChange}
@@ -241,22 +242,6 @@ const CreateForm = Form.create()(props => {
       );
     }
   }
-  // const AvatarView = ({ avatar }) => (
-  //   <Fragment>
-  //     <div className={styles.avatar}>
-  //       <img src={avatar} alt="avatar" />
-  //     </div>
-  //     <Upload fileList={[]} action="http://localhost:8011/uploadCasherImg"
-  //             onChange={handleChange}>
-  //       <div className={styles.button_view}>
-  //         <Button icon="upload">
-  //           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
-  //         </Button>
-  //       </div>
-  //     </Upload>
-  //   </Fragment>
-  // );
-
   return (
     <Modal
       destroyOnClose
@@ -536,11 +521,6 @@ export default class TableList extends PureComponent {
         fWid: record.fWid,
         fMerchantid: record.fMerchantid,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
-      },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };
