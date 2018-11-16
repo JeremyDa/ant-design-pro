@@ -56,6 +56,7 @@ const CreateForm = Form.create()(props => {
     addOrUpdate,
 
     // to update: value to text的数据源，这里是表名
+    T_MERCHANT,
     T_THIRD,
   } = props;
 
@@ -85,14 +86,18 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       {/* // to update: form表单内容，修改字段名称 */}
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="商户名称">
-        {form.getFieldDecorator('fMerchantid', {
-          initialValue: fMerchantid,
-          rules: [
-            { required: true, message: '请输入类型代码' },
-            { max: 12, message: '不超过12位' },
-          ],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="商户">
+        {form.getFieldDecorator(
+          'fMerchantid',
+          // f_SELECT && { initialValue: `${f_SELECT}`,
+          {
+            initialValue: fMerchantid ? `${fMerchantid}` : ``,
+          }
+        )(
+          <Select placeholder="请选择" style={{ width: '100%' }}  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} >
+            {T_MERCHANT ? T_MERCHANT.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方名称">
         {form.getFieldDecorator(
@@ -102,7 +107,7 @@ const CreateForm = Form.create()(props => {
             initialValue: fThirdid ? `${fThirdid}` : ``,
           }
         )(
-          <Select placeholder="请选择" style={{ width: '100%' }}>
+          <Select placeholder="请选择" style={{ width: '100%' }}  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} >
             {T_THIRD ? T_THIRD.tv.map(d => <Option value={d.value}>{d.text}</Option>) : ''}
           </Select>
         )}
@@ -110,20 +115,20 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方ID">
         {form.getFieldDecorator('fAppid', {
           initialValue: fAppid,
-          rules: [{ required: true, message: '请输入第三方ID' }, { max: 6, message: '不超过6位' }],
+          rules: [{ required: true, message: '请输入第三方ID' }, { max: 32, message: '不超过32位' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方商户号">
         {form.getFieldDecorator('fMchid', {
           initialValue: fMchid,
-          rules: [{ required: true, message: '请输入第三方商户号' }],
+          rules: [{ required: true, message: '请输入第三方商户号' }, { max: 32, message: '不超过32位' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
 
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="备注">
         {form.getFieldDecorator('fMem', {
           initialValue: fMem,
-          rules: [{ required: true, message: '请输入所属备注' }],
+          rules: [{ message: '请输入所属备注' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
@@ -609,11 +614,6 @@ export default class TableList extends PureComponent {
         fMerchantid: record.fMerchantid,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
@@ -701,6 +701,7 @@ export default class TableList extends PureComponent {
       payload: {
         ...fields,
         // f_DATE: fields.f_DATE.format('YYYYMMDD'),
+        fUse: 1,
         tradeCode: `${tradeSpace}.insertSelective`,
       },
     });
@@ -898,6 +899,7 @@ export default class TableList extends PureComponent {
         <CreateForm
           // to update: 中文翻译
           // T_INDUSTRY={table.T_INDUSTRY}
+          T_MERCHANT={table.T_MERCHANT}
           T_THIRD={table.T_THIRD}
           addOrUpdate={addOrUpdate}
           // record={(addOrUpdate === 2 && selectedRows[0]) || {}}
