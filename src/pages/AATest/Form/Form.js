@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import {
   Row,
   Col,
@@ -28,15 +29,79 @@ import {
   notification,
   Progress,
 } from 'antd';
-import { connect } from 'dva';
-import styles from './style.less';
+import BraftEditor from 'braft-editor';
+import 'braft-editor/dist/index.css';
+// import LzEditor from './editor/index.jsx';
+// // import LzEditor from "./node_modules/react-lz-editor/index";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+@connect(({ table, loading }) => ({
+  table,
+  loading: loading.models.table,
+}))
 class NormalLoginForm extends React.Component {
+  state = {
+    editorState: null,
+  };
+
+  async componentDidMount() {
+
+    // 假设此处从服务端获取html格式的编辑器内容
+
+    // 使用BraftEditor.createEditorState将html字符串转换为编辑器需要的editorState数据
+
+    const htmlContent = await this.fetchEditorContent();
+
+    this.setState({
+      editorState: BraftEditor.createEditorState(htmlContent),
+    });
+  }
+
+  fetchEditorContent = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'table/fetch',
+      payload: {
+        tradeCode: 'ttest.selectByPrimaryKey',
+        // fId: '6',
+      },
+    });
+    const { table } = this.props;
+    console.log("list::", table.data.list[3].fEditor);
+    const htmlContent = table.data.list[3].fEditor;
+    return htmlContent;
+  }
+
+
+  submitContent = async () => {
+    const { dispatch } = this.props;
+    // 在编辑器获得焦点时按下ctrl+s会执行此方法
+    // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
+    const htmlContent = this.state.editorState.toHTML();
+    // const result = await saveEditorContent(htmlContent);
+    dispatch({
+      type: 'table/add',
+      payload: {
+        tradeCode: 'ttest.insertSelective',
+        fEditor: htmlContent,
+      },
+    });
+  };
+
+  handleEditorChange = editorState => {
+    this.setState({ editorState });
+    console.log('editorState:', editorState.toHTML());
+  };
+
+  receiveHtml(content) {
+    console.log('recieved HTML content', content);
+    this.setState({ responseList: [] });
+  }
+
   state = {
     size: 'large',
   };
@@ -72,6 +137,7 @@ class NormalLoginForm extends React.Component {
   };
 
   render() {
+    const { editorState } = this.state;
     const { getFieldDecorator } = this.props.form;
 
     const size = this.state.size;
@@ -114,6 +180,13 @@ class NormalLoginForm extends React.Component {
 
     return (
       <div>
+        <Card>
+          <BraftEditor
+            value={editorState}
+            onChange={this.handleEditorChange}
+            onSave={this.submitContent}
+          />
+        </Card>
         <Card>
           <div className="demo">
             <div style={{ marginLeft: 70, whiteSpace: 'nowrap' }}>
