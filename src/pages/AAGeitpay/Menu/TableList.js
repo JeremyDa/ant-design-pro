@@ -322,9 +322,6 @@ export default class TableList extends PureComponent {
         returnSelect: 'null'
       },
       callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
         dispatch({
           type: 'table/fetch',
           payload: {

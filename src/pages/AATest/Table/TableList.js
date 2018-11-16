@@ -569,11 +569,6 @@ export default class TableList extends PureComponent {
         fId: record.fId,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
