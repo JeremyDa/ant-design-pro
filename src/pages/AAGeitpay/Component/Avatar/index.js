@@ -1,8 +1,9 @@
 import React from 'react';
 import { FormattedMessage } from 'umi/locale';
 import { Button, Upload } from 'antd';
+import url from '../../../../services/url';
 
-import user from '../../../../../public/user.svg';
+import user from '../../../../../public/user.png';
 import styles from './index.less';
 
 // 头像组件 方便以后独立，增加裁剪之类的功能
@@ -35,7 +36,7 @@ class AvatarView extends React.Component {
           <img src={fileDownloadUri || user} alt="avatar" />
         </div>
         <Upload
-          action="http://localhost:8011/uploadCasherImg"
+          action={`${url}/uploadCasherImg`}
           onSuccess={this.onSuccess}
           showUploadList={false}
           fileDownloadUri={fileDownloadUri}

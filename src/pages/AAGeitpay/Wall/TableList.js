@@ -27,6 +27,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import url from '../../../services/url';
 
 import styles from './TableList.less';
 
@@ -173,7 +174,7 @@ export default class TableList extends PureComponent {
         <Card bordered={false}>
           <div className="clearfix">
             <Upload
-              action="http://localhost:8011/uploadFile"
+              action=url+"/uploadFile"
               listType="picture-card"
               fileList={wall && wall.data.list||[]}
               onPreview={this.handlePreview}

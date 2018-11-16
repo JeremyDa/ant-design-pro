@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
+import url from '../../../services/url';
 import moment from 'moment';
 import {
   Row,
@@ -565,11 +566,6 @@ export default class TableList extends PureComponent {
         fId: record.fId,
         tradeCode: tradeSpace + '.deleteByPrimaryKey',
       },
-      callback: () => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
     });
   };
 
@@ -799,7 +795,7 @@ export default class TableList extends PureComponent {
 
     const props = {
       name: 'file',
-      action: 'http://localhost:8011/uploadExcel',
+      action: url+'/uploadExcel',
       headers: {
         authorization: 'authorization-text',
       },
