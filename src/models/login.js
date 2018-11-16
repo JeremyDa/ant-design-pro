@@ -4,6 +4,7 @@ import { accountLogin, getFakeCaptcha } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { message } from 'antd';
 
 export default {
   namespace: 'login',
@@ -38,6 +39,11 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
+      }else{
+        yield put({
+          type: 'showError',
+          payload: response,
+        });
       }
     },
 
@@ -74,6 +80,7 @@ export default {
         localStorage.setItem('userName',payload.userName); 
         localStorage.setItem('menu',JSON.stringify(payload.menu));
         localStorage.setItem('token',payload.token); 
+        localStorage.setItem('time',new Date().getTime());
 
         return {
           ...state,
@@ -93,5 +100,12 @@ export default {
       
       
     },
+    showError(state, {payload}){
+      console.log(payload);
+      message.error(payload.details);
+      return {
+        ...state,
+      }
+    }
   },
 };
