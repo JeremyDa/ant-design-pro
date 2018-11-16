@@ -23,12 +23,12 @@ class Info extends Component {
       // binding: (
       //   <FormattedMessage id="app.settings.menuMap.binding" defaultMessage="Account Binding" />
       // ),
-      notification: (
-        <FormattedMessage
-          id="app.settings.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
-      ),
+      // notification: (
+      //   <FormattedMessage
+      //     id="app.settings.menuMap.notification"
+      //     defaultMessage="New Message Notification"
+      //   />
+      // ),
     };
     const key = location.pathname.replace(`${match.path}/`, '');
     this.state = {
