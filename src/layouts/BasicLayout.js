@@ -24,30 +24,30 @@ const { Content } = Layout;
 function formatter(data, parentAuthority, parentName) {
   return data
     .map(item => {
-      let locale = 'menu';
-      if (parentName && item.name) {
-        locale = `${parentName}.${item.name}`;
-      } else if (item.name) {
-        locale = `menu.${item.name}`;
-      } else if (parentName) {
-        locale = parentName;
-      }
-      if (item.path) {
-        const result = {
-          ...item,
-          locale,
-          authority: item.authority || parentAuthority,
-        };
-        if (item.routes) {
-          const children = formatter(item.routes, item.authority, locale);
-          // Reduce memory usage
-          result.children = children;
-        }
-        delete result.routes;
-        return result;
+      if (!item.name || !item.path) {
+        return null;
       }
 
-      return null;
+      let locale = 'menu';
+      if (parentName) {
+        locale = `${parentName}.${item.name}`;
+      } else {
+        locale = `menu.${item.name}`;
+      }
+
+      const result = {
+        ...item,
+        name: formatMessage({ id: locale, defaultMessage: item.name }),
+        locale,
+        authority: item.authority || parentAuthority,
+      };
+      if (item.routes) {
+        const children = formatter(item.routes, item.authority, locale);
+        // Reduce memory usage
+        result.children = children;
+      }
+      delete result.routes;
+      return result;
     })
     .filter(item => item);
 }
@@ -143,9 +143,9 @@ class BasicLayout extends React.PureComponent {
 
   getMenuData() {
     const {
-      route: { routes },
+      route: { routes, authority },
     } = this.props;
-    return memoizeOneFormatter(routes);
+    return memoizeOneFormatter(routes, authority);
   }
 
   /**
@@ -180,11 +180,11 @@ class BasicLayout extends React.PureComponent {
     if (!currRouterData) {
       return 'Ant Design Pro';
     }
-    const message = formatMessage({
+    const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - Ant Design Pro`;
+    return `${pageName} - Ant Design Pro`;
   };
 
   getLayoutStyle = () => {
