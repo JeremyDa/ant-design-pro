@@ -12,7 +12,7 @@ import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
 import SettingDrawer from '@/components/SettingDrawer';
-import logo from '../../public/initial-d-vector-logo.png';
+import logo from '../../public/Initial_D.png';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
