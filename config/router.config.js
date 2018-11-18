@@ -18,7 +18,14 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      { path: '/', redirect: '/index' },
+      {
+        path: '/index',
+        name: 'index',
+        // icon: '',
+        component: './List/TableList',
+        // component: './AAInitialD/Index/index',
+      },
       {
         path: '/dashboard',
         name: 'dashboard',
