@@ -92,6 +92,7 @@ const CreateForm = Form.create()(props => {
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fMerchantid ? `${fMerchantid}` : ``,
+            rules: [{ required: true, message: '请选择商户' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} >
@@ -105,6 +106,7 @@ const CreateForm = Form.create()(props => {
           // f_SELECT && { initialValue: `${f_SELECT}`,
           {
             initialValue: fThirdid ? `${fThirdid}` : ``,
+            rules: [{ required: true, message: '请选择第三方' }],
           }
         )(
           <Select placeholder="请选择" style={{ width: '100%' }}  disabled={(addOrUpdate === 1 && false) || (addOrUpdate === 2 && true)} >
@@ -112,10 +114,10 @@ const CreateForm = Form.create()(props => {
           </Select>
         )}
       </FormItem>
-      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方ID">
+      <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方AppID">
         {form.getFieldDecorator('fAppid', {
           initialValue: fAppid,
-          rules: [{ required: true, message: '请输入第三方ID' }, { max: 32, message: '不超过32位' }],
+          rules: [{ required: true, message: '请输入第三方AppID' }, { max: 32, message: '不超过32位' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="第三方商户号">
@@ -612,6 +614,7 @@ export default class TableList extends PureComponent {
       payload: {
         // to update: set primarykey
         fMerchantid: record.fMerchantid,
+        fThirdid: record.fThirdid,
         tradeCode: `${tradeSpace}.deleteByPrimaryKey`,
       },
     });
