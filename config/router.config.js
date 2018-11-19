@@ -108,6 +108,11 @@ module.exports = [
             name: 'cashereva',
             component: './AAGeitpay/CasherEva/CardList',
           },
+          {
+            path: '/basic/terminal',
+            name: 'terminal',
+            component: './AAGeitpay/Terminal/TableList',
+          },
         ],
       },
 
