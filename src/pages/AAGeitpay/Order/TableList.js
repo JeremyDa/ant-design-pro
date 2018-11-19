@@ -357,8 +357,9 @@ export default class TableList extends PureComponent {
         dataIndex: 'fTradetype',
       },
       {
-        title: '医保标志',
+        title: '是否医保',
         dataIndex: 'fYbflag',
+        render: val => (val === '1'?'是':'否'),
       },
 
       {
