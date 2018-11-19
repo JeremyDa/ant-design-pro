@@ -99,7 +99,7 @@ export default {
         }
       }
     },
-    *update({ payload, callback, success }, { select, call, put }) {
+    *update({ payload, callback, success,error,final }, { select, call, put }) {
       const pagination = yield select(state => state.table.data.pagination);
       const response = yield call(update, { ...payload, ...pagination });
 
@@ -108,6 +108,9 @@ export default {
           type: 'showError',
           payload: response,
         });
+        if(error){
+          error();
+        }
       }else{
         yield put({
           type: 'save',
@@ -121,6 +124,9 @@ export default {
             type: 'edit'
           });
         }
+      }
+      if(final){
+        final();
       }
 
     },
@@ -141,15 +147,21 @@ export default {
   },
 
   reducers: {
-    new() {
+    new(state) {
       message.success('保存成功');
+      return {
+        ...state,
+      };
     },
     edit(state) {
       message.success('更新成功');
       return state;
     },
-    delete() {
+    delete(state) {
       message.success('删除成功');
+      return {
+        ...state,
+      };
     },
     save(state, action) {
       if (action.payload.list) {
