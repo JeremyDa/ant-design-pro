@@ -78,6 +78,7 @@ export default {
 
   'menu.test': 'test',
   'menu.test.table-list': 'test',
+  'menu.test.student': 'student',
   'menu.test.advanced-form': 'form',
   'menu.test.form': 'form-test',
   'menu.dev': '开发者工具',
