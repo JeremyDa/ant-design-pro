@@ -212,6 +212,7 @@ module.exports = [
           // },
           { path: '/test/form', name: 'form', component: './AATest/Form/Form' },
           { path: '/test/table-list', name: 'table-list', component: './AATest/Table/TableList' },
+          { path: '/test/sutudent', name: 'student', component: './AATest/Table/Student' },
         ],
       },
 
