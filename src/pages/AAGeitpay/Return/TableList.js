@@ -28,6 +28,7 @@ import {
 } from 'antd';
 import StandardTable from '../../../components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import WrappedReasonModal from './ReasonModal';
 
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { getTimeDistance } from '../../../utils/utils';
@@ -48,52 +49,6 @@ const getValue = obj =>
     .join(',');
 const Search = Input.Search;
 
-const payOrReturn = { '1': '支付', '-1': '退款' };
-const payOrReturnColor = { '1': 'green', '-1': 'red' };
-
-// const payStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-// const payStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
-// const returnStatus = { '0': '待确认', '1': '已确认', V: '订单关闭' };
-// const returnStatusColor = { '0': 'orange', '1': 'green', V: 'grey' };
-
-const relationFlag = { '0': '平', '1': '长款', '-1': '短款' };
-const relationFlagColor = { '0': 'grey', '1': 'orange', '-1': 'red' };
-
-const ReturnModal = Form.create()(
-  class extends React.Component {
-    render() {
-      const { handleReturn, handleCancel, returnVisible, form } = this.props;
-      const { getFieldDecorator } = form;
-      return (
-        <div>
-          <Modal
-            title="退款原因"
-            visible={returnVisible}
-            onOk={handleReturn}
-            onCancel={handleCancel}
-          >
-            <FormItem>
-              {getFieldDecorator('refundReason', {
-                rules: [{ required: true, message: '请输入退款原因' }],
-              })(
-                <div>
-                  <Alert
-                    message="将统一使用下方填写的退款原因"
-                    type="warning"
-                    banner
-                    style={{ marginBottom: 10 }}
-                    closeText="Close"
-                  />
-                  <TextArea rows={4} placeholder="请输入退款原因" />
-                </div>
-              )}
-            </FormItem>
-          </Modal>
-        </div>
-      );
-    }
-  }
-);
 /* eslint react/no-multi-comp:0 */
 @connect(({ table, chart, loading }) => ({
   table,
@@ -246,7 +201,6 @@ export default class TableList extends PureComponent {
     formValues: {},
     addOrUpdate: 1,
     stepFormValues: {},
-    refundReason: '',
     record: '',
 
     // to update: tradeCode更新
@@ -444,38 +398,34 @@ export default class TableList extends PureComponent {
     const { selectedRowKeys, selectedRows } = this.state;
     console.log(selectedRowKeys, selectedRows);
 
-    selectedRowKeys == 0
-      ? message.error('请选择退款的订单号')
-      : this.setState({
-          returnVisible: true,
-        });
+    if(selectedRows.length > 0){
+      this.setState({
+        returnVisible: true,
+      })
+    }else{
+      message.warning('请选择退款的订单号');
+    }
+
+    // selectedRowKeys == 0
+    //   ? message.error('请选择退款的订单号')
+    //   : this.setState({
+    //       returnVisible: true,
+    //     });
   };
 
   handleReturnBatch = () => {
     const { dispatch } = this.props;
     const form = this.formRef.props.form;
     const { tradeSpace } = this.state;
-    const { selectedRows } = this.state;
-    console.log('----------------', selectedRows.length);
+    
+    
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      if (!selectedRows) return;
-      // for (let i = 0; i < selectedRows.length; i++) {
-      //   var map = new Map();
-      //   map.indCode = selectedRows[i].fIndustryCode;
-      //   map.chanelType = selectedRows[i].fChannel;
-      //   map.merchantId = selectedRows[i].fMerchantid;
-      //   map.operId = selectedRows[i].fOperid;
-      //   map.termId = selectedRows[i].fTermid;
-      //   map.orderId = selectedRows[i].fOrdertrace;
-      //   map.refundAmt = selectedRows[i].f3totalFee;
-      //   var returnFund = [];
-      //   returnFund.push(map);
-      // }
 
-      console.log('selectedRows',selectedRows);
+      const { selectedRows } = this.state;
+      if (!selectedRows) return;
       dispatch({
         type: 'table/update',
         payload: {
@@ -489,6 +439,16 @@ export default class TableList extends PureComponent {
         success: ()=> {
 
         },
+        error: ()=> {
+          
+        },
+        final: ()=> {
+          this.setState({
+            returnVisible: false,
+            selectedRows: [],
+            selectedRowKeys: [],
+          });
+        },
         callback: () => {
           dispatch({
             type: 'table/update',
@@ -500,7 +460,6 @@ export default class TableList extends PureComponent {
               batch: true,
             },
             callback: () => {
-              
             },
             success: ()=> {
               message.success('退款成功');
@@ -509,13 +468,10 @@ export default class TableList extends PureComponent {
         },
       });
 
-      if (fieldsValue.refundReason == null) {
-        message.success('输入退款原因');
-      } else {
-        this.setState({
-          returnVisible: false,
-        });
-      }
+      this.setState({
+        returnVisible: false,
+      });
+
     });
   };
 
@@ -1093,7 +1049,7 @@ export default class TableList extends PureComponent {
     return (
       <div>
         <PageHeaderWrapper title="查询表格">
-          <ReturnModal
+          <WrappedReasonModal 
             wrappedComponentRef={this.saveFormRef}
             handleReturn={this.handleReturnBatch}
             handleCancel={this.handleCancel}
