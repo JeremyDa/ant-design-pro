@@ -10,7 +10,7 @@ module.exports =
   // }
 
   {
-    navTheme: 'light',
+    navTheme: 'dark',
     primaryColor: '#1890FF',
     layout: 'topmenu',
     contentWidth: 'Fluid',
