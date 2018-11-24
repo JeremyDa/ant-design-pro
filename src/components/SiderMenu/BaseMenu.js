@@ -3,8 +3,9 @@ import { Menu, Icon } from 'antd';
 import Link from 'umi/link';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
-import pathToRegexp from 'path-to-regexp';
 import { urlToList } from '../_utils/pathTools';
+import { getMenuMatches } from './SiderMenuUtils';
+import { isUrl } from '@/utils/utils';
 import styles from './index.less';
 
 const { SubMenu } = Menu;
@@ -14,7 +15,7 @@ const { SubMenu } = Menu;
 //   icon: 'http://demo.com/icon.png',
 //   icon: <Icon type="setting" />,
 const getIcon = icon => {
-  if (typeof icon === 'string' && icon.indexOf('http') === 0) {
+  if (typeof icon === 'string' && isUrl(icon)) {
     return <img src={icon} alt="icon" className={styles.icon} />;
   }
   if (typeof icon === 'string') {
@@ -22,14 +23,6 @@ const getIcon = icon => {
   }
   return icon;
 };
-
-export const getMenuMatches = (flatMenuKeys, path) =>
-  flatMenuKeys.filter(item => {
-    if (item) {
-      return pathToRegexp(item).test(path);
-    }
-    return false;
-  });
 
 export default class BaseMenu extends PureComponent {
   constructor(props) {
@@ -47,11 +40,7 @@ export default class BaseMenu extends PureComponent {
     }
     return menusData
       .filter(item => item.name && !item.hideInMenu)
-      .map(item => {
-        // make dom
-        const ItemDom = this.getSubMenuOrItem(item, parent);
-        return this.checkPermissionItem(item.authority, ItemDom);
-      })
+      .map(item => this.getSubMenuOrItem(item, parent))
       .filter(item => item);
   };
 
@@ -126,16 +115,6 @@ export default class BaseMenu extends PureComponent {
         <span>{name}</span>
       </Link>
     );
-  };
-
-  // permission to check
-  checkPermissionItem = (authority, ItemDom) => {
-    const { Authorized } = this.props;
-    if (Authorized && Authorized.check) {
-      const { check } = Authorized;
-      return check(authority, ItemDom);
-    }
-    return ItemDom;
   };
 
   conversionPath = path => {
