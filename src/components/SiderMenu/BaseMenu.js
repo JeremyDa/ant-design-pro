@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
+import classNames from 'classnames';
 import { Menu, Icon } from 'antd';
 import Link from 'umi/link';
-import isEqual from 'lodash/isEqual';
-import memoizeOne from 'memoize-one';
 import { urlToList } from '../_utils/pathTools';
 import { getMenuMatches } from './SiderMenuUtils';
 import { isUrl } from '@/utils/utils';
@@ -25,11 +24,6 @@ const getIcon = icon => {
 };
 
 export default class BaseMenu extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.getSelectedMenuKeys = memoizeOne(this.getSelectedMenuKeys, isEqual);
-  }
-
   /**
    * 获得菜单子节点
    * @memberof SiderMenu
@@ -130,6 +124,8 @@ export default class BaseMenu extends PureComponent {
       theme,
       mode,
       location: { pathname },
+      className,
+      collapsed,
     } = this.props;
     // if pathname can't match, use the nearest parent's key
     let selectedKeys = this.getSelectedMenuKeys(pathname);
@@ -137,12 +133,16 @@ export default class BaseMenu extends PureComponent {
       selectedKeys = [openKeys[openKeys.length - 1]];
     }
     let props = {};
-    if (openKeys) {
+    if (openKeys && !collapsed) {
       props = {
-        openKeys,
+        openKeys: openKeys.length === 0 ? [...selectedKeys] : openKeys,
       };
     }
     const { handleOpenChange, style, menuData } = this.props;
+    const cls = classNames(className, {
+      'top-nav-menu': mode === 'horizontal',
+    });
+
     return (
       <Menu
         key="Menu"
@@ -151,7 +151,7 @@ export default class BaseMenu extends PureComponent {
         onOpenChange={handleOpenChange}
         selectedKeys={selectedKeys}
         style={style}
-        className={mode === 'horizontal' ? 'top-nav-menu' : ''}
+        className={cls}
         {...props}
       >
         {this.getNavMenuItems(menuData)}
